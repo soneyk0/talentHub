@@ -1,102 +1,118 @@
 query GetUserById($userId: ID!) {
-    user(userId: $userId) {
-        id
-        created_at
-        email
-        is_verified
-        profile {
-            id
-            first_name
-            last_name
-            full_name
-            avatar
-        }
-        department {
-            id
-            name
-        }
-        position {
-            id
-            name
-        }
-        role
-    }
+	user(userId: $userId) {
+		id
+		created_at
+		email
+		is_verified
+		profile {
+			id
+			first_name
+			last_name
+			full_name
+			avatar
+		}
+		department {
+			id
+			name
+		}
+		position {
+			id
+			name
+		}
+		role
+	}
 }
 
 query GetAllDepartments {
-    departments {
-        id
-        name
-    }
+	departments {
+		id
+		name
+	}
 }
 
 query GetAllPositions {
-    positions {
-        id
-        name
-    }
+	positions {
+		id
+		name
+	}
 }
 
 query GetProfileSkills($userId: ID!) {
-    profile(userId: $userId) {
-        id
-        skills {
-            name
-            categoryId
-            mastery
-        }
-    }
+	profile(userId: $userId) {
+		id
+		skills {
+			name
+			categoryId
+			mastery
+		}
+	}
 }
 
 query GetSkillCategories {
-    skillCategories {
-        id
-        name
-        parent {
-            id
-            name
-        }
-    }
+	skillCategories {
+		id
+		name
+		parent {
+			id
+			name
+		}
+	}
 }
 
 query GetAllSkills {
-    skills {
-        id
-        name
-        category {
-            id
-            order
-        }
-        category_name
-        category_parent_name
-    }
+	skills {
+		id
+		name
+		category {
+			id
+			order
+		}
+		category_name
+		category_parent_name
+	}
+}
+
+query GetProfileLanguages($userId: ID!) {
+	profile(userId: $userId) {
+		id
+		languages {
+			name
+			proficiency
+		}
+	}
+}
+
+query GetAllLanguages {
+	languages {
+		id
+		name
+	}
 }
 
 query GetUserFullName($userId: ID!) {
-    user(userId: $userId) {
-        profile {
-            full_name
-        }
-        email
-    }
+	user(userId: $userId) {
+		profile {
+			full_name
+		}
+		email
+	}
 }
 
 query GetAllUsers {
-    users {
-        id
-        profile {
-            first_name
-            last_name
-            full_name
-            avatar
-        }
-        email
-        department {
-            name
-        }
-        position {
-            name
-        }
-    }
+	users {
+		id
+		profile {
+			first_name
+			last_name
+			full_name
+			avatar
+		}
+		email
+		department {
+			name
+		}
+		position {
+			name
+		}
+	}
 }
-

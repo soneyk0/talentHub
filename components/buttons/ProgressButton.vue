@@ -7,7 +7,7 @@
 		class="relative flex max-w-[284px] items-center justify-start gap-4 overflow-hidden"
 	>
 		<div
-			class="bg-gray-6 relative left-0 top-0 h-1 w-32 rounded-2xl"
+			class="relative left-0 top-0 h-1 w-32 rounded-2xl bg-gray-6"
 			:class="progressBackgroundClass"
 		>
 			<div
