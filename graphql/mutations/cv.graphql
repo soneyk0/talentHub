@@ -1,0 +1,14 @@
+mutation CreateCV($cv: CreateCvInput!) {
+    createCv(cv: $cv) {
+        id
+        name
+        education
+        description
+    }
+}
+
+mutation DeleteCV($cv: DeleteCvInput!) {
+    deleteCv(cv: $cv){
+        affected
+    }
+}

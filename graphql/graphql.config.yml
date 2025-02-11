@@ -1,0 +1,2 @@
+schema: import.meta.env.VITE_GRAPHQL_URI
+documents: '**/*.graphql'
