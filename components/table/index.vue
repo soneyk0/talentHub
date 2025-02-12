@@ -18,6 +18,7 @@
 					:key="row.id"
 					:row="row"
 					:table-container="tableContainer"
+					@onDeleteCV="$emit('onDeleteCV', row)"
 				/>
 			</tbody>
 		</table>
@@ -27,6 +28,8 @@
 <script setup lang="ts">
 	import TableCvRow from '@/components/table/CvRow.vue';
 	import TableUserRow from '@/components/table/UserRow.vue';
+
+	const emit = defineEmits(['onDeleteCV']);
 
 	type UserRow = {
 		id: number;

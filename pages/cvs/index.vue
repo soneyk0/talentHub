@@ -28,6 +28,7 @@
 				:headers="headers"
 				:rows-data="filteredData"
 				row-component="TableCvRow"
+				@onDeleteCV="openDeleteCVModal"
 			/>
 		</div>
 		<BaseModal
@@ -35,7 +36,7 @@
 			confirm-text="CREATE"
 			cancel-text="CANCEL"
 			title="Create CV"
-			:has-changes="!!name"
+			:has-changes="!!name && !!education && !!description"
 			@confirm="handleAddCVConfirm"
 		>
 			<BaseInput id="name" v-model="name" type="text" label="Name" />
@@ -52,13 +53,28 @@
 				:rows="6"
 			/>
 		</BaseModal>
+		<BaseModal
+			v-model:is-open="isDeleteCVModalOpen"
+			confirm-text="CONFIRM"
+			cancel-text="CANCEL"
+			title="Delete CV"
+			:has-changes="isDeleteCVModalOpen"
+			@confirm="deleteCV"
+			@cancel="selectedCv = null"
+		>
+			<p class="text-white">
+				Are you sure you want to delete CV
+				<b>{{ selectedCv!.name }}</b>
+				?
+			</p>
+		</BaseModal>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import { useRouter } from '#app';
 	import PlusIcon from '~/components/icons/PlusIcon.vue';
-	import { createCv, getAllCvs } from '~/services/cv';
+	import { createCv, deleteCv, getAllCvs } from '~/services/cv';
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
 
 	interface Cv {
@@ -72,26 +88,23 @@
 		};
 	}
 
-	interface CreateCV {
-		userId: string;
-		name: string;
-		education: string;
-		description: string;
-	}
-
 	const searchQuery = ref('');
-	const isDataLoaded = ref(false);
 	const cvs = ref<Cv[]>([]);
 	const isAddCVModalOpen = ref(false);
 	const name = ref('');
 	const education = ref('');
 	const description = ref('');
 	const router = useRouter();
+	const isSubmitting = ref(false);
+	const isDeleteCVModalOpen = ref(false);
+	const selectedCv = ref<Cv | null>(null);
 
-	const userId = computed(() => {
-		return cvs.value.length > 0 ? String(cvs.value[0].user.id) : '';
-	});
+	const userId = useCookie('userId');
 
+	const cvsDataKey = `cvs-${userId.value}`;
+	const { data: cvsData } = useNuxtData(cvsDataKey);
+	const { data } = await useAsyncData(cvsDataKey, () => getAllCvs());
+	cvsData.value = data.value;
 	const headers = reactive([
 		{ key: 'name', label: 'CV Name', isSortable: true },
 		{ key: 'education', label: 'Education', isSortable: true },
@@ -100,15 +113,16 @@
 	]);
 
 	const tableData = computed(() => {
-		if (!isDataLoaded.value) return [];
-		return cvs.value.map((cv) => ({
-			id: Number(cv.id),
-			name: cv.name,
-			education: cv.education || '',
-			description: cv.description || '',
-			email: cv.user.email,
-			link: `/cvs/${cv.id}/details`,
-		}));
+		return cvs.value
+			? cvs.value.map((cv) => ({
+					id: +cv.id,
+					name: cv.name,
+					education: cv.education || '',
+					description: cv.description || '',
+					email: cv.user.email,
+					link: `/cvs/${cv.id}/details`,
+				}))
+			: [];
 	});
 
 	const filteredData = computed(() => {
@@ -123,18 +137,6 @@
 		});
 	});
 
-	const getCvs = async () => {
-		try {
-			const { cvs: data } = await getAllCvs();
-
-			cvs.value = data?.cvs ?? [];
-		} catch (error) {
-			console.error('Error loading CVs:', error);
-		} finally {
-			isDataLoaded.value = true;
-		}
-	};
-
 	const handleAddCV = () => {
 		name.value = '';
 		education.value = '';
@@ -144,33 +146,57 @@
 
 	const handleAddCVConfirm = async () => {
 		if (!name.value) return;
+		isSubmitting.value = true;
+
 		try {
-			const cv: CreateCV = {
+			const newCv = await createCv({
 				userId: userId.value,
 				name: name.value,
 				education: education.value,
 				description: description.value,
-			};
-			const data = await createCv(cv);
-			console.log(data);
-			if (data) {
-				isAddCVModalOpen.value = false;
-				await getCvs();
-				router.push(`/cvs/${data.data.createCv.id}/details`);
-				showSuccessToast('CV create successfully');
-			}
+			});
+
+			if (!newCv?.id) throw new Error('Failed to create CV');
+			clearNuxtData(cvsDataKey);
+
+			cvs.value = data.value ?? [];
+
+			isAddCVModalOpen.value = false;
+			showSuccessToast('CV created successfully');
+			router.push(`/cvs/${newCv.id}/details`);
 		} catch (error) {
-			showErrorToast('CV create failed');
+			showErrorToast('CV creation failed');
+			console.error('Error creating CV:', error);
+		} finally {
+			isSubmitting.value = false;
 		}
 	};
 
-	onMounted(() => {
-		getCvs();
-	});
+	const openDeleteCVModal = (cv: Cv) => {
+		selectedCv.value = cv;
+		isDeleteCVModalOpen.value = true;
+	};
 
-	watchEffect(() => {
-		if (import.meta.client) {
-			getCvs();
+	const deleteCV = async () => {
+		try {
+			await deleteCv(selectedCv.value!.id.toString());
+			selectedCv.value = null;
+			await useAsyncData(cvsDataKey, () => getAllCvs());
+			showSuccessToast('CV deleted successfully');
+			isDeleteCVModalOpen.value = false;
+		} catch (error) {
+			showErrorToast('Error deleting CV');
+			isDeleteCVModalOpen.value = false;
 		}
-	});
+	};
+
+	watch(
+		() => cvsData.value,
+		(newCvs) => {
+			if (newCvs) {
+				cvs.value = newCvs;
+			}
+		},
+		{ immediate: true, deep: true }
+	);
 </script>

@@ -1,5 +1,5 @@
 <template>
-	<header class="text-gray-1 flex items-center">
+	<header class="flex items-center text-gray-1">
 		<ol class="flex items-center">
 			<HeaderItem
 				v-for="(breadcrumb, index) in breadcrumbs"

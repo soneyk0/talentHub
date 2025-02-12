@@ -26,6 +26,7 @@
 				color="primary"
 				class="max-w-md"
 				:disabled="!hasChanges"
+				@click="handleSubmit"
 			>
 				UPDATE
 			</BaseButton>
@@ -34,7 +35,8 @@
 </template>
 
 <script setup lang="ts">
-	import { getCvById } from '~/services/cv';
+	import { getCvById, updateСv } from '~/services/cv';
+	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
 
 	definePageMeta({
 		layout: 'cv',
@@ -42,6 +44,9 @@
 
 	const route = useRoute();
 	const cvId = ref(route.params.id as string);
+	const isSubmitting = ref(false);
+	const cvDataKey = `cv-${cvId.value}`;
+	const refreshCv = ref();
 
 	const initialValues = ref({
 		name: '',
@@ -61,9 +66,6 @@
 		);
 	});
 
-	const cvDataKey = `cv-${cvId.value}`;
-	const refreshCv = ref();
-
 	const { data: cvData } = useNuxtData(cvDataKey);
 
 	if (!cvData.value) {
@@ -80,6 +82,41 @@
 		refreshCv.value = refresh;
 	}
 
+	const handleSubmit = async () => {
+		isSubmitting.value = true;
+		try {
+			const { executeUpdate: updateCvData } = updateСv({
+				cvId: cvId.value,
+				name: name.value,
+				education: education.value,
+				description: education.value,
+			});
+			await updateCvData();
+			clearNuxtData(cvDataKey);
+
+			const { data } = await useAsyncData(cvDataKey, () =>
+				getCvById(cvId.value, true)
+			);
+			if (data.value?.cv) {
+				name.value = data.value.cv.name || '';
+				education.value = data.value.cv.education || '';
+				description.value = data.value.cv.description || '';
+
+				initialValues.value = {
+					name: name.value,
+					education: education.value,
+					description: description.value,
+				};
+			}
+
+			showSuccessToast('CV updated successfully');
+		} catch (error) {
+			showErrorToast('Failed to update CV');
+		} finally {
+			isSubmitting.value = false;
+		}
+	};
+
 	watch(
 		() => cvData.value?.cv,
 		(newCv) => {
@@ -90,7 +127,7 @@
 				initialValues.value = {
 					name: name.value,
 					education: education.value,
-					description: education.value,
+					description: description.value,
 				};
 			}
 		},

@@ -1,7 +1,7 @@
 <template>
 	<div class="mt-2 flex w-full justify-center">
 		<button
-			class="focus:bg-gray-9 min-w-[150px] border-b-2 px-6 py-3 font-medium transition-all duration-200 ease-in-out"
+			class="min-w-[150px] border-b-2 px-6 py-3 font-medium transition-all duration-200 ease-in-out focus:bg-gray-9 active:bg-red-500/10"
 			:class="{
 				'border-red-5 text-red-5': currentRoute === '/auth/login',
 				'border-transparent text-white': currentRoute !== '/auth/login',
@@ -12,7 +12,7 @@
 			LOG IN
 		</button>
 		<button
-			class="focus:bg-gray-9 min-w-[150px] border-b-2 px-6 py-3 font-medium transition-all duration-200 ease-in-out"
+			class="min-w-[150px] border-b-2 px-6 py-3 font-medium transition-all duration-200 ease-in-out focus:bg-gray-9 active:bg-red-500/10"
 			:class="{
 				'border-red-5 text-red-5': currentRoute === '/auth/signup',
 				'border-transparent text-white': currentRoute !== '/auth/signup',

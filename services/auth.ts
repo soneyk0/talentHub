@@ -20,9 +20,11 @@ export const signUp = async (auth: { email: string; password: string }) => {
 			maxAge: 60 * 60 * 24 * 30,
 			path: '/',
 		});
+		const userId = useCookie('userId');
 
 		accessToken.value = res.data.signup.access_token;
 		refreshToken.value = res.data.signup.refresh_token;
+		userId.value = res.data.signup.user.id;
 	}
 	return res!.data!;
 };
@@ -36,9 +38,11 @@ export const login = async (auth: { email: string; password: string }) => {
 			if (res && res.data) {
 				const accessToken = useCookie('access_token');
 				const refreshToken = useCookie('refresh_token');
+				const userId = useCookie('userId');
 
 				accessToken.value = res.data.login.access_token;
 				refreshToken.value = res.data.login.refresh_token;
+				userId.value = res.data.login.user.id;
 				currentUserIdVar(res.data.login.user.id);
 				stop();
 				resolve(res.data);

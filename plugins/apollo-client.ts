@@ -6,6 +6,7 @@ import { apolloCache } from '~/utils/apollo/fetch-new-token';
 
 export const currentUserIdVar = makeVar<string | null>(null);
 
+
 export default defineNuxtPlugin((nuxtApp) => {
 	const apollo = new ApolloClient({
 		link: from([errorLink, authMiddleware, httpLink]),

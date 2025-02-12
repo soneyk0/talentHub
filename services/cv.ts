@@ -1,5 +1,5 @@
 import { useApolloClient, useMutation, useQuery } from '@vue/apollo-composable';
-import { CreateCV, DeleteCV } from '~/graphql/mutations/cv.graphql';
+import { CreateCV, DeleteCV, UpdateCV } from '~/graphql/mutations/cv.graphql';
 import {
 	GetAllCvs,
 	GetCvById,
@@ -22,6 +22,13 @@ interface CreateCV {
 	education: string;
 	name: string;
 	userId: string;
+}
+
+interface UpdateCvInput {
+	cvId: string;
+	name: string;
+	education: string;
+	description: string;
 }
 
 export const getCvFullname = (cvId: string) => {
@@ -62,25 +69,30 @@ export const getCvById = async (cvId: string, force = false) => {
 };
 
 export const getAllCvs = async () => {
-	const { result, loading, error, refetch } = useQuery<{ cvs: CV[] }>(
-		GetAllCvs
-	);
+	const apolloClient = useApolloClient().client;
+	try {
+		const { data } = await apolloClient.query({
+			query: GetAllCvs,
+			fetchPolicy: 'network-only',
+		});
 
-	return { cvs: result.value, loading, error, refetch };
+		return data.cvs ?? [];
+	} catch (error) {
+		console.error('Error fetching CVs:', error);
+		return [];
+	}
 };
 
 export const createCv = async (cv: CreateCV) => {
-	const { mutate } = useMutation(CreateCV, {
-		variables: {
-			cv: {
-				userId: cv.userId,
-				name: cv.name,
-				education: cv.education,
-				description: cv.description,
-			},
-		},
-	});
-	return await mutate({ cv });
+	const { mutate: addCVMutation, loading, error } = useMutation(CreateCV);
+
+	try {
+		const response = await addCVMutation({ cv });
+		return response!.data?.createCv;
+	} catch (err) {
+		console.error('Error adding skill:', err);
+		throw err;
+	}
 };
 
 export const deleteCv = async (cvId: string) => {
@@ -88,4 +100,20 @@ export const deleteCv = async (cvId: string) => {
 	await mutate({
 		cv: { cvId },
 	});
+};
+
+export const updateСv = (cv: UpdateCvInput) => {
+	const { mutate: updateCvMutation, loading, error } = useMutation(UpdateCV);
+
+	const executeUpdate = async () => {
+		try {
+			const response = await updateCvMutation({ cv });
+			return response!.data?.cvs;
+		} catch (err) {
+			console.error('Error updating CV:', err);
+			throw err;
+		}
+	};
+
+	return { executeUpdate, loading, error };
 };
