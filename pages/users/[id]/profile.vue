@@ -72,6 +72,7 @@
 </template>
 
 <script setup lang="ts">
+	import { useCurrentUser } from '~/composables/useCurrentUser';
 	import {
 		deleteAvatar,
 		getAllDepartments,
@@ -91,8 +92,10 @@
 		layout: 'user-profile',
 	});
 
+	const { getCurrentUserId } = useCurrentUser();
+	const userId = ref('');
 	const route = useRoute();
-	const userId = ref(route.params.id as string);
+	userId.value = String(getCurrentUserId.value);
 
 	const initialValues = ref({
 		firstName: '',

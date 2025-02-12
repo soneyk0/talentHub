@@ -76,7 +76,8 @@
 		router.push('/auth/login');
 		const accessToken = useCookie('access_token');
 		const refreshToken = useCookie('refresh_token');
-
+		const { setCurrentUserId } = useCurrentUser();
+		setCurrentUserId(null);
 		accessToken.value = null;
 		refreshToken.value = null;
 	};

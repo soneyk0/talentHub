@@ -7,6 +7,7 @@ export default defineNuxtConfig({
 	css: ['~/assets/styles/main.css'],
 	plugins: [
 		'~/plugins/apollo-client',
+		'~/plugins/auth',
 		{ src: '~/plugins/toast', mode: 'client' },
 	],
 	postcss: {
