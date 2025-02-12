@@ -1,14 +1,23 @@
 mutation CreateCV($cv: CreateCvInput!) {
     createCv(cv: $cv) {
-        id
         name
         education
         description
+        id
     }
 }
 
 mutation DeleteCV($cv: DeleteCvInput!) {
     deleteCv(cv: $cv){
         affected
+    }
+}
+
+mutation UpdateCV($cv:  UpdateCvInput!) {
+    updateCv(cv: $cv) {
+        id
+        name
+        education
+        education
     }
 }
