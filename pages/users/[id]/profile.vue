@@ -305,6 +305,7 @@
 			const { user } = await getUserById(userId.value, true);
 
 			if (user) {
+				fullName.value = user.profile.full_name;
 				initialValues.value = {
 					firstName: firstName.value,
 					lastName: lastName.value,
