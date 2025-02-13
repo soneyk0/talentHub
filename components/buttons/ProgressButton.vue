@@ -2,9 +2,11 @@
 	<BaseButton
 		:variant="variant"
 		:color="color"
-		:disabled="disabled"
 		:type="type"
-		class="relative flex max-w-[284px] items-center justify-start gap-4 overflow-hidden"
+		:class="[
+			'relative flex max-w-[284px] items-center justify-start gap-4 overflow-hidden',
+			disabled ? 'pointer-events-none' : '',
+		]"
 	>
 		<div
 			class="relative left-0 top-0 h-1 w-32 rounded-2xl bg-gray-6"

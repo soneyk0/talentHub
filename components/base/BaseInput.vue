@@ -4,9 +4,13 @@
 			:id="id"
 			v-model="enteredValue"
 			:type="type"
-			class="peer h-12 w-full min-w-[220px] border border-gray-6 bg-dark-1 p-3 text-white transition-all duration-200 hover:border-white focus:border-red-5 focus:outline-none"
+			:class="[
+				'peer h-12 w-full min-w-[220px] border border-gray-6 bg-dark-1 p-3 text-white transition-all duration-200 focus:border-red-5 focus:outline-none',
+				disabled ? '' : 'hover:border-white',
+			]"
 			:autocomplete="autocomplete"
 			:placeholder="enteredValue || isFocused ? placeholder : ''"
+			:disabled="disabled"
 			@focus="isFocused = true"
 			@blur="isFocused = !!enteredValue"
 			@input="onInput"
@@ -43,6 +47,7 @@
 		},
 		placeholder: { type: String, default: '' },
 		autocomplete: { type: String, default: 'off' },
+		disabled: { type: Boolean, default: false },
 	});
 
 	const emit = defineEmits(['inputValue']);

@@ -3,8 +3,10 @@
 		<button
 			:id="id"
 			type="button"
-			class="border-gray-6 bg-dark-1 hover:border-gray-6 focus:border-red-5 peer h-12 w-full appearance-none border p-3 text-left text-white transition-all duration-200 focus:outline-none disabled:opacity-50"
-			:disabled="disabled"
+			:class="[
+				'peer h-12 w-full appearance-none border border-gray-6 bg-dark-1 p-3 text-left text-white transition-all duration-200 focus:border-red-5 focus:outline-none disabled:opacity-50',
+				disabled ? 'pointer-events-none' : 'hover:border-white',
+			]"
 			@click="isOpen = !isOpen"
 		>
 			{{ selectedValue?.value === '' ? '' : selectedOption?.label }}
@@ -12,9 +14,9 @@
 
 		<label
 			:class="[
-				'text-gray-2 peer-focus:bg-dark-1 peer-focus:text-red-5 pointer-events-none absolute left-0 top-0 transition-all duration-200',
+				'pointer-events-none absolute left-0 top-0 text-gray-2 transition-all duration-200 peer-focus:bg-dark-1 peer-focus:text-red-5',
 				selectedValue?.value
-					? 'bg-dark-1 -translate-x-0 -translate-y-4 scale-75 p-1'
+					? '-translate-x-0 -translate-y-4 scale-75 bg-dark-1 p-1'
 					: 'translate-y-0 p-3 peer-focus:-translate-x-0 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:p-1',
 			]"
 		>
@@ -22,7 +24,7 @@
 		</label>
 
 		<div
-			class="text-gray-2 pointer-events-none absolute right-3 top-1/2 -translate-y-1/2"
+			class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-2"
 		>
 			<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
 				<path d="M7 10l5 5 5-5z" />
@@ -31,7 +33,7 @@
 
 		<div
 			v-if="isOpen"
-			class="bg-dark-5 absolute z-50 mt-1 w-full -translate-y-[60px] rounded-md py-1 shadow-lg"
+			class="absolute z-50 mt-1 w-full -translate-y-[60px] rounded-md bg-dark-5 py-1 shadow-lg"
 		>
 			<div class="flex max-h-[200px] flex-col overflow-auto">
 				<div

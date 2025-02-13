@@ -19,7 +19,7 @@
 					</div>
 				</div>
 
-				<div class="sticky bottom-0 bg-dark-1 py-2">
+				<div v-if="canEdit" class="sticky bottom-0 bg-dark-1 py-2">
 					<div class="flex justify-end gap-4 px-2">
 						<template v-if="!isRemovalMode">
 							<BaseButton
@@ -144,7 +144,14 @@
 	const languages = ref<Language[]>([]);
 
 	const route = useRoute();
-	const userId = ref((route.params.id as string) || '481');
+	const { getCurrentUserId } = useCurrentUser();
+	const userId = ref(
+		(route.params.id as string) || String(getCurrentUserId.value)
+	);
+
+	const canEdit = computed(() => {
+		return String(getCurrentUserId.value) === userId.value;
+	});
 
 	const languagesDataKey = `languages-${userId.value}`;
 	const allLanguagesDataKey = 'all-languages';
