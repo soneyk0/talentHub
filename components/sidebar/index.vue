@@ -13,7 +13,16 @@
 				:is-collapsed="isCollapsed"
 			/>
 		</nav>
-		<SidebarUserItem :item="user" :is-collapsed="isCollapsed" class="mt-auto" />
+		<SidebarUserItem
+			v-if="userData.email"
+			:item="{
+				photo: userData.photo,
+				text: userData.firstName || userData.lastName || userData.email,
+				link: userData.profileLink,
+			}"
+			:is-collapsed="isCollapsed"
+			class="mt-auto"
+		/>
 		<SidebarLogoutItem :is-collapsed="isCollapsed" @click="logout" />
 		<ButtonsToggle
 			:is-toggled="isCollapsed"
@@ -61,11 +70,11 @@
 		},
 	]);
 
-	const user = reactive({
-		photo: '',
-		text: 'username@usernameemail.com',
-		link: '#',
-	});
+	const { getCurrentUserId, userData, fetchUserData } = useCurrentUser();
+
+	if (getCurrentUserId.value) {
+		await fetchUserData();
+	}
 
 	const isCollapsed = ref(false);
 
@@ -73,13 +82,15 @@
 		isCollapsed.value = !isCollapsed.value;
 	};
 	const logout = () => {
-		router.push('/auth/login');
+		const { clearUserData } = useCurrentUser();
+
 		const accessToken = useCookie('access_token');
 		const refreshToken = useCookie('refresh_token');
-		const { setCurrentUserId } = useCurrentUser();
-		setCurrentUserId(null);
 		accessToken.value = null;
 		refreshToken.value = null;
+		clearUserData();
+
+		router.push('/auth/login');
 	};
 
 	const updateActiveTab = () => {

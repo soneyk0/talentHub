@@ -72,7 +72,6 @@
 </template>
 
 <script setup lang="ts">
-	import { useCurrentUser } from '~/composables/useCurrentUser';
 	import {
 		deleteAvatar,
 		getAllDepartments,
@@ -92,10 +91,11 @@
 		layout: 'user-profile',
 	});
 
-	const { getCurrentUserId } = useCurrentUser();
+	const { updateCurrentUserData } = useCurrentUser();
+
 	const userId = ref('');
 	const route = useRoute();
-	userId.value = String(getCurrentUserId.value);
+	userId.value = route.params.id as string;
 
 	const initialValues = ref({
 		firstName: '',
@@ -238,6 +238,7 @@
 		if (data.value?.user) {
 			showSuccessToast('Avatar uploaded successfully');
 			avatar.value = data.value.user.profile.avatar;
+			updateCurrentUserData(data.value.user);
 		}
 	};
 
@@ -252,6 +253,7 @@
 
 			if (data.value?.user) {
 				avatar.value = data.value.user.profile.avatar || '';
+				updateCurrentUserData(data.value.user);
 			}
 			showSuccessToast('Avatar deleted successfully');
 		} catch (error) {
@@ -299,6 +301,8 @@
 					selectedDepartment: { ...selectedDepartment.value },
 					selectedPosition: { ...selectedPosition.value },
 				};
+
+				updateCurrentUserData(data.value.user);
 			}
 			showSuccessToast('Profile updated successfully');
 		} catch (error) {

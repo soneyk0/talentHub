@@ -19,8 +19,9 @@ export const signUp = async (auth: { email: string; password: string }) => {
 			maxAge: 60 * 60 * 24 * 30,
 			path: '/',
 		});
-		const { setCurrentUserId } = useCurrentUser();
+		const { setCurrentUserId, reinitializeUser } = useCurrentUser();
 		setCurrentUserId(res.data.signup.user.id);
+		reinitializeUser();
 		accessToken.value = res.data.signup.access_token;
 		refreshToken.value = res.data.signup.refresh_token;
 		userId.value = res.data.signup.user.id;
@@ -33,7 +34,7 @@ export const login = async (auth: { email: string; password: string }) => {
 		auth,
 	});
 	return new Promise((resolve, reject) => {
-		onResult((res) => {
+		onResult(async (res) => {
 			if (res && res.data) {
 				const accessToken = useCookie('access_token');
 				const refreshToken = useCookie('refresh_token');

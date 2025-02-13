@@ -3,11 +3,12 @@ import { useCurrentUser } from '~/composables/useCurrentUser';
 
 export default defineNuxtPlugin({
 	name: 'auth',
-	enforce: 'pre',
+	enforce: 'post',
 	async setup(nuxtApp) {
-		const initializeUser = () => {
+		const initializeUser = async () => {
 			let accessToken: string | null = null;
-			const { setCurrentUserId } = useCurrentUser();
+			const { setCurrentUserId, clearUserData } = useCurrentUser();
+			clearUserData();
 
 			if (import.meta.server) {
 				const cookies = parseCookies(
@@ -25,10 +26,7 @@ export default defineNuxtPlugin({
 					setCurrentUserId(payload.sub);
 				} catch (e) {
 					console.error('Failed to decode token:', e);
-					setCurrentUserId(null);
 				}
-			} else {
-				setCurrentUserId(null);
 			}
 		};
 
@@ -42,7 +40,7 @@ export default defineNuxtPlugin({
 				}, {});
 		}
 
-		initializeUser();
+		await initializeUser();
 
 		return {
 			provide: {

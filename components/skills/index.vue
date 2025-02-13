@@ -176,11 +176,19 @@
 		Proficient: 80,
 		Expert: 100,
 	};
-	const categories = ref<SkillCategory[]>([]);
+
+	const otherCategory = {
+		id: 'other',
+		name: 'Other',
+		parent: null,
+	} as const;
+
+	const categories = ref<SkillCategory[]>([otherCategory]);
 	const skills = ref<Skill[]>([]);
 
 	const route = useRoute();
-	const userId = ref((route.params.id as string) || '481');
+	const { getCurrentUserId } = useCurrentUser();
+	const userId = ref((route.params.id as string) || getCurrentUserId.value);
 	const skillsDataKey = `skills-${userId.value}`;
 	const categoriesDataKey = 'skill-categories';
 	const allSkillsDataKey = 'all-skills';
@@ -196,8 +204,9 @@
 
 	if (!skillsData.value) {
 		const { data } = await useAsyncData(skillsDataKey, () =>
-			getProfileSkills(userId.value)
+			getProfileSkills(userId.value!)
 		);
+
 		skillsData.value = data.value;
 	}
 
@@ -244,9 +253,16 @@
 	);
 
 	const categoriesWithSkills = computed(() => {
-		return categories.value.filter((category) =>
+		const hasSkillsWithNullCategory = skills.value.some(
+			(skill) => !skill.categoryId
+		);
+		const filtered = categories.value.filter((category) =>
 			skills.value.some((skill) => skill.categoryId === category.id)
 		);
+		if (hasSkillsWithNullCategory) {
+			filtered.push(otherCategory);
+		}
+		return filtered;
 	});
 
 	const getSkillProgress = (mastery: Skill['mastery']) => {
@@ -254,6 +270,9 @@
 	};
 
 	const getSkillsByCategory = (categoryId: string) => {
+		if (categoryId === 'other') {
+			return skills.value.filter((skill) => !skill.categoryId);
+		}
 		return skills.value.filter((skill) => skill.categoryId === categoryId);
 	};
 
@@ -322,7 +341,7 @@
 
 		try {
 			const { executeAdd } = addProfileSkill({
-				userId: userId.value,
+				userId: userId.value!,
 				name: newSelectedSkill.value.name,
 				categoryId: newSelectedSkill.value.category.id,
 				mastery: newSelectedLevel.value,
@@ -397,7 +416,7 @@
 
 		try {
 			const { executeUpdate } = updateProfileSkill({
-				userId: userId.value,
+				userId: userId.value!,
 				name: selectedSkill.value.name,
 				categoryId: selectedSkill.value.categoryId,
 				mastery: selectedLevel.value,
@@ -428,7 +447,7 @@
 		isDeletingSkills.value = true;
 		try {
 			const { executeDelete } = deleteProfileSkill(
-				userId.value,
+				userId.value!,
 				Array.from(selectedSkillsToRemove.value)
 			);
 			await executeDelete();
