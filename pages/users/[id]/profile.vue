@@ -10,7 +10,7 @@
 					:photo="avatar"
 				/>
 				<button
-					v-if="avatar"
+					v-if="avatar && canEdit"
 					:disabled="isDeletingAvatar"
 					class="absolute -right-5 -top-5 flex h-10 w-10 items-center justify-center rounded-full text-3xl text-white transition duration-300 hover:bg-dark-4"
 					@click="handleDeleteAvatar"
@@ -23,6 +23,7 @@
 				</button>
 			</div>
 			<FileUpload
+				v-if="canEdit"
 				:user-id="userId"
 				@upload-success="handleUploadSuccess"
 				@upload-start="isUploading = true"
@@ -40,8 +41,18 @@
 			class="grid w-full max-w-3xl grid-cols-1 gap-x-8 gap-y-9 px-4 md:grid-cols-2 md:pr-12"
 			@submit.prevent="handleSubmit"
 		>
-			<BaseInput id="firstName" v-model="firstName" label="First Name" />
-			<BaseInput id="lastName" v-model="lastName" label="Last Name" />
+			<BaseInput
+				id="firstName"
+				v-model="firstName"
+				label="First Name"
+				:disabled="!canEdit"
+			/>
+			<BaseInput
+				id="lastName"
+				v-model="lastName"
+				label="Last Name"
+				:disabled="!canEdit"
+			/>
 
 			<BaseDropdown
 				id="department"
@@ -49,6 +60,7 @@
 				label="Department"
 				:options="departments"
 				default-option-label="No department"
+				:disabled="!canEdit"
 			/>
 			<BaseDropdown
 				id="position"
@@ -56,10 +68,12 @@
 				label="Position"
 				:options="positions"
 				default-option-label="No position"
+				:disabled="!canEdit"
 			/>
 
 			<div></div>
 			<BaseButton
+				v-if="canEdit"
 				type="submit"
 				variant="contained"
 				color="primary"
@@ -96,6 +110,12 @@
 	const userId = ref('');
 	const route = useRoute();
 	userId.value = route.params.id as string;
+
+	const { getCurrentUserId } = useCurrentUser();
+
+	const canEdit = computed(() => {
+		return String(getCurrentUserId.value) === userId.value;
+	});
 
 	const initialValues = ref({
 		firstName: '',
@@ -285,24 +305,21 @@
 			const { user } = await getUserById(userId.value, true);
 
 			if (user) {
-				firstName.value = user.profile.first_name || '';
-				lastName.value = user.profile.last_name || '';
-				fullName.value = user.profile.full_name || '';
-				avatar.value = user.profile.avatar || '';
-				selectedDepartment.value.value = user.department?.id || '';
-				selectedDepartment.value.label = user.department?.name || '';
-				selectedPosition.value.value = user.position?.id || '';
-				selectedPosition.value.label = user.position?.name || '';
-
 				initialValues.value = {
 					firstName: firstName.value,
 					lastName: lastName.value,
 					selectedDepartment: { ...selectedDepartment.value },
 					selectedPosition: { ...selectedPosition.value },
 				};
-
-				updateCurrentUserData(user);
 			}
+			updateCurrentUserData({
+				profile: {
+					first_name: firstName.value,
+					last_name: lastName.value,
+					avatar: avatar.value,
+				},
+				email: email.value,
+			});
 			showSuccessToast('Profile updated successfully');
 		} catch (error) {
 			showErrorToast('Failed to update profile');

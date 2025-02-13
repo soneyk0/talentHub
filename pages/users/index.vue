@@ -33,6 +33,18 @@
 	const isDataLoaded = ref(false);
 	const users = ref<User[]>([]);
 
+	const getUsers = async () => {
+		try {
+			const { users: data } = await getAllUsers();
+			users.value = data;
+		} catch (error) {
+			console.error('Error loading users:', error);
+		} finally {
+			isDataLoaded.value = true;
+		}
+	};
+	getUsers();
+
 	const headers = reactive([
 		{ key: 'avatar', label: '', isSortable: false },
 		{ key: 'firstName', label: 'First Name', isSortable: true },
@@ -74,22 +86,7 @@
 		});
 	});
 
-	const getUsers = () => {
-		try {
-			const { users: data } = getAllUsers();
-			users.value = data.value;
-		} catch (error) {
-			console.error('Error loading users:', error);
-		} finally {
-			isDataLoaded.value = true;
-		}
-	};
-
 	onMounted(() => {
-		getUsers();
-	});
-
-	watchEffect(() => {
 		if (import.meta.client) {
 			getUsers();
 		}

@@ -63,7 +63,7 @@ export function useCurrentUser() {
 	};
 
 	const reinitializeUser = () => {
-		nuxtApp.$initializeUser();
+		(nuxtApp.$initializeUser as () => Promise<void>)();
 	};
 
 	return {

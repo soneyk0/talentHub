@@ -14,13 +14,14 @@
 
 <script setup lang="ts">
 	import { getCvFullname } from '~/services/cv';
+	import { getUserFullname } from '~/services/user';
 
 	const route = useRoute();
 	const router = useRouter();
 
 	const id = ref('');
 	const fullname = ref('');
-	const { userData } = useCurrentUser();
+	const { userData, getCurrentUserId } = useCurrentUser();
 
 	const breadcrumbs = reactive<{ label: string; link: string }[]>([]);
 
@@ -48,16 +49,19 @@
 		return segments;
 	};
 
-	const updateValues = (path: string) => {
+	const updateValues = async (path: string) => {
 		const pathSegments: string[] = path.split('/').filter(Boolean);
 
 		if (
-			(pathSegments[0] === 'users' || pathSegments[0] === 'cvs') &&
-			pathSegments[1]
+			!(pathSegments[0] === 'users' || pathSegments[0] === 'cvs') ||
+			!pathSegments[1]
 		) {
-			id.value = pathSegments[1];
-		} else {
 			return;
+		}
+
+		if (id.value !== pathSegments[1]) {
+			id.value = pathSegments[1];
+			fullname.value = '';
 		}
 
 		let elemFullname = '';
@@ -65,8 +69,17 @@
 
 		switch (pathSegments[0]) {
 			case 'users': {
-				const userFullname = userData.firstName + ' ' + userData.lastName;
-				const userEmail = userData.email;
+				let userFullname = '';
+				let userEmail = '';
+				if (String(getCurrentUserId.value) === id.value) {
+					userFullname = userData.firstName + ' ' + userData.lastName;
+					userEmail = userData.email;
+				} else {
+					const { fullname, email } = await getUserFullname(id.value);
+					userFullname = fullname;
+					userEmail = email;
+				}
+
 				elemFullname = userFullname.trim();
 				elemEmail = userEmail;
 				break;

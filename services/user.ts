@@ -1,5 +1,4 @@
-import { useApolloClient, useMutation, useQuery } from '@vue/apollo-composable';
-import { ref, watchEffect } from 'vue';
+import { useApolloClient, useMutation } from '@vue/apollo-composable';
 import {
 	AddProfileLanguage,
 	AddProfileSkill,
@@ -461,42 +460,46 @@ export const deleteProfileLanguage = (
 	return { executeDelete, loading, error };
 };
 
-export const getUserFullname = (userId: string) => {
-	const { result, loading, error } = useQuery<{
-		user: { profile: { full_name: string }; email: string };
-	}>(GetUserFullName, { userId });
+export const getUserFullname = async (userId: string) => {
+	const apolloClient = useApolloClient().client;
 
-	const fullname = ref('');
-	const email = ref('');
-
-	watchEffect(() => {
-		if (result.value) {
-			fullname.value = result.value.user.profile.full_name || '';
-			email.value = result.value.user.email || '';
-		}
-
-		if (error.value) {
-			console.error('Error fetching user details:', error.value);
-		}
-	});
-
-	return { fullname, email, loading, error };
+	try {
+		const { data } = await apolloClient.query({
+			query: GetUserFullName,
+			variables: { userId },
+			fetchPolicy: 'no-cache',
+		});
+		return {
+			fullname: data.user.profile.full_name,
+			email: data.user.email,
+			error: null,
+		};
+	} catch (error) {
+		console.error('Error fetching user details:', error);
+		return {
+			fullname: '',
+			email: '',
+			error,
+		};
+	}
 };
 
-export const getAllUsers = () => {
-	const { result, loading, error, refetch } = useQuery<{ users: User[] }>(
-		GetAllUsers
-	);
-	const users = ref<User[]>([]);
+export const getAllUsers = async () => {
+	const apolloClient = useApolloClient().client;
 
-	watchEffect(() => {
-		if (result.value) {
-			users.value = result.value.users;
-		}
-		if (error.value) {
-			console.error('Error fetching users:', error.value);
-		}
-	});
-
-	return { users, loading, error, refetch };
+	try {
+		const { data } = await apolloClient.query({
+			query: GetAllUsers,
+		});
+		return {
+			users: data.users,
+			error: null,
+		};
+	} catch (error) {
+		console.error('Error fetching users:', error);
+		return {
+			users: [],
+			error,
+		};
+	}
 };

@@ -17,6 +17,7 @@
 								:class="getSkillButtonProps(skill).class"
 								variant="text"
 								color="secondary"
+								:disabled="!canEdit"
 								@click="handleSkillClick(skill)"
 							>
 								{{ skill.name }}
@@ -25,7 +26,7 @@
 					</div>
 				</div>
 
-				<div class="sticky bottom-0 bg-dark-1 py-2">
+				<div v-if="canEdit" class="sticky bottom-0 bg-dark-1 py-2">
 					<div class="flex justify-end gap-4 px-2">
 						<template v-if="!isRemovalMode">
 							<BaseButton
@@ -189,6 +190,10 @@
 	const route = useRoute();
 	const { getCurrentUserId } = useCurrentUser();
 	const userId = ref((route.params.id as string) || getCurrentUserId.value);
+	const canEdit = computed(() => {
+		return String(getCurrentUserId.value) === String(userId.value);
+	});
+
 	const skillsDataKey = `skills-${userId.value}`;
 	const categoriesDataKey = 'skill-categories';
 	const allSkillsDataKey = 'all-skills';
