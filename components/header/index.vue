@@ -14,13 +14,13 @@
 
 <script setup lang="ts">
 	import { getCvFullname } from '~/services/cv';
-	import { getUserFullname } from '~/services/user';
 
 	const route = useRoute();
 	const router = useRouter();
 
 	const id = ref('');
 	const fullname = ref('');
+	const { userData } = useCurrentUser();
 
 	const breadcrumbs = reactive<{ label: string; link: string }[]>([]);
 
@@ -65,11 +65,10 @@
 
 		switch (pathSegments[0]) {
 			case 'users': {
-				const { fullname: userFullname, email: userEmail } = getUserFullname(
-					id.value
-				);
-				elemFullname = userFullname.value;
-				elemEmail = userEmail.value;
+				const userFullname = userData.firstName + ' ' + userData.lastName;
+				const userEmail = userData.email;
+				elemFullname = userFullname.trim();
+				elemEmail = userEmail;
 				break;
 			}
 			case 'cvs': {
@@ -81,7 +80,7 @@
 			}
 		}
 
-		if (elemFullname && elemFullname !== '') {
+		if (elemFullname && elemFullname.trim() !== '') {
 			fullname.value = elemFullname;
 		} else if (pathSegments[0] === 'users' && elemEmail) {
 			fullname.value = elemEmail;

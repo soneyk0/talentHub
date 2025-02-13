@@ -17,7 +17,10 @@
 			v-if="userData.email"
 			:item="{
 				photo: userData.photo,
-				text: userData.firstName || userData.lastName || userData.email,
+				text:
+					userData.firstName.trim() ||
+					userData.lastName.trim() ||
+					userData.email,
 				link: userData.profileLink,
 			}"
 			:is-collapsed="isCollapsed"
