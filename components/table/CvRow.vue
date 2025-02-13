@@ -18,7 +18,7 @@
 
 				<TableOptions
 					v-if="optionsVisible"
-					class="absolute right-0 z-10 mt-2 w-28 rounded-lg border-dark-4 bg-dark-4 py-2 shadow-lg"
+					class="absolute right-0 z-10 -mt-11 w-28 rounded-lg border-dark-4 bg-dark-4 py-2 shadow-lg"
 					:class="optionsPosition"
 					:buttons="[
 						{ label: 'Details', event: 'detailsClick' },
@@ -58,7 +58,7 @@
 
 	const optionsVisible = ref(false);
 	const optionsContainer = ref<HTMLElement | null>(null);
-	const optionsPosition = ref('top-0');
+	const optionsPosition = ref('top-20');
 
 	const displayedFields = computed(() => {
 		return {
@@ -76,7 +76,7 @@
 			const tableRect = props.tableContainer.getBoundingClientRect();
 			const spaceBelow = tableRect.bottom - rect.bottom;
 
-			optionsPosition.value = spaceBelow < 150 ? 'bottom-0' : 'top-0';
+			optionsPosition.value = spaceBelow < 50 ? 'bottom-5' : 'top-0)';
 		}
 	};
 

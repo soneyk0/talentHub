@@ -89,7 +89,7 @@
 				cvId: cvId.value,
 				name: name.value,
 				education: education.value,
-				description: education.value,
+				description: description.value,
 			});
 			await updateCvData();
 			clearNuxtData(cvDataKey);
