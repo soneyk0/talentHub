@@ -28,7 +28,7 @@
 				:headers="headers"
 				:rows-data="filteredData"
 				row-component="TableCvRow"
-				@onDeleteCV="openDeleteCVModal"
+				@on-delete-c-v="openDeleteCVModal"
 			/>
 		</div>
 		<BaseModal
@@ -99,9 +99,11 @@
 	const isDeleteCVModalOpen = ref(false);
 	const selectedCv = ref<Cv | null>(null);
 
-	const userId = useCookie('userId');
+	const { getCurrentUserId } = useCurrentUser();
 
-	const cvsDataKey = `cvs-${userId.value}`;
+	const userId = String(getCurrentUserId.value);
+
+	const cvsDataKey = `cvs-${userId}`;
 	const { data: cvsData } = useNuxtData(cvsDataKey);
 	const { data } = await useAsyncData(cvsDataKey, () => getAllCvs());
 	cvsData.value = data.value;
@@ -150,7 +152,7 @@
 
 		try {
 			const newCv = await createCv({
-				userId: userId.value,
+				userId: userId,
 				name: name.value,
 				education: education.value,
 				description: description.value,

@@ -282,18 +282,17 @@
 			]);
 			clearNuxtData(userDataKey);
 
-			const { data } = await useAsyncData(userDataKey, () =>
-				getUserById(userId.value, true)
-			);
-			if (data.value?.user) {
-				firstName.value = data.value.user.profile.first_name || '';
-				lastName.value = data.value.user.profile.last_name || '';
-				fullName.value = data.value.user.profile.full_name || '';
-				avatar.value = data.value.user.profile.avatar || '';
-				selectedDepartment.value.value = data.value.user.department?.id || '';
-				selectedDepartment.value.label = data.value.user.department?.name || '';
-				selectedPosition.value.value = data.value.user.position?.id || '';
-				selectedPosition.value.label = data.value.user.position?.name || '';
+			const { user } = await getUserById(userId.value, true);
+
+			if (user) {
+				firstName.value = user.profile.first_name || '';
+				lastName.value = user.profile.last_name || '';
+				fullName.value = user.profile.full_name || '';
+				avatar.value = user.profile.avatar || '';
+				selectedDepartment.value.value = user.department?.id || '';
+				selectedDepartment.value.label = user.department?.name || '';
+				selectedPosition.value.value = user.position?.id || '';
+				selectedPosition.value.label = user.position?.name || '';
 
 				initialValues.value = {
 					firstName: firstName.value,
@@ -302,7 +301,7 @@
 					selectedPosition: { ...selectedPosition.value },
 				};
 
-				updateCurrentUserData(data.value.user);
+				updateCurrentUserData(user);
 			}
 			showSuccessToast('Profile updated successfully');
 		} catch (error) {
