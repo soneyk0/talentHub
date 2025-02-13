@@ -52,6 +52,7 @@
 </template>
 
 <script setup lang="ts">
+	import { useCurrentUser } from '~/composables/useCurrentUser';
 	const router = useRouter();
 	const props = defineProps<{
 		row: {
@@ -66,8 +67,8 @@
 		};
 		tableContainer: HTMLElement | null;
 	}>();
-
-	const currentUserId = 1;
+	const { getCurrentUserId } = useCurrentUser();
+	const currentUserId = ref(Number(getCurrentUserId.value));
 
 	const optionsVisible = ref(false);
 	const optionsContainer = ref<HTMLElement | null>(null);

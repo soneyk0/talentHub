@@ -1,1 +1,9 @@
-<template><div>Languages Page</div></template>
+<template>
+	<Languages />
+</template>
+
+<script setup lang="ts">
+	definePageMeta({
+		layout: 'default',
+	});
+</script>

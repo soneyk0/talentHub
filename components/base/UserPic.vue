@@ -10,7 +10,7 @@
 		/>
 		<div
 			v-else
-			class="text-dark-1 flex h-full w-full items-center justify-center text-xl"
+			class="flex h-full w-full items-center justify-center text-xl text-dark-1"
 		>
 			{{ firstLetter }}
 		</div>
@@ -18,11 +18,12 @@
 </template>
 
 <script setup lang="ts">
-	const firstLetter = ref('');
 	const props = defineProps<{
 		name: string;
 		photo?: string;
 	}>();
 
-	firstLetter.value = props.name ? props.name.charAt(0).toUpperCase() : '?';
+	const firstLetter = computed(() => {
+		return props.name ? props.name.charAt(0).toUpperCase() : '?';
+	});
 </script>

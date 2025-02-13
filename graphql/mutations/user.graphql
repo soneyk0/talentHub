@@ -1,70 +1,92 @@
 mutation UpdateUser($user: UpdateUserInput!) {
-    updateUser(user: $user) {
-        id
-        department {
-            id
-            name
-        }
-        position {
-            id
-            name
-        }
-    }
+	updateUser(user: $user) {
+		id
+		department {
+			id
+			name
+		}
+		position {
+			id
+			name
+		}
+	}
 }
-
-
 
 mutation UpdateProfile($profile: UpdateProfileInput!) {
-    updateProfile(profile: $profile) {
-        id
-        first_name
-        last_name
-    }
+	updateProfile(profile: $profile) {
+		id
+		first_name
+		last_name
+	}
 }
-
 
 mutation UploadAvatar($avatar: UploadAvatarInput!) {
-    uploadAvatar(avatar: $avatar)
+	uploadAvatar(avatar: $avatar)
 }
-
 
 mutation DeleteAvatar($avatar: DeleteAvatarInput!) {
-    deleteAvatar(avatar: $avatar)
+	deleteAvatar(avatar: $avatar)
 }
-
 
 mutation UpdateProfileSkill($skill: UpdateProfileSkillInput!) {
-    updateProfileSkill(skill: $skill) {
-        id
-        skills {
-            name
-            categoryId
-            mastery
-        }
-    }
+	updateProfileSkill(skill: $skill) {
+		id
+		skills {
+			name
+			categoryId
+			mastery
+		}
+	}
 }
-
-
 
 mutation AddProfileSkill($skill: AddProfileSkillInput!) {
-    addProfileSkill(skill: $skill) {
-        id
-        skills {
-            name
-            categoryId
-            mastery
-        }
-    }
+	addProfileSkill(skill: $skill) {
+		id
+		skills {
+			name
+			categoryId
+			mastery
+		}
+	}
 }
 
-
 mutation DeleteProfileSkill($skill: DeleteProfileSkillInput!) {
-    deleteProfileSkill(skill: $skill) {
-        id
-        skills {
-            name
-            categoryId
-            mastery
-        }
-    }
+	deleteProfileSkill(skill: $skill) {
+		id
+		skills {
+			name
+			categoryId
+			mastery
+		}
+	}
+}
+
+mutation AddProfileLanguage($language: AddProfileLanguageInput!) {
+	addProfileLanguage(language: $language) {
+		id
+		languages {
+			name
+			proficiency
+		}
+	}
+}
+
+mutation DeleteProfileLanguage($language: DeleteProfileLanguageInput!) {
+	deleteProfileLanguage(language: $language) {
+		id
+		languages {
+			name
+			proficiency
+		}
+	}
+}
+
+mutation UpdateProfileLanguage($language: UpdateProfileLanguageInput!) {
+	updateProfileLanguage(language: $language) {
+		id
+		languages {
+			name
+			proficiency
+		}
+	}
 }

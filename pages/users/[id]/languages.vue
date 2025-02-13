@@ -1,5 +1,5 @@
 <template>
-	<div>Languages</div>
+	<Languages />
 </template>
 
 <script setup lang="ts">

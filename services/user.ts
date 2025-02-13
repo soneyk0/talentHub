@@ -1,19 +1,24 @@
 import { useApolloClient, useMutation, useQuery } from '@vue/apollo-composable';
 import { ref, watchEffect } from 'vue';
 import {
+	AddProfileLanguage,
 	AddProfileSkill,
 	DeleteAvatar,
+	DeleteProfileLanguage,
 	DeleteProfileSkill,
 	UpdateProfile,
+	UpdateProfileLanguage,
 	UpdateProfileSkill,
 	UpdateUser,
 	UploadAvatar,
 } from '~/graphql/mutations/user.graphql';
 import {
 	GetAllDepartments,
+	GetAllLanguages,
 	GetAllPositions,
 	GetAllSkills,
 	GetAllUsers,
+	GetProfileLanguages,
 	GetProfileSkills,
 	GetSkillCategories,
 	GetUserById,
@@ -53,24 +58,9 @@ interface Skill {
 	mastery: 'Novice' | 'Advanced' | 'Competent' | 'Proficient' | 'Expert';
 }
 
-interface SkillDefault {
-	id: string;
+interface Language {
 	name: string;
-	category: {
-		id: string;
-		order: number;
-	};
-	category_name: string;
-	category_parent_name: string;
-}
-
-interface SkillCategory {
-	id: string;
-	name: string;
-	parent: {
-		id: string;
-		name: string;
-	} | null;
+	proficiency: 'Native' | 'C2' | 'C1' | 'B2' | 'B1' | 'A2' | 'A1';
 }
 
 interface UpdateUserInput {
@@ -91,6 +81,12 @@ interface UpdateProfileSkillInput {
 	name: string;
 	categoryId: string;
 	mastery: Skill['mastery'];
+}
+
+interface UpdateProfileLanguageInput {
+	userId: string;
+	name: string;
+	proficiency: Language['proficiency'];
 }
 
 interface UploadAvatarInput {
@@ -124,20 +120,12 @@ export const getUserById = async (userId: string, force = false) => {
 };
 
 export const getAllDepartments = async () => {
-	console.log(
-		'getAllDepartments running on:',
-		import.meta.server ? 'server' : 'client'
-	);
-
 	const apolloClient = useApolloClient().client;
 
 	try {
-		console.log('Making GraphQL request...');
-
 		const { data } = await apolloClient.query({
 			query: GetAllDepartments,
 		});
-		console.log('GraphQL request completed');
 
 		return {
 			departments: data.departments,
@@ -356,6 +344,116 @@ export const deleteProfileSkill = (userId: string, skillNames: string[]) => {
 			return response!.data?.deleteProfileSkill;
 		} catch (err) {
 			console.error('Error deleting skills:', err);
+			throw err;
+		}
+	};
+
+	return { executeDelete, loading, error };
+};
+
+export const getProfileLanguages = async (userId: string) => {
+	const apolloClient = useApolloClient().client;
+
+	try {
+		const { data } = await apolloClient.query({
+			query: GetProfileLanguages,
+			variables: { userId },
+			fetchPolicy: 'no-cache',
+		});
+		return {
+			languages: data.profile.languages,
+			error: null,
+		};
+	} catch (error) {
+		console.error('Error fetching profile languages:', error);
+		return {
+			languages: [],
+			error,
+		};
+	}
+};
+
+export const getAllLanguages = async () => {
+	const apolloClient = useApolloClient().client;
+
+	try {
+		const { data } = await apolloClient.query({
+			query: GetAllLanguages,
+		});
+		return {
+			languages: data.languages,
+			error: null,
+		};
+	} catch (error) {
+		console.error('Error fetching languages:', error);
+		return {
+			languages: [],
+			error,
+		};
+	}
+};
+
+export const updateProfileLanguage = (language: UpdateProfileLanguageInput) => {
+	const {
+		mutate: updateLanguageMutation,
+		loading,
+		error,
+	} = useMutation(UpdateProfileLanguage);
+
+	const executeUpdate = async () => {
+		try {
+			const response = await updateLanguageMutation({ language });
+			return response!.data?.updateProfileLanguage;
+		} catch (err) {
+			console.error('Error updating language:', err);
+			throw err;
+		}
+	};
+
+	return { executeUpdate, loading, error };
+};
+
+export const addProfileLanguage = (language: UpdateProfileLanguageInput) => {
+	const {
+		mutate: addLanguageMutation,
+		loading,
+		error,
+	} = useMutation(AddProfileLanguage);
+
+	const executeAdd = async () => {
+		try {
+			const response = await addLanguageMutation({ language });
+			return response!.data?.addProfileLanguage;
+		} catch (err) {
+			console.error('Error adding language:', err);
+			throw err;
+		}
+	};
+
+	return { executeAdd, loading, error };
+};
+
+export const deleteProfileLanguage = (
+	userId: string,
+	languageNames: string[]
+) => {
+	const {
+		mutate: deleteLanguageMutation,
+		loading,
+		error,
+	} = useMutation(DeleteProfileLanguage);
+
+	const executeDelete = async () => {
+		try {
+			const response = await deleteLanguageMutation({
+				language: {
+					userId,
+					name: languageNames,
+				},
+			});
+			return response!.data?.deleteProfileLanguage;
+		} catch (err) {
+			console.error('Error deleting languages:', err);
 			throw err;
 		}
 	};
