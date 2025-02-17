@@ -99,13 +99,13 @@
 						label: selectedSkill?.name ?? '',
 					},
 				]"
-				disabled
+				:disabled="true"
 			/>
 			<BaseDropdown
 				id="skill-level"
 				v-model="selectedLevelOption"
 				label="Skill Level"
-				:options="skillLevelOptions"
+				:options="SKILL_LEVELS"
 			/>
 		</BaseModal>
 		<BaseModal
@@ -125,7 +125,7 @@
 				id="new-skill-level"
 				v-model="newLevelOption"
 				label="Skill Level"
-				:options="skillLevelOptions"
+				:options="SKILL_LEVELS"
 			/>
 		</BaseModal>
 	</div>
@@ -134,6 +134,11 @@
 <script setup lang="ts">
 	import PlusIcon from '~/components/icons/PlusIcon.vue';
 	import TrashBin from '~/components/icons/TrashBin.vue';
+	import {
+		SKILL_LEVEL_TO_PROGRESS,
+		SKILL_LEVELS,
+		type SkillLevel,
+	} from '~/constants/entity-level';
 	import {
 		addProfileSkill,
 		deleteProfileSkill,
@@ -169,14 +174,6 @@
 			name: string;
 		} | null;
 	}
-
-	const skillLevelToProgress: Record<Skill['mastery'], number> = {
-		Novice: 20,
-		Advanced: 40,
-		Competent: 60,
-		Proficient: 80,
-		Expert: 100,
-	};
 
 	const otherCategory = {
 		id: 'other',
@@ -271,7 +268,7 @@
 	});
 
 	const getSkillProgress = (mastery: Skill['mastery']) => {
-		return skillLevelToProgress[mastery];
+		return SKILL_LEVEL_TO_PROGRESS[mastery];
 	};
 
 	const getSkillsByCategory = (categoryId: string) => {
@@ -349,7 +346,7 @@
 				userId: userId.value!,
 				name: newSelectedSkill.value.name,
 				categoryId: newSelectedSkill.value.category.id,
-				mastery: newSelectedLevel.value,
+				mastery: newSelectedLevel.value as SkillLevel,
 			});
 
 			await executeAdd();
@@ -385,13 +382,6 @@
 			selectedLevel.value = option.value as Skill['mastery'];
 		},
 	});
-	const skillLevelOptions = [
-		{ value: 'Novice', label: 'Novice' },
-		{ value: 'Advanced', label: 'Advanced' },
-		{ value: 'Competent', label: 'Competent' },
-		{ value: 'Proficient', label: 'Proficient' },
-		{ value: 'Expert', label: 'Expert' },
-	];
 
 	const isRemovalMode = ref(false);
 	const isDeletingSkills = ref(false);
@@ -424,7 +414,7 @@
 				userId: userId.value!,
 				name: selectedSkill.value.name,
 				categoryId: selectedSkill.value.categoryId,
-				mastery: selectedLevel.value,
+				mastery: selectedLevel.value as SkillLevel,
 			});
 
 			await executeUpdate();

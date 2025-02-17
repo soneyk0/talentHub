@@ -97,7 +97,7 @@
 				id="language-level"
 				v-model="selectedLevelOption"
 				label="Language Level"
-				:options="languageLevelOptions"
+				:options="LANGUAGE_LEVELS"
 			/>
 		</BaseModal>
 		<BaseModal
@@ -117,7 +117,7 @@
 				id="new-language-level"
 				v-model="newLevelOption"
 				label="Language Level"
-				:options="languageLevelOptions"
+				:options="LANGUAGE_LEVELS"
 			/>
 		</BaseModal>
 	</div>
@@ -126,6 +126,7 @@
 <script setup lang="ts">
 	import PlusIcon from '~/components/icons/PlusIcon.vue';
 	import TrashBin from '~/components/icons/TrashBin.vue';
+	import { LANGUAGE_LEVELS } from '~/constants/entity-level';
 	import {
 		addProfileLanguage,
 		deleteProfileLanguage,
@@ -133,7 +134,6 @@
 		getProfileLanguages,
 		updateProfileLanguage,
 	} from '~/services/user';
-
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
 
 	interface Language {
@@ -288,16 +288,6 @@
 			selectedLevel.value = option.value as Language['proficiency'];
 		},
 	});
-
-	const languageLevelOptions = [
-		{ value: 'Native', label: 'Native' },
-		{ value: 'C2', label: 'C2' },
-		{ value: 'C1', label: 'C1' },
-		{ value: 'B2', label: 'B2' },
-		{ value: 'B1', label: 'B1' },
-		{ value: 'A2', label: 'A2' },
-		{ value: 'A1', label: 'A1' },
-	];
 
 	const isRemovalMode = ref(false);
 	const isDeletingLanguages = ref(false);
