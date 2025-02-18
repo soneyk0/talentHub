@@ -50,7 +50,7 @@ export type SkillLevel =
 	| 'Expert';
 
 // in case we need it later
-interface User {
+export interface User {
 	id: string;
 	created_at: string;
 	email: string;
@@ -66,6 +66,10 @@ interface User {
 	position: Position | null;
 	role: string;
 }
+
+export type UserProfileInfo = Pick<User, 'email'> & {
+	profile: Omit<User['profile'], 'full_name' | 'id'>;
+};
 
 interface Department {
 	id: string;

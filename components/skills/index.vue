@@ -165,6 +165,7 @@
 
 	const categories = ref<SkillCategory[]>([otherCategory]);
 	const skills = ref<Skill[]>([]);
+	const allSkills = ref<SkillDefault[]>([]);
 	const route = useRoute();
 	const { getCurrentUserId } = useCurrentUser();
 	const userId = ref((route.params.id as string) || getCurrentUserId.value);
@@ -245,7 +246,6 @@
 
 	// add skill modal state and logic
 	const isAddSkillModalOpen = ref(false);
-	const allSkills = ref<SkillDefault[]>([]);
 	const newSelectedSkill = ref<SkillDefault | null>(null);
 	const newSelectedLevel = ref<Skill['mastery'] | null>(null);
 

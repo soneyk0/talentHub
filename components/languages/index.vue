@@ -141,6 +141,7 @@
 	const allLanguagesDataKey = 'all-languages';
 	const { data: languagesData } = useNuxtData(languagesDataKey);
 	const { data: allLanguagesData } = useNuxtData(allLanguagesDataKey);
+	const allLanguages = ref<Language[]>([]);
 
 	if (!languagesData.value) {
 		const { data } = await useAsyncData(languagesDataKey, () =>
@@ -178,7 +179,6 @@
 
 	// add language modal state and logic
 	const isAddLanguageModalOpen = ref(false);
-	const allLanguages = ref<Language[]>([]);
 	const newSelectedLanguage = ref<Language | null>(null);
 	const newSelectedLevel = ref<Language['proficiency'] | null>(null);
 
