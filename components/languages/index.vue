@@ -74,52 +74,40 @@
 				</div>
 			</div>
 		</div>
-		<BaseModal
+		<EntityModal
 			v-model:is-open="isUpdateLanguageModalOpen"
+			v-model:name-option="selectedLanguageOption"
+			v-model:level-option="selectedLevelOption"
 			title="Update Language"
 			confirm-text="CONFIRM"
 			:has-changes="hasChanges"
+			entity-label="Language"
+			name-input-id="language-name"
+			level-input-id="language-level"
+			:name-options="[
+				{
+					value: selectedLanguage?.name ?? '',
+					label: selectedLanguage?.name ?? '',
+				},
+			]"
+			:level-options="LANGUAGE_LEVELS"
+			:is-name-disabled="true"
 			@confirm="handleUpdateLanguageConfirm"
-		>
-			<BaseDropdown
-				id="language-name"
-				v-model="selectedLanguageOption"
-				label="Language"
-				:options="[
-					{
-						value: selectedLanguage?.name ?? '',
-						label: selectedLanguage?.name ?? '',
-					},
-				]"
-				disabled
-			/>
-			<BaseDropdown
-				id="language-level"
-				v-model="selectedLevelOption"
-				label="Language Level"
-				:options="LANGUAGE_LEVELS"
-			/>
-		</BaseModal>
-		<BaseModal
+		/>
+		<EntityModal
 			v-model:is-open="isAddLanguageModalOpen"
+			v-model:name-option="newLanguageOption"
+			v-model:level-option="newLevelOption"
 			title="Add Language"
 			confirm-text="ADD"
 			:has-changes="!!(newSelectedLanguage && newSelectedLevel)"
+			entity-label="Language"
+			name-input-id="new-language-name"
+			level-input-id="new-language-level"
+			:name-options="languageOptions"
+			:level-options="LANGUAGE_LEVELS"
 			@confirm="handleAddLanguageConfirm"
-		>
-			<BaseDropdown
-				id="new-language-name"
-				v-model="newLanguageOption"
-				label="Language"
-				:options="languageOptions"
-			/>
-			<BaseDropdown
-				id="new-language-level"
-				v-model="newLevelOption"
-				label="Language Level"
-				:options="LANGUAGE_LEVELS"
-			/>
-		</BaseModal>
+		/>
 	</div>
 </template>
 

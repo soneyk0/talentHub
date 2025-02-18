@@ -82,52 +82,40 @@
 			</div>
 		</div>
 
-		<BaseModal
+		<EntityModal
 			v-model:is-open="isUpdateSkillModalOpen"
+			v-model:name-option="selectedSkillOption"
+			v-model:level-option="selectedLevelOption"
 			title="Update Skill"
 			confirm-text="CONFIRM"
 			:has-changes="hasChanges"
+			entity-label="Skill"
+			name-input-id="skill-name"
+			level-input-id="skill-level"
+			:name-options="[
+				{
+					value: selectedSkill?.name ?? '',
+					label: selectedSkill?.name ?? '',
+				},
+			]"
+			:level-options="SKILL_LEVELS"
+			:is-name-disabled="true"
 			@confirm="handleUpdateSkillConfirm"
-		>
-			<BaseDropdown
-				id="skill-name"
-				v-model="selectedSkillOption"
-				label="Skill"
-				:options="[
-					{
-						value: selectedSkill?.name ?? '',
-						label: selectedSkill?.name ?? '',
-					},
-				]"
-				:disabled="true"
-			/>
-			<BaseDropdown
-				id="skill-level"
-				v-model="selectedLevelOption"
-				label="Skill Level"
-				:options="SKILL_LEVELS"
-			/>
-		</BaseModal>
-		<BaseModal
+		/>
+		<EntityModal
 			v-model:is-open="isAddSkillModalOpen"
+			v-model:name-option="newSkillOption"
+			v-model:level-option="newLevelOption"
 			title="Add Skill"
 			confirm-text="ADD"
 			:has-changes="!!(newSelectedSkill && newSelectedLevel)"
+			entity-label="Skill"
+			name-input-id="new-skill-name"
+			level-input-id="new-skill-level"
+			:name-options="skillOptions"
+			:level-options="SKILL_LEVELS"
 			@confirm="handleAddSkillConfirm"
-		>
-			<BaseDropdown
-				id="new-skill-name"
-				v-model="newSkillOption"
-				label="Skill"
-				:options="skillOptions"
-			/>
-			<BaseDropdown
-				id="new-skill-level"
-				v-model="newLevelOption"
-				label="Skill Level"
-				:options="SKILL_LEVELS"
-			/>
-		</BaseModal>
+		/>
 	</div>
 </template>
 
