@@ -18,7 +18,7 @@
 					:key="row.id"
 					:row="row"
 					:table-container="tableContainer"
-					@onDeleteCV="$emit('onDeleteCV', row)"
+					@on-delete-c-v="$emit('onDeleteCV', row)"
 				/>
 			</tbody>
 		</table>
@@ -28,32 +28,12 @@
 <script setup lang="ts">
 	import TableCvRow from '@/components/table/CvRow.vue';
 	import TableUserRow from '@/components/table/UserRow.vue';
-
+	import type { Row } from '~/global';
 	const emit = defineEmits(['onDeleteCV']);
-
-	type UserRow = {
-		id: number;
-		photo: string;
-		firstName: string;
-		lastName: string;
-		email: string;
-		department: string;
-		position: string;
-		link: string;
-	};
-
-	type CvRow = {
-		id: number;
-		name: string;
-		education: string;
-		description: string;
-		email: string;
-		link: string;
-	};
 
 	const props = defineProps<{
 		headers: { key: string; label: string; isSortable: boolean }[];
-		rowsData: Array<UserRow | CvRow>;
+		rowsData: Row[];
 		searchQuery?: string;
 		rowComponent: 'TableUserRow' | 'TableCvRow';
 	}>();
@@ -64,15 +44,17 @@
 	const itemsPerPage = 10;
 	const loadedCount = ref(itemsPerPage);
 	const isLoading = ref(false);
-	const displayedData = ref<(UserRow | CvRow)[]>([]);
+	const displayedData = ref<Row[]>([]);
 
 	const rowComponent = computed(() => {
-		if (props.rowComponent === 'TableUserRow') {
-			return TableUserRow;
-		} else if (props.rowComponent === 'TableCvRow') {
-			return TableCvRow;
-		}
-		return null;
+		const components: Record<
+			'TableUserRow' | 'TableCvRow',
+			typeof TableUserRow | typeof TableCvRow
+		> = {
+			TableUserRow,
+			TableCvRow,
+		};
+		return components[props.rowComponent];
 	});
 
 	const sortedData = computed(() => {
@@ -81,11 +63,7 @@
 		return sortRows([...props.rowsData], sortKey.value, sortOrder.value);
 	});
 
-	const sortRows = (
-		array: (UserRow | CvRow)[],
-		key: string,
-		order: 'asc' | 'desc'
-	) => {
+	const sortRows = (array: Row[], key: string, order: 'asc' | 'desc') => {
 		const collator = new Intl.Collator('en', { sensitivity: 'base' });
 
 		return array.sort((a, b) => {

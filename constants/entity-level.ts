@@ -1,3 +1,4 @@
+import type { SkillLevel } from '~/global';
 export const SKILL_LEVELS = [
 	{ value: 'Novice', label: 'Novice' },
 	{ value: 'Advanced', label: 'Advanced' },
@@ -5,12 +6,6 @@ export const SKILL_LEVELS = [
 	{ value: 'Proficient', label: 'Proficient' },
 	{ value: 'Expert', label: 'Expert' },
 ];
-export type SkillLevel =
-	| 'Novice'
-	| 'Advanced'
-	| 'Competent'
-	| 'Proficient'
-	| 'Expert';
 
 export const SKILL_LEVEL_TO_PROGRESS: Record<SkillLevel, number> = {
 	Novice: 20,

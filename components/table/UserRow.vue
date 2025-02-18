@@ -53,18 +53,10 @@
 
 <script setup lang="ts">
 	import { useCurrentUser } from '~/composables/useCurrentUser';
+	import type { Row } from '~/global';
 	const router = useRouter();
 	const props = defineProps<{
-		row: {
-			id: number;
-			photo: string;
-			firstName: string;
-			lastName: string;
-			email: string;
-			department: string;
-			position: string;
-			link: string;
-		};
+		row: Row;
 		tableContainer: HTMLElement | null;
 	}>();
 	const { getCurrentUserId } = useCurrentUser();

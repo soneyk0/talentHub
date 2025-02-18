@@ -127,6 +127,7 @@
 	import PlusIcon from '~/components/icons/PlusIcon.vue';
 	import TrashBin from '~/components/icons/TrashBin.vue';
 	import { LANGUAGE_LEVELS } from '~/constants/entity-level';
+	import type { Language } from '~/global';
 	import {
 		addProfileLanguage,
 		deleteProfileLanguage,
@@ -135,11 +136,6 @@
 		updateProfileLanguage,
 	} from '~/services/user';
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
-
-	interface Language {
-		name: string;
-		proficiency: 'Native' | 'C2' | 'C1' | 'B2' | 'B1' | 'A2' | 'A1';
-	}
 
 	const languages = ref<Language[]>([]);
 

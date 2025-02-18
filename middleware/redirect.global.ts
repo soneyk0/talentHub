@@ -3,6 +3,9 @@ import { defineNuxtRouteMiddleware, navigateTo } from '#app';
 export default defineNuxtRouteMiddleware((to) => {
 	const pathSegments = to.path.split('/').filter(Boolean);
 	const lastSegment = pathSegments[pathSegments.length - 1];
+	if (to.path === '/') {
+		return navigateTo('/users');
+	}
 
 	if (lastSegment && to.path.startsWith(`/users/${lastSegment}`)) {
 		return navigateTo(`/users/${lastSegment}/profile`);

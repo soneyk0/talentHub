@@ -54,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+	import type { Option } from '~/global';
 	import {
 		deleteAvatar,
 		getAllDepartments,
@@ -63,11 +64,6 @@
 		updateUser,
 	} from '~/services/user';
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
-
-	interface Option {
-		value: string;
-		label: string;
-	}
 
 	definePageMeta({
 		layout: 'user-profile',

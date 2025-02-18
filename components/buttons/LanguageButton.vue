@@ -20,14 +20,14 @@
 </template>
 
 <script setup lang="ts">
-	type LanguageLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' | 'Native';
-
+	import { LANGUAGE_LEVELS } from '~/constants/entity-level';
+	import type { LanguageLevel } from '~/global';
 	const props = defineProps({
 		level: {
 			type: String as () => LanguageLevel,
 			required: true,
 			validator: (value: string) =>
-				['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Native'].includes(value),
+				LANGUAGE_LEVELS.some((level) => level.value === value),
 		},
 		variant: {
 			type: String as () => 'contained' | 'outlined' | 'text',

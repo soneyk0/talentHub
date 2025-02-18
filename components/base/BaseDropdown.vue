@@ -50,12 +50,7 @@
 </template>
 
 <script setup lang="ts">
-	interface Option {
-		value: string;
-		label: string;
-		isSeparator?: boolean;
-		disabled?: boolean;
-	}
+	import type { Option } from '~/global';
 
 	const props = defineProps({
 		id: {

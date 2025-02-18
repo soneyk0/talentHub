@@ -137,8 +137,8 @@
 	import {
 		SKILL_LEVEL_TO_PROGRESS,
 		SKILL_LEVELS,
-		type SkillLevel,
 	} from '~/constants/entity-level';
+	import type { Skill, SkillLevel } from '~/global';
 	import {
 		addProfileSkill,
 		deleteProfileSkill,
@@ -148,12 +148,6 @@
 		updateProfileSkill,
 	} from '~/services/user';
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
-
-	interface Skill {
-		name: string;
-		categoryId: string;
-		mastery: 'Novice' | 'Advanced' | 'Competent' | 'Proficient' | 'Expert';
-	}
 
 	interface SkillDefault {
 		id: string;

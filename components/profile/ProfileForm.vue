@@ -47,10 +47,7 @@
 </template>
 
 <script setup lang="ts">
-	interface Option {
-		value: string;
-		label: string;
-	}
+	import type { Option } from '~/global';
 
 	const props = defineProps<{
 		firstName: string;

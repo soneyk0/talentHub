@@ -1,4 +1,5 @@
 import { useApolloClient, useMutation } from '@vue/apollo-composable';
+import type { Language, Skill } from '~/global';
 import {
 	AddProfileLanguage,
 	AddProfileSkill,
@@ -23,44 +24,6 @@ import {
 	GetUserById,
 	GetUserFullName,
 } from '~/graphql/queries/user.graphql';
-
-interface User {
-	id: string;
-	created_at: string;
-	email: string;
-	is_verified: boolean;
-	profile: {
-		id: string;
-		first_name: string;
-		last_name: string;
-		full_name: string;
-		avatar: string;
-	};
-	department: Department | null;
-	position: Position | null;
-	role: string;
-}
-
-interface Department {
-	id: string;
-	name: string;
-}
-
-interface Position {
-	id: string;
-	name: string;
-}
-
-interface Skill {
-	name: string;
-	categoryId: string;
-	mastery: 'Novice' | 'Advanced' | 'Competent' | 'Proficient' | 'Expert';
-}
-
-interface Language {
-	name: string;
-	proficiency: 'Native' | 'C2' | 'C1' | 'B2' | 'B1' | 'A2' | 'A1';
-}
 
 interface UpdateUserInput {
 	userId: string;
