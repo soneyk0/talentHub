@@ -125,28 +125,22 @@
 	} from '~/services/user';
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
 
-	const languages = ref<Language[]>([]);
-
 	const route = useRoute();
 	const { getCurrentUserId } = useCurrentUser();
+
+	const languages = ref<Language[]>([]);
 	const userId = ref(
 		(route.params.id as string) || String(getCurrentUserId.value)
 	);
-
 	const canEdit = computed(() => {
 		return String(getCurrentUserId.value) === userId.value;
 	});
 
+	// languages data
 	const languagesDataKey = `languages-${userId.value}`;
 	const allLanguagesDataKey = 'all-languages';
-
 	const { data: languagesData } = useNuxtData(languagesDataKey);
 	const { data: allLanguagesData } = useNuxtData(allLanguagesDataKey);
-
-	const isAddLanguageModalOpen = ref(false);
-	const allLanguages = ref<Language[]>([]);
-	const newSelectedLanguage = ref<Language | null>(null);
-	const newSelectedLevel = ref<Language['proficiency'] | null>(null);
 
 	if (!languagesData.value) {
 		const { data } = await useAsyncData(languagesDataKey, () =>
@@ -181,6 +175,12 @@
 		},
 		{ immediate: true }
 	);
+
+	// add language modal state and logic
+	const isAddLanguageModalOpen = ref(false);
+	const allLanguages = ref<Language[]>([]);
+	const newSelectedLanguage = ref<Language | null>(null);
+	const newSelectedLevel = ref<Language['proficiency'] | null>(null);
 
 	const newLanguageOption = computed({
 		get: () => ({
@@ -251,8 +251,13 @@
 		}
 	};
 
+	// update language modal state and logic
 	const isUpdateLanguageModalOpen = ref(false);
 	const selectedLanguage = ref<Language | null>(null);
+	const initialLevel = ref<Language['proficiency'] | null>(null);
+	const selectedLevel = ref<Language['proficiency'] | null>(null);
+	const hasChanges = computed(() => selectedLevel.value !== initialLevel.value);
+
 	const selectedLanguageOption = computed({
 		get: () => ({
 			value: selectedLanguage.value?.name ?? '',
@@ -261,8 +266,6 @@
 		set: () => {},
 	});
 
-	const initialLevel = ref<Language['proficiency'] | null>(null);
-	const selectedLevel = ref<Language['proficiency'] | null>(null);
 	const selectedLevelOption = computed({
 		get: () => ({
 			value: selectedLevel.value ?? '',
@@ -272,29 +275,6 @@
 			selectedLevel.value = option.value as Language['proficiency'];
 		},
 	});
-
-	const isRemovalMode = ref(false);
-	const isDeletingLanguages = ref(false);
-	const selectedLanguagesToRemove = ref<Set<string>>(new Set());
-
-	const hasChanges = computed(() => selectedLevel.value !== initialLevel.value);
-
-	const handleLanguageClick = (language: Language) => {
-		if (isRemovalMode.value) {
-			const languageName = language.name;
-			if (selectedLanguagesToRemove.value.has(languageName)) {
-				selectedLanguagesToRemove.value.delete(languageName);
-			} else {
-				selectedLanguagesToRemove.value.add(languageName);
-			}
-			return;
-		}
-		selectedLanguage.value = language;
-		selectedLevel.value = language.proficiency;
-		initialLevel.value = language.proficiency;
-
-		isUpdateLanguageModalOpen.value = true;
-	};
 
 	const handleUpdateLanguageConfirm = async () => {
 		if (!selectedLanguage.value || !selectedLevel.value) return;
@@ -320,6 +300,11 @@
 			console.error('Error updating language:', error);
 		}
 	};
+
+	// removal mode state and logic
+	const isRemovalMode = ref(false);
+	const isDeletingLanguages = ref(false);
+	const selectedLanguagesToRemove = ref<Set<string>>(new Set());
 
 	const handleCancelRemoval = () => {
 		isRemovalMode.value = false;
@@ -349,6 +334,25 @@
 		}
 	};
 
+	// handler to manage update and removal
+	const handleLanguageClick = (language: Language) => {
+		if (isRemovalMode.value) {
+			const languageName = language.name;
+			if (selectedLanguagesToRemove.value.has(languageName)) {
+				selectedLanguagesToRemove.value.delete(languageName);
+			} else {
+				selectedLanguagesToRemove.value.add(languageName);
+			}
+			return;
+		}
+		selectedLanguage.value = language;
+		selectedLevel.value = language.proficiency;
+		initialLevel.value = language.proficiency;
+
+		isUpdateLanguageModalOpen.value = true;
+	};
+
+	// button ui helper
 	const getLanguageButtonProps = (language: Language) => {
 		if (isRemovalMode.value) {
 			const isSelected = selectedLanguagesToRemove.value.has(language.name);

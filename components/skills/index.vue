@@ -165,7 +165,6 @@
 
 	const categories = ref<SkillCategory[]>([otherCategory]);
 	const skills = ref<Skill[]>([]);
-
 	const route = useRoute();
 	const { getCurrentUserId } = useCurrentUser();
 	const userId = ref((route.params.id as string) || getCurrentUserId.value);
@@ -173,18 +172,26 @@
 		return String(getCurrentUserId.value) === String(userId.value);
 	});
 
+	const categoriesWithSkills = computed(() => {
+		const hasSkillsWithNullCategory = skills.value.some(
+			(skill) => !skill.categoryId
+		);
+		const filtered = categories.value.filter((category) =>
+			skills.value.some((skill) => skill.categoryId === category.id)
+		);
+		if (hasSkillsWithNullCategory) {
+			filtered.push(otherCategory);
+		}
+		return filtered;
+	});
+
+	// skills and categories data, initial loading
 	const skillsDataKey = `skills-${userId.value}`;
 	const categoriesDataKey = 'skill-categories';
 	const allSkillsDataKey = 'all-skills';
-
 	const { data: skillsData } = useNuxtData(skillsDataKey);
 	const { data: categoriesData } = useNuxtData(categoriesDataKey);
 	const { data: allSkillsData } = useNuxtData(allSkillsDataKey);
-
-	const isAddSkillModalOpen = ref(false);
-	const allSkills = ref<SkillDefault[]>([]);
-	const newSelectedSkill = ref<SkillDefault | null>(null);
-	const newSelectedLevel = ref<Skill['mastery'] | null>(null);
 
 	if (!skillsData.value) {
 		const { data } = await useAsyncData(skillsDataKey, () =>
@@ -236,29 +243,11 @@
 		{ immediate: true }
 	);
 
-	const categoriesWithSkills = computed(() => {
-		const hasSkillsWithNullCategory = skills.value.some(
-			(skill) => !skill.categoryId
-		);
-		const filtered = categories.value.filter((category) =>
-			skills.value.some((skill) => skill.categoryId === category.id)
-		);
-		if (hasSkillsWithNullCategory) {
-			filtered.push(otherCategory);
-		}
-		return filtered;
-	});
-
-	const getSkillProgress = (mastery: Skill['mastery']) => {
-		return SKILL_LEVEL_TO_PROGRESS[mastery];
-	};
-
-	const getSkillsByCategory = (categoryId: string) => {
-		if (categoryId === 'other') {
-			return skills.value.filter((skill) => !skill.categoryId);
-		}
-		return skills.value.filter((skill) => skill.categoryId === categoryId);
-	};
+	// add skill modal state and logic
+	const isAddSkillModalOpen = ref(false);
+	const allSkills = ref<SkillDefault[]>([]);
+	const newSelectedSkill = ref<SkillDefault | null>(null);
+	const newSelectedLevel = ref<Skill['mastery'] | null>(null);
 
 	const newSkillOption = computed({
 		get: () => ({
@@ -343,8 +332,13 @@
 		}
 	};
 
+	// update skill modal state and logic
 	const isUpdateSkillModalOpen = ref(false);
 	const selectedSkill = ref<Skill | null>(null);
+	const initialLevel = ref<Skill['mastery'] | null>(null);
+	const selectedLevel = ref<Skill['mastery'] | null>(null);
+	const hasChanges = computed(() => selectedLevel.value !== initialLevel.value);
+
 	const selectedSkillOption = computed({
 		get: () => ({
 			value: selectedSkill.value?.name ?? '',
@@ -353,8 +347,6 @@
 		set: () => {},
 	});
 
-	const initialLevel = ref<Skill['mastery'] | null>(null);
-	const selectedLevel = ref<Skill['mastery'] | null>(null);
 	const selectedLevelOption = computed({
 		get: () => ({
 			value: selectedLevel.value ?? '',
@@ -364,29 +356,6 @@
 			selectedLevel.value = option.value as Skill['mastery'];
 		},
 	});
-
-	const isRemovalMode = ref(false);
-	const isDeletingSkills = ref(false);
-	const selectedSkillsToRemove = ref<Set<string>>(new Set());
-
-	const hasChanges = computed(() => selectedLevel.value !== initialLevel.value);
-
-	const handleSkillClick = (skill: Skill) => {
-		if (isRemovalMode.value) {
-			const skillName = skill.name;
-			if (selectedSkillsToRemove.value.has(skillName)) {
-				selectedSkillsToRemove.value.delete(skillName);
-			} else {
-				selectedSkillsToRemove.value.add(skillName);
-			}
-			return;
-		}
-		selectedSkill.value = skill;
-		selectedLevel.value = skill.mastery;
-		initialLevel.value = skill.mastery;
-
-		isUpdateSkillModalOpen.value = true;
-	};
 
 	const handleUpdateSkillConfirm = async () => {
 		if (!selectedSkill.value || !selectedLevel.value) return;
@@ -414,6 +383,11 @@
 			console.error('Error updating skill:', error);
 		}
 	};
+
+	// removal mode state and logic
+	const isRemovalMode = ref(false);
+	const isDeletingSkills = ref(false);
+	const selectedSkillsToRemove = ref<Set<string>>(new Set());
 
 	const handleCancelRemoval = () => {
 		isRemovalMode.value = false;
@@ -443,6 +417,37 @@
 		}
 	};
 
+	// helpers
+	const getSkillProgress = (mastery: Skill['mastery']) => {
+		return SKILL_LEVEL_TO_PROGRESS[mastery];
+	};
+
+	const getSkillsByCategory = (categoryId: string) => {
+		if (categoryId === 'other') {
+			return skills.value.filter((skill) => !skill.categoryId);
+		}
+		return skills.value.filter((skill) => skill.categoryId === categoryId);
+	};
+
+	// handler to manage update and removal
+	const handleSkillClick = (skill: Skill) => {
+		if (isRemovalMode.value) {
+			const skillName = skill.name;
+			if (selectedSkillsToRemove.value.has(skillName)) {
+				selectedSkillsToRemove.value.delete(skillName);
+			} else {
+				selectedSkillsToRemove.value.add(skillName);
+			}
+			return;
+		}
+		selectedSkill.value = skill;
+		selectedLevel.value = skill.mastery;
+		initialLevel.value = skill.mastery;
+
+		isUpdateSkillModalOpen.value = true;
+	};
+
+	// button ui helper
 	const getSkillButtonProps = (skill: Skill) => {
 		if (isRemovalMode.value) {
 			const isSelected = selectedSkillsToRemove.value.has(skill.name);

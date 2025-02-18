@@ -69,14 +69,10 @@
 		layout: 'user-profile',
 	});
 
-	const { updateCurrentUserData } = useCurrentUser();
-
+	const { updateCurrentUserData, getCurrentUserId } = useCurrentUser();
 	const userId = ref('');
 	const route = useRoute();
 	userId.value = route.params.id as string;
-
-	const { getCurrentUserId } = useCurrentUser();
-
 	const canEdit = computed(() => {
 		return String(getCurrentUserId.value) === userId.value;
 	});
