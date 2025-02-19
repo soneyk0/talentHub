@@ -4,7 +4,7 @@
 			<BaseUserPic
 				:name="`${row.firstName} ${row.lastName}`"
 				class="bg-gray-4"
-				:photo="row.photo"
+				:photo="currentUserPhoto"
 			/>
 		</td>
 		<td
@@ -58,7 +58,7 @@
 		row: Row;
 		tableContainer: HTMLElement | null;
 	}>();
-	const { getCurrentUserId } = useCurrentUser();
+	const { getCurrentUserId, userData } = useCurrentUser();
 	const currentUserId = ref(Number(getCurrentUserId.value));
 
 	const optionsVisible = ref(false);
@@ -66,6 +66,15 @@
 	const optionsPosition = ref('top-0');
 	const isOpen = ref(false);
 	const displayedFields = computed(() => {
+		if (props.row.id === currentUserId.value) {
+			return {
+				firstName: { value: userData.firstName, class: 'small-column' },
+				lastName: { value: userData.lastName, class: 'medium-column' },
+				email: { value: userData.email, class: 'big-column' },
+				department: { value: userData.department, class: 'small-column' },
+				position: { value: userData.position, class: 'medium-column' },
+			};
+		}
 		return {
 			firstName: { value: props.row.firstName, class: 'small-column' },
 			lastName: { value: props.row.lastName, class: 'medium-column' },
@@ -73,6 +82,13 @@
 			department: { value: props.row.department, class: 'small-column' },
 			position: { value: props.row.position, class: 'medium-column' },
 		};
+	});
+
+	const currentUserPhoto = computed(() => {
+		if (props.row.id === currentUserId.value) {
+			return userData.photo;
+		}
+		return props.row.photo;
 	});
 
 	const showOptions = async () => {

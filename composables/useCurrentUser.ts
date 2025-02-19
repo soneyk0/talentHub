@@ -9,6 +9,8 @@ const userData = reactive({
 	lastName: '',
 	email: '',
 	profileLink: '',
+	department: '',
+	position: '',
 });
 
 export function useCurrentUser() {
@@ -34,6 +36,8 @@ export function useCurrentUser() {
 				userData.lastName = user.profile.last_name || '';
 				userData.email = user.email || '';
 				userData.profileLink = `/users/${currentUserId.value}/profile`;
+				userData.department = user.department?.name || '';
+				userData.position = user.position?.name || '';
 				hasLoaded.value = true;
 			}
 		} catch (error) {
@@ -48,6 +52,8 @@ export function useCurrentUser() {
 			userData.lastName = user.profile.last_name || '';
 			userData.email = user.email || '';
 			userData.profileLink = `/users/${currentUserId.value}/profile`;
+			userData.department = user.department?.name || '';
+			userData.position = user.position?.name || '';
 			hasLoaded.value = true;
 		}
 	};

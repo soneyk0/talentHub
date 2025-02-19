@@ -256,10 +256,9 @@
 				first_name: firstName.value,
 				last_name: lastName.value,
 			});
-			const [userResult, profileResult] = await Promise.all([
-				updateUserData(),
-				updateProfileData(),
-			]);
+			await updateUserData();
+			await updateProfileData();
+
 			clearNuxtData(userDataKey);
 
 			const { user } = await getUserById(userId.value, true);
@@ -280,6 +279,14 @@
 					avatar: avatar.value,
 				},
 				email: email.value,
+				department: {
+					id: selectedDepartment.value.value,
+					name: selectedDepartment.value.label,
+				},
+				position: {
+					id: selectedPosition.value.value,
+					name: selectedPosition.value.label,
+				},
 			});
 			showSuccessToast('Profile updated successfully');
 		} catch (error) {

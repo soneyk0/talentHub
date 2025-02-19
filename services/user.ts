@@ -58,14 +58,14 @@ interface UploadAvatarInput {
 	type: string;
 }
 
-export const getUserById = async (userId: string, force = false) => {
+export const getUserById = async (userId: string, skipCache = false) => {
 	const apolloClient = useApolloClient().client;
 
 	try {
 		const { data } = await apolloClient.query({
 			query: GetUserById,
 			variables: { userId },
-			fetchPolicy: 'no-cache',
+			fetchPolicy: skipCache ? 'network-only' : 'cache-first',
 		});
 
 		return {

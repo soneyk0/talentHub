@@ -179,24 +179,32 @@
 
 	const handleSubmit = async () => {
 		try {
-			await Promise.all([
-				updateUser({
-					userId: userId.value!,
-					departmentId: selectedDepartment.value.value,
-					positionId: selectedPosition.value.value,
-				}).executeUpdate(),
-				updateProfile({
-					userId: userId.value!,
-					first_name: firstName.value,
-					last_name: lastName.value,
-				}).executeUpdate(),
-			]);
+			const { executeUpdate: updateUserData } = updateUser({
+				userId: userId.value as string,
+				departmentId: selectedDepartment.value.value,
+				positionId: selectedPosition.value.value,
+			});
+			const { executeUpdate: updateProfileData } = updateProfile({
+				userId: userId.value as string,
+				first_name: firstName.value,
+				last_name: lastName.value,
+			});
+			await updateUserData();
+			await updateProfileData();
 
 			updateCurrentUserData({
 				profile: {
 					first_name: firstName.value,
 					last_name: lastName.value,
 					avatar: avatar.value,
+				},
+				department: {
+					id: selectedDepartment.value.value,
+					name: selectedDepartment.value.label,
+				},
+				position: {
+					id: selectedPosition.value.value,
+					name: selectedPosition.value.label,
 				},
 				email: email.value,
 			});
