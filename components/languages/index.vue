@@ -74,58 +74,48 @@
 				</div>
 			</div>
 		</div>
-		<BaseModal
+		<EntityModal
 			v-model:is-open="isUpdateLanguageModalOpen"
+			v-model:name-option="selectedLanguageOption"
+			v-model:level-option="selectedLevelOption"
 			title="Update Language"
 			confirm-text="CONFIRM"
 			:has-changes="hasChanges"
+			entity-label="Language"
+			name-input-id="language-name"
+			level-input-id="language-level"
+			:name-options="[
+				{
+					value: selectedLanguage?.name ?? '',
+					label: selectedLanguage?.name ?? '',
+				},
+			]"
+			:level-options="LANGUAGE_LEVELS"
+			:is-name-disabled="true"
 			@confirm="handleUpdateLanguageConfirm"
-		>
-			<BaseDropdown
-				id="language-name"
-				v-model="selectedLanguageOption"
-				label="Language"
-				:options="[
-					{
-						value: selectedLanguage?.name ?? '',
-						label: selectedLanguage?.name ?? '',
-					},
-				]"
-				disabled
-			/>
-			<BaseDropdown
-				id="language-level"
-				v-model="selectedLevelOption"
-				label="Language Level"
-				:options="languageLevelOptions"
-			/>
-		</BaseModal>
-		<BaseModal
+		/>
+		<EntityModal
 			v-model:is-open="isAddLanguageModalOpen"
+			v-model:name-option="newLanguageOption"
+			v-model:level-option="newLevelOption"
 			title="Add Language"
 			confirm-text="ADD"
 			:has-changes="!!(newSelectedLanguage && newSelectedLevel)"
+			entity-label="Language"
+			name-input-id="new-language-name"
+			level-input-id="new-language-level"
+			:name-options="languageOptions"
+			:level-options="LANGUAGE_LEVELS"
 			@confirm="handleAddLanguageConfirm"
-		>
-			<BaseDropdown
-				id="new-language-name"
-				v-model="newLanguageOption"
-				label="Language"
-				:options="languageOptions"
-			/>
-			<BaseDropdown
-				id="new-language-level"
-				v-model="newLevelOption"
-				label="Language Level"
-				:options="languageLevelOptions"
-			/>
-		</BaseModal>
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import PlusIcon from '~/components/icons/PlusIcon.vue';
 	import TrashBin from '~/components/icons/TrashBin.vue';
+	import { LANGUAGE_LEVELS } from '~/constants/entity-level';
+	import type { Language } from '~/global';
 	import {
 		addProfileLanguage,
 		deleteProfileLanguage,
@@ -133,36 +123,25 @@
 		getProfileLanguages,
 		updateProfileLanguage,
 	} from '~/services/user';
-
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
-
-	interface Language {
-		name: string;
-		proficiency: 'Native' | 'C2' | 'C1' | 'B2' | 'B1' | 'A2' | 'A1';
-	}
-
-	const languages = ref<Language[]>([]);
 
 	const route = useRoute();
 	const { getCurrentUserId } = useCurrentUser();
+
+	const languages = ref<Language[]>([]);
 	const userId = ref(
 		(route.params.id as string) || String(getCurrentUserId.value)
 	);
-
 	const canEdit = computed(() => {
 		return String(getCurrentUserId.value) === userId.value;
 	});
 
+	// languages data
 	const languagesDataKey = `languages-${userId.value}`;
 	const allLanguagesDataKey = 'all-languages';
-
 	const { data: languagesData } = useNuxtData(languagesDataKey);
 	const { data: allLanguagesData } = useNuxtData(allLanguagesDataKey);
-
-	const isAddLanguageModalOpen = ref(false);
 	const allLanguages = ref<Language[]>([]);
-	const newSelectedLanguage = ref<Language | null>(null);
-	const newSelectedLevel = ref<Language['proficiency'] | null>(null);
 
 	if (!languagesData.value) {
 		const { data } = await useAsyncData(languagesDataKey, () =>
@@ -197,6 +176,11 @@
 		},
 		{ immediate: true }
 	);
+
+	// add language modal state and logic
+	const isAddLanguageModalOpen = ref(false);
+	const newSelectedLanguage = ref<Language | null>(null);
+	const newSelectedLevel = ref<Language['proficiency'] | null>(null);
 
 	const newLanguageOption = computed({
 		get: () => ({
@@ -267,8 +251,13 @@
 		}
 	};
 
+	// update language modal state and logic
 	const isUpdateLanguageModalOpen = ref(false);
 	const selectedLanguage = ref<Language | null>(null);
+	const initialLevel = ref<Language['proficiency'] | null>(null);
+	const selectedLevel = ref<Language['proficiency'] | null>(null);
+	const hasChanges = computed(() => selectedLevel.value !== initialLevel.value);
+
 	const selectedLanguageOption = computed({
 		get: () => ({
 			value: selectedLanguage.value?.name ?? '',
@@ -277,8 +266,6 @@
 		set: () => {},
 	});
 
-	const initialLevel = ref<Language['proficiency'] | null>(null);
-	const selectedLevel = ref<Language['proficiency'] | null>(null);
 	const selectedLevelOption = computed({
 		get: () => ({
 			value: selectedLevel.value ?? '',
@@ -288,39 +275,6 @@
 			selectedLevel.value = option.value as Language['proficiency'];
 		},
 	});
-
-	const languageLevelOptions = [
-		{ value: 'Native', label: 'Native' },
-		{ value: 'C2', label: 'C2' },
-		{ value: 'C1', label: 'C1' },
-		{ value: 'B2', label: 'B2' },
-		{ value: 'B1', label: 'B1' },
-		{ value: 'A2', label: 'A2' },
-		{ value: 'A1', label: 'A1' },
-	];
-
-	const isRemovalMode = ref(false);
-	const isDeletingLanguages = ref(false);
-	const selectedLanguagesToRemove = ref<Set<string>>(new Set());
-
-	const hasChanges = computed(() => selectedLevel.value !== initialLevel.value);
-
-	const handleLanguageClick = (language: Language) => {
-		if (isRemovalMode.value) {
-			const languageName = language.name;
-			if (selectedLanguagesToRemove.value.has(languageName)) {
-				selectedLanguagesToRemove.value.delete(languageName);
-			} else {
-				selectedLanguagesToRemove.value.add(languageName);
-			}
-			return;
-		}
-		selectedLanguage.value = language;
-		selectedLevel.value = language.proficiency;
-		initialLevel.value = language.proficiency;
-
-		isUpdateLanguageModalOpen.value = true;
-	};
 
 	const handleUpdateLanguageConfirm = async () => {
 		if (!selectedLanguage.value || !selectedLevel.value) return;
@@ -346,6 +300,11 @@
 			console.error('Error updating language:', error);
 		}
 	};
+
+	// removal mode state and logic
+	const isRemovalMode = ref(false);
+	const isDeletingLanguages = ref(false);
+	const selectedLanguagesToRemove = ref<Set<string>>(new Set());
 
 	const handleCancelRemoval = () => {
 		isRemovalMode.value = false;
@@ -375,6 +334,25 @@
 		}
 	};
 
+	// handler to manage update and removal
+	const handleLanguageClick = (language: Language) => {
+		if (isRemovalMode.value) {
+			const languageName = language.name;
+			if (selectedLanguagesToRemove.value.has(languageName)) {
+				selectedLanguagesToRemove.value.delete(languageName);
+			} else {
+				selectedLanguagesToRemove.value.add(languageName);
+			}
+			return;
+		}
+		selectedLanguage.value = language;
+		selectedLevel.value = language.proficiency;
+		initialLevel.value = language.proficiency;
+
+		isUpdateLanguageModalOpen.value = true;
+	};
+
+	// button ui helper
 	const getLanguageButtonProps = (language: Language) => {
 		if (isRemovalMode.value) {
 			const isSelected = selectedLanguagesToRemove.value.has(language.name);

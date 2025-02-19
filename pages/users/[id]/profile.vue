@@ -37,55 +37,24 @@
 			<p class="text-gray-10">{{ email }}</p>
 			<p class="text-white">A member since {{ dateJoined }}</p>
 		</div>
-		<form
-			class="grid w-full max-w-3xl grid-cols-1 gap-x-8 gap-y-9 px-4 md:grid-cols-2 md:pr-12"
-			@submit.prevent="handleSubmit"
-		>
-			<BaseInput
-				id="firstName"
-				v-model="firstName"
-				label="First Name"
-				:disabled="!canEdit"
-			/>
-			<BaseInput
-				id="lastName"
-				v-model="lastName"
-				label="Last Name"
-				:disabled="!canEdit"
-			/>
-
-			<BaseDropdown
-				id="department"
-				v-model="selectedDepartment"
-				label="Department"
-				:options="departments"
-				default-option-label="No department"
-				:disabled="!canEdit"
-			/>
-			<BaseDropdown
-				id="position"
-				v-model="selectedPosition"
-				label="Position"
-				:options="positions"
-				default-option-label="No position"
-				:disabled="!canEdit"
-			/>
-
-			<div></div>
-			<BaseButton
-				v-if="canEdit"
-				type="submit"
-				variant="contained"
-				color="primary"
-				:disabled="isSubmitting || isUploading || !hasChanges"
-			>
-				UPDATE
-			</BaseButton>
-		</form>
+		<ProfileForm
+			v-model:first-name="firstName"
+			v-model:last-name="lastName"
+			v-model:selected-department="selectedDepartment"
+			v-model:selected-position="selectedPosition"
+			:departments="departments"
+			:positions="positions"
+			:can-edit="canEdit"
+			:is-submitting="isSubmitting"
+			:is-uploading="isUploading"
+			:has-changes="hasChanges"
+			@submit="handleSubmit"
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
+	import type { Option } from '~/global';
 	import {
 		deleteAvatar,
 		getAllDepartments,
@@ -96,23 +65,14 @@
 	} from '~/services/user';
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
 
-	interface Option {
-		value: string;
-		label: string;
-	}
-
 	definePageMeta({
 		layout: 'user-profile',
 	});
 
-	const { updateCurrentUserData } = useCurrentUser();
-
+	const { updateCurrentUserData, getCurrentUserId } = useCurrentUser();
 	const userId = ref('');
 	const route = useRoute();
 	userId.value = route.params.id as string;
-
-	const { getCurrentUserId } = useCurrentUser();
-
 	const canEdit = computed(() => {
 		return String(getCurrentUserId.value) === userId.value;
 	});

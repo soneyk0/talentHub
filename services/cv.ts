@@ -6,17 +6,6 @@ import {
 	GetCvFullName,
 } from '~/graphql/queries/cv.graphql';
 
-interface CV {
-	id: string;
-	name: string;
-	education: string;
-	description: string;
-	user: {
-		id: string;
-		email: string;
-	};
-}
-
 interface CreateCV {
 	description: string;
 	education: string;

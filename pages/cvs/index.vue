@@ -74,19 +74,9 @@
 <script setup lang="ts">
 	import { useRouter } from '#app';
 	import PlusIcon from '~/components/icons/PlusIcon.vue';
+	import type { Cv } from '~/global';
 	import { createCv, deleteCv, getAllCvs } from '~/services/cv';
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
-
-	interface Cv {
-		id: string | number;
-		name: string;
-		education: string;
-		description: string;
-		user: {
-			id: string | number;
-			email: string;
-		};
-	}
 
 	const searchQuery = ref('');
 	const cvs = ref<Cv[]>([]);

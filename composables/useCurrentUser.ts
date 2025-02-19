@@ -1,5 +1,5 @@
+import type { UserProfileInfo } from '~/global';
 import { getUserById } from '~/services/user';
-
 const currentUserId = ref<string | null>(null);
 const hasLoaded = ref(false);
 
@@ -41,7 +41,7 @@ export function useCurrentUser() {
 		}
 	};
 
-	const updateCurrentUserData = (user: any) => {
+	const updateCurrentUserData = (user: UserProfileInfo) => {
 		if (user) {
 			userData.photo = user.profile.avatar || '';
 			userData.firstName = user.profile.first_name || '';

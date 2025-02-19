@@ -82,58 +82,51 @@
 			</div>
 		</div>
 
-		<BaseModal
+		<EntityModal
 			v-model:is-open="isUpdateSkillModalOpen"
+			v-model:name-option="selectedSkillOption"
+			v-model:level-option="selectedLevelOption"
 			title="Update Skill"
 			confirm-text="CONFIRM"
 			:has-changes="hasChanges"
+			entity-label="Skill"
+			name-input-id="skill-name"
+			level-input-id="skill-level"
+			:name-options="[
+				{
+					value: selectedSkill?.name ?? '',
+					label: selectedSkill?.name ?? '',
+				},
+			]"
+			:level-options="SKILL_LEVELS"
+			:is-name-disabled="true"
 			@confirm="handleUpdateSkillConfirm"
-		>
-			<BaseDropdown
-				id="skill-name"
-				v-model="selectedSkillOption"
-				label="Skill"
-				:options="[
-					{
-						value: selectedSkill?.name ?? '',
-						label: selectedSkill?.name ?? '',
-					},
-				]"
-				disabled
-			/>
-			<BaseDropdown
-				id="skill-level"
-				v-model="selectedLevelOption"
-				label="Skill Level"
-				:options="skillLevelOptions"
-			/>
-		</BaseModal>
-		<BaseModal
+		/>
+		<EntityModal
 			v-model:is-open="isAddSkillModalOpen"
+			v-model:name-option="newSkillOption"
+			v-model:level-option="newLevelOption"
 			title="Add Skill"
 			confirm-text="ADD"
 			:has-changes="!!(newSelectedSkill && newSelectedLevel)"
+			entity-label="Skill"
+			name-input-id="new-skill-name"
+			level-input-id="new-skill-level"
+			:name-options="skillOptions"
+			:level-options="SKILL_LEVELS"
 			@confirm="handleAddSkillConfirm"
-		>
-			<BaseDropdown
-				id="new-skill-name"
-				v-model="newSkillOption"
-				label="Skill"
-				:options="skillOptions"
-			/>
-			<BaseDropdown
-				id="new-skill-level"
-				v-model="newLevelOption"
-				label="Skill Level"
-				:options="skillLevelOptions"
-			/>
-		</BaseModal>
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import PlusIcon from '~/components/icons/PlusIcon.vue';
 	import TrashBin from '~/components/icons/TrashBin.vue';
+	import {
+		SKILL_LEVEL_TO_PROGRESS,
+		SKILL_LEVELS,
+	} from '~/constants/entity-level';
+	import type { Skill, SkillLevel } from '~/global';
 	import {
 		addProfileSkill,
 		deleteProfileSkill,
@@ -143,12 +136,6 @@
 		updateProfileSkill,
 	} from '~/services/user';
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
-
-	interface Skill {
-		name: string;
-		categoryId: string;
-		mastery: 'Novice' | 'Advanced' | 'Competent' | 'Proficient' | 'Expert';
-	}
 
 	interface SkillDefault {
 		id: string;
@@ -170,14 +157,6 @@
 		} | null;
 	}
 
-	const skillLevelToProgress: Record<Skill['mastery'], number> = {
-		Novice: 20,
-		Advanced: 40,
-		Competent: 60,
-		Proficient: 80,
-		Expert: 100,
-	};
-
 	const otherCategory = {
 		id: 'other',
 		name: 'Other',
@@ -186,7 +165,7 @@
 
 	const categories = ref<SkillCategory[]>([otherCategory]);
 	const skills = ref<Skill[]>([]);
-
+	const allSkills = ref<SkillDefault[]>([]);
 	const route = useRoute();
 	const { getCurrentUserId } = useCurrentUser();
 	const userId = ref((route.params.id as string) || getCurrentUserId.value);
@@ -194,18 +173,26 @@
 		return String(getCurrentUserId.value) === String(userId.value);
 	});
 
+	const categoriesWithSkills = computed(() => {
+		const hasSkillsWithNullCategory = skills.value.some(
+			(skill) => !skill.categoryId
+		);
+		const filtered = categories.value.filter((category) =>
+			skills.value.some((skill) => skill.categoryId === category.id)
+		);
+		if (hasSkillsWithNullCategory) {
+			filtered.push(otherCategory);
+		}
+		return filtered;
+	});
+
+	// skills and categories data, initial loading
 	const skillsDataKey = `skills-${userId.value}`;
 	const categoriesDataKey = 'skill-categories';
 	const allSkillsDataKey = 'all-skills';
-
 	const { data: skillsData } = useNuxtData(skillsDataKey);
 	const { data: categoriesData } = useNuxtData(categoriesDataKey);
 	const { data: allSkillsData } = useNuxtData(allSkillsDataKey);
-
-	const isAddSkillModalOpen = ref(false);
-	const allSkills = ref<SkillDefault[]>([]);
-	const newSelectedSkill = ref<SkillDefault | null>(null);
-	const newSelectedLevel = ref<Skill['mastery'] | null>(null);
 
 	if (!skillsData.value) {
 		const { data } = await useAsyncData(skillsDataKey, () =>
@@ -257,29 +244,10 @@
 		{ immediate: true }
 	);
 
-	const categoriesWithSkills = computed(() => {
-		const hasSkillsWithNullCategory = skills.value.some(
-			(skill) => !skill.categoryId
-		);
-		const filtered = categories.value.filter((category) =>
-			skills.value.some((skill) => skill.categoryId === category.id)
-		);
-		if (hasSkillsWithNullCategory) {
-			filtered.push(otherCategory);
-		}
-		return filtered;
-	});
-
-	const getSkillProgress = (mastery: Skill['mastery']) => {
-		return skillLevelToProgress[mastery];
-	};
-
-	const getSkillsByCategory = (categoryId: string) => {
-		if (categoryId === 'other') {
-			return skills.value.filter((skill) => !skill.categoryId);
-		}
-		return skills.value.filter((skill) => skill.categoryId === categoryId);
-	};
+	// add skill modal state and logic
+	const isAddSkillModalOpen = ref(false);
+	const newSelectedSkill = ref<SkillDefault | null>(null);
+	const newSelectedLevel = ref<Skill['mastery'] | null>(null);
 
 	const newSkillOption = computed({
 		get: () => ({
@@ -349,7 +317,7 @@
 				userId: userId.value!,
 				name: newSelectedSkill.value.name,
 				categoryId: newSelectedSkill.value.category.id,
-				mastery: newSelectedLevel.value,
+				mastery: newSelectedLevel.value as SkillLevel,
 			});
 
 			await executeAdd();
@@ -364,8 +332,13 @@
 		}
 	};
 
+	// update skill modal state and logic
 	const isUpdateSkillModalOpen = ref(false);
 	const selectedSkill = ref<Skill | null>(null);
+	const initialLevel = ref<Skill['mastery'] | null>(null);
+	const selectedLevel = ref<Skill['mastery'] | null>(null);
+	const hasChanges = computed(() => selectedLevel.value !== initialLevel.value);
+
 	const selectedSkillOption = computed({
 		get: () => ({
 			value: selectedSkill.value?.name ?? '',
@@ -374,8 +347,6 @@
 		set: () => {},
 	});
 
-	const initialLevel = ref<Skill['mastery'] | null>(null);
-	const selectedLevel = ref<Skill['mastery'] | null>(null);
 	const selectedLevelOption = computed({
 		get: () => ({
 			value: selectedLevel.value ?? '',
@@ -385,36 +356,6 @@
 			selectedLevel.value = option.value as Skill['mastery'];
 		},
 	});
-	const skillLevelOptions = [
-		{ value: 'Novice', label: 'Novice' },
-		{ value: 'Advanced', label: 'Advanced' },
-		{ value: 'Competent', label: 'Competent' },
-		{ value: 'Proficient', label: 'Proficient' },
-		{ value: 'Expert', label: 'Expert' },
-	];
-
-	const isRemovalMode = ref(false);
-	const isDeletingSkills = ref(false);
-	const selectedSkillsToRemove = ref<Set<string>>(new Set());
-
-	const hasChanges = computed(() => selectedLevel.value !== initialLevel.value);
-
-	const handleSkillClick = (skill: Skill) => {
-		if (isRemovalMode.value) {
-			const skillName = skill.name;
-			if (selectedSkillsToRemove.value.has(skillName)) {
-				selectedSkillsToRemove.value.delete(skillName);
-			} else {
-				selectedSkillsToRemove.value.add(skillName);
-			}
-			return;
-		}
-		selectedSkill.value = skill;
-		selectedLevel.value = skill.mastery;
-		initialLevel.value = skill.mastery;
-
-		isUpdateSkillModalOpen.value = true;
-	};
 
 	const handleUpdateSkillConfirm = async () => {
 		if (!selectedSkill.value || !selectedLevel.value) return;
@@ -424,7 +365,7 @@
 				userId: userId.value!,
 				name: selectedSkill.value.name,
 				categoryId: selectedSkill.value.categoryId,
-				mastery: selectedLevel.value,
+				mastery: selectedLevel.value as SkillLevel,
 			});
 
 			await executeUpdate();
@@ -442,6 +383,11 @@
 			console.error('Error updating skill:', error);
 		}
 	};
+
+	// removal mode state and logic
+	const isRemovalMode = ref(false);
+	const isDeletingSkills = ref(false);
+	const selectedSkillsToRemove = ref<Set<string>>(new Set());
 
 	const handleCancelRemoval = () => {
 		isRemovalMode.value = false;
@@ -471,6 +417,37 @@
 		}
 	};
 
+	// helpers
+	const getSkillProgress = (mastery: Skill['mastery']) => {
+		return SKILL_LEVEL_TO_PROGRESS[mastery];
+	};
+
+	const getSkillsByCategory = (categoryId: string) => {
+		if (categoryId === 'other') {
+			return skills.value.filter((skill) => !skill.categoryId);
+		}
+		return skills.value.filter((skill) => skill.categoryId === categoryId);
+	};
+
+	// handler to manage update and removal
+	const handleSkillClick = (skill: Skill) => {
+		if (isRemovalMode.value) {
+			const skillName = skill.name;
+			if (selectedSkillsToRemove.value.has(skillName)) {
+				selectedSkillsToRemove.value.delete(skillName);
+			} else {
+				selectedSkillsToRemove.value.add(skillName);
+			}
+			return;
+		}
+		selectedSkill.value = skill;
+		selectedLevel.value = skill.mastery;
+		initialLevel.value = skill.mastery;
+
+		isUpdateSkillModalOpen.value = true;
+	};
+
+	// button ui helper
 	const getSkillButtonProps = (skill: Skill) => {
 		if (isRemovalMode.value) {
 			const isSelected = selectedSkillsToRemove.value.has(skill.name);

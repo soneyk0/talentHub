@@ -41,16 +41,10 @@
 </template>
 
 <script setup lang="ts">
+	import type { Row } from '~/global';
 	const router = useRouter();
 	const props = defineProps<{
-		row: {
-			id: string;
-			name: string;
-			education: string;
-			description: string;
-			email: string;
-			link: string;
-		};
+		row: Row;
 		tableContainer: HTMLElement | null;
 	}>();
 
