@@ -47,7 +47,6 @@
 
 <script lang="ts" setup>
 	import { useRouter } from '#app';
-	import { ref } from 'vue';
 	import { forgotPassword } from '~/services/auth';
 
 	const email = ref('');

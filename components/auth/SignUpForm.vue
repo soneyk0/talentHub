@@ -85,7 +85,6 @@
 
 <script lang="ts" setup>
 	import { useRouter } from '#app';
-	import { ref } from 'vue';
 	import { useAuthValidation } from '~/composables/useAuthValidation';
 	import { signUp } from '~/services/auth';
 

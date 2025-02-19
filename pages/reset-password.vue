@@ -46,7 +46,6 @@
 
 <script lang="ts" setup>
 	import { useRouter } from '#app';
-	import { ref } from 'vue';
 	import { resetPassword } from '~/services/auth';
 
 	definePageMeta({
