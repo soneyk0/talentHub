@@ -84,7 +84,7 @@
 	const firstName = ref('');
 	const lastName = ref('');
 	const email = ref('');
-	const password = ref('');
+	const password = ref('000000000');
 	const role = ref<Option>({ value: '', label: '' });
 	const avatar = ref('');
 	const selectedDepartment = ref<Option>({ value: '', label: '' });

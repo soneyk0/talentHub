@@ -65,8 +65,12 @@
 
 	const sortRows = (array: Row[], key: string, order: 'asc' | 'desc') => {
 		const collator = new Intl.Collator('en', { sensitivity: 'base' });
+		const { getCurrentUserId } = useCurrentUser();
+		const currentUserId = Number(getCurrentUserId.value);
 
 		return array.sort((a, b) => {
+			if (a.id === currentUserId) return -1;
+			if (b.id === currentUserId) return 1;
 			const aValue = a[key as keyof typeof a];
 			const bValue = b[key as keyof typeof b];
 
