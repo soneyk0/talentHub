@@ -12,7 +12,7 @@ export const signUp = async (auth: { email: string; password: string }) => {
 	const res = await mutate({ auth });
 	if (res && res.data) {
 		const accessToken = useCookie('access_token', {
-			maxAge: 60,
+			maxAge: 60 * 60 * 24 * 7,
 			path: '/',
 		});
 		const refreshToken = useCookie('refresh_token', {

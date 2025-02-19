@@ -1,9 +1,18 @@
 import { useApolloClient, useMutation, useQuery } from '@vue/apollo-composable';
-import { CreateCV, DeleteCV, UpdateCV } from '~/graphql/mutations/cv.graphql';
+import type { Skill } from '~/global';
+import {
+	AddCvSkill,
+	CreateCV,
+	DeleteCV,
+	DeleteCvSkill,
+	UpdateCV,
+	UpdateCvSkill,
+} from '~/graphql/mutations/cv.graphql';
 import {
 	GetAllCvs,
 	GetCvById,
 	GetCvFullName,
+	GetCvSkills,
 } from '~/graphql/queries/cv.graphql';
 
 interface CreateCV {
@@ -18,6 +27,13 @@ interface UpdateCvInput {
 	name: string;
 	education: string;
 	description: string;
+}
+
+interface UpdateCvSkillInput {
+	cvId: string;
+	name: string;
+	categoryId: string;
+	mastery: Skill['mastery'];
 }
 
 export const getCvFullname = (cvId: string) => {
@@ -105,4 +121,87 @@ export const updateСv = (cv: UpdateCvInput) => {
 	};
 
 	return { executeUpdate, loading, error };
+};
+
+export const addCvSkill = (skill: UpdateCvSkillInput) => {
+	const { mutate: addSkillMutation, loading, error } = useMutation(AddCvSkill);
+
+	const executeAdd = async () => {
+		try {
+			const response = await addSkillMutation({ skill });
+			return response!.data?.addCvSkill;
+		} catch (err) {
+			console.error('Error adding skill:', err);
+			throw err;
+		}
+	};
+
+	return { executeAdd, loading, error };
+};
+
+export const updateCvSkill = (skill: UpdateCvSkillInput) => {
+	const {
+		mutate: updateSkillMutation,
+		loading,
+		error,
+	} = useMutation(UpdateCvSkill);
+
+	const executeUpdate = async () => {
+		try {
+			const response = await updateSkillMutation({ skill });
+			return response!.data?.updateCvSkill;
+		} catch (err) {
+			console.error('Error updating skill:', err);
+			throw err;
+		}
+	};
+
+	return { executeUpdate, loading, error };
+};
+
+export const deleteCvSkill = (cvId: string, skillNames: string[]) => {
+	const {
+		mutate: deleteSkillMutation,
+		loading,
+		error,
+	} = useMutation(DeleteCvSkill);
+
+	const executeDelete = async () => {
+		try {
+			const response = await deleteSkillMutation({
+				skill: {
+					cvId,
+					name: skillNames,
+				},
+			});
+			return response!.data?.deleteCvSkill;
+		} catch (err) {
+			console.error('Error deleting skills:', err);
+			throw err;
+		}
+	};
+
+	return { executeDelete, loading, error };
+};
+
+export const getCvSkills = async (cvId: string) => {
+	const apolloClient = useApolloClient().client;
+
+	try {
+		const { data } = await apolloClient.query({
+			query: GetCvSkills,
+			variables: { cvId },
+			fetchPolicy: 'no-cache',
+		});
+		return {
+			skills: data.cv.skills,
+			error: null,
+		};
+	} catch (error) {
+		console.error('Error fetching profile skills:', error);
+		return {
+			skills: [],
+			error,
+		};
+	}
 };

@@ -1,9 +1,473 @@
 <template>
-	<div>skills</div>
+	<div class="-mt-8 flex h-[calc(100vh-70px-2.5rem)] flex-col">
+		<div class="flex-1 overflow-y-auto pt-8">
+			<div class="relative mx-auto flex w-full max-w-[900px] flex-col">
+				<div class="flex flex-col gap-8 pb-5">
+					<div
+						v-for="category in categoriesWithSkills"
+						:key="category.id"
+						class="flex flex-col gap-4"
+					>
+						<h3 class="text-m font-light text-white">{{ category.name }}</h3>
+						<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+							<ButtonsProgressButton
+								v-for="skill in getSkillsByCategory(category.id)"
+								:key="skill.name"
+								:progress="getSkillButtonProps(skill).progress"
+								:class="getSkillButtonProps(skill).class"
+								variant="text"
+								color="secondary"
+								:disabled="!canEdit"
+								@click="handleSkillClick(skill)"
+							>
+								{{ skill.name }}
+							</ButtonsProgressButton>
+						</div>
+					</div>
+				</div>
+
+				<div v-if="canEdit" class="sticky bottom-0 bg-dark-1 py-2">
+					<div class="flex justify-end gap-4 px-2">
+						<template v-if="!isRemovalMode">
+							<BaseButton
+								class="max-w-[220px]"
+								variant="text"
+								color="secondary"
+								@click="handleAddSkill"
+							>
+								<div class="flex items-center justify-center gap-3">
+									<PlusIcon color="var(--color-gray-7)" width="24" />
+									ADD SKILL
+								</div>
+							</BaseButton>
+							<BaseButton
+								v-if="cvSkills.length > 0"
+								class="max-w-[220px]"
+								variant="text"
+								color="primary"
+								@click="isRemovalMode = true"
+							>
+								<div class="flex items-center justify-center gap-3">
+									<TrashBin color="var(--color-red-1)" width="24" />
+									REMOVE SKILLS
+								</div>
+							</BaseButton>
+						</template>
+						<template v-else>
+							<BaseButton
+								class="max-w-[220px]"
+								variant="outlined"
+								color="secondary"
+								@click="handleCancelRemoval"
+							>
+								CANCEL
+							</BaseButton>
+							<BaseButton
+								class="max-w-[220px]"
+								variant="contained"
+								color="primary"
+								:disabled="
+									selectedSkillsToRemove.size === 0 || isDeletingSkills
+								"
+								@click="handleDeleteSkills"
+							>
+								<div class="flex items-center justify-center gap-3">
+									DELETE
+									<div class="w-2">{{ selectedSkillsToRemove.size }}</div>
+								</div>
+							</BaseButton>
+						</template>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<EntityModal
+			v-model:is-open="isUpdateSkillModalOpen"
+			v-model:name-option="selectedSkillOption"
+			v-model:level-option="selectedLevelOption"
+			title="Update Skill"
+			confirm-text="CONFIRM"
+			:has-changes="hasChanges"
+			entity-label="Skill"
+			name-input-id="skill-name"
+			level-input-id="skill-level"
+			:name-options="[
+				{
+					value: selectedSkill?.name ?? '',
+					label: selectedSkill?.name ?? '',
+				},
+			]"
+			:level-options="SKILL_LEVELS"
+			:is-name-disabled="true"
+			@confirm="handleUpdateSkillConfirm"
+		/>
+		<EntityModal
+			v-model:is-open="isAddSkillModalOpen"
+			v-model:name-option="newSkillOption"
+			v-model:level-option="newLevelOption"
+			title="Add Skill"
+			confirm-text="ADD"
+			:has-changes="!!(newSelectedSkill && newSelectedLevel)"
+			entity-label="Skill"
+			name-input-id="new-skill-name"
+			level-input-id="new-skill-level"
+			:name-options="skillOptions"
+			:level-options="SKILL_LEVELS"
+			@confirm="handleAddSkillConfirm"
+		/>
+	</div>
 </template>
 
 <script setup lang="ts">
+	import PlusIcon from '~/components/icons/PlusIcon.vue';
+	import TrashBin from '~/components/icons/TrashBin.vue';
+	import {
+		SKILL_LEVEL_TO_PROGRESS,
+		SKILL_LEVELS,
+	} from '~/constants/entity-level';
+	import type { Skill, SkillLevel } from '~/global';
+	import {
+		addCvSkill,
+		deleteCvSkill,
+		getCvSkills,
+		updateCvSkill,
+	} from '~/services/cv';
+	import { getAllSkills, getSkillCategories } from '~/services/user';
+	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
+
 	definePageMeta({
 		layout: 'cv',
 	});
+
+	interface SkillDefault {
+		id: string;
+		name: string;
+		category: {
+			id: string;
+			order: number;
+		};
+		category_name: string;
+		category_parent_name: string;
+	}
+
+	interface SkillCategory {
+		id: string;
+		name: string;
+		parent: {
+			id: string;
+			name: string;
+		} | null;
+	}
+
+	const otherCategory = {
+		id: 'other',
+		name: 'Other',
+		parent: null,
+	} as const;
+
+	const categories = ref<SkillCategory[]>([otherCategory]);
+	const skills = ref<Skill[]>([]);
+	const cvSkills = ref<Skill[]>([]);
+	const allSkills = ref<SkillDefault[]>([]);
+	const route = useRoute();
+	const { getCurrentUserId } = useCurrentUser();
+	const userId = ref(getCurrentUserId.value);
+	const cvId = ref(route.params.id as string);
+	const canEdit = computed(() => {
+		return String(getCurrentUserId.value) === String(userId.value);
+	});
+
+	const categoriesWithSkills = computed(() => {
+		const hasSkillsWithNullCategory = cvSkills.value.some(
+			(skill) => !skill.categoryId
+		);
+		const filtered = categories.value.filter((category) =>
+			cvSkills.value.some((skill) => skill.categoryId === category.id)
+		);
+		if (hasSkillsWithNullCategory) {
+			filtered.push(otherCategory);
+		}
+		return filtered;
+	});
+
+	// skills and categories data, initial loading
+	const skillsDataKey = `skills-${cvId.value}`;
+	const categoriesDataKey = 'skill-categories';
+	const allSkillsDataKey = 'all-skills';
+	const { data: skillsData } = useNuxtData(skillsDataKey);
+	const { data: categoriesData } = useNuxtData(categoriesDataKey);
+	const { data: allSkillsData } = useNuxtData(allSkillsDataKey);
+
+	if (!skillsData.value) {
+		const { data } = await useAsyncData(skillsDataKey, () =>
+			getCvSkills(cvId.value!)
+		);
+
+		skillsData.value = data.value;
+		cvSkills.value = skillsData.value;
+	}
+
+	if (!categoriesData.value) {
+		const { data } = await useAsyncData(categoriesDataKey, () =>
+			getSkillCategories()
+		);
+		categoriesData.value = data.value;
+	}
+
+	if (!allSkillsData.value) {
+		const { data } = await useAsyncData(allSkillsDataKey, () => getAllSkills());
+		allSkillsData.value = data.value;
+	}
+
+	watch(
+		() => categoriesData.value?.categories,
+		(newCategories) => {
+			if (newCategories) {
+				categories.value = newCategories;
+			}
+		},
+		{ immediate: true }
+	);
+
+	watch(
+		() => allSkillsData.value?.skills,
+		(newSkills) => {
+			if (newSkills) {
+				allSkills.value = newSkills;
+			}
+		},
+		{ immediate: true }
+	);
+
+	watch(
+		() => skillsData.value?.skills,
+		(newSkills) => {
+			if (newSkills) {
+				cvSkills.value = newSkills;
+			}
+		},
+		{ immediate: true }
+	);
+
+	// add skill modal state and logic
+	const isAddSkillModalOpen = ref(false);
+	const newSelectedSkill = ref<SkillDefault | null>(null);
+	const newSelectedLevel = ref<Skill['mastery'] | null>(null);
+
+	const newSkillOption = computed({
+		get: () => ({
+			value: newSelectedSkill.value?.id ?? '',
+			label: newSelectedSkill.value?.name ?? '',
+		}),
+		set: (option) => {
+			newSelectedSkill.value =
+				allSkills.value.find((skill) => skill.id === option.value) ?? null;
+		},
+	});
+
+	const newLevelOption = computed({
+		get: () => ({
+			value: newSelectedLevel.value ?? '',
+			label: newSelectedLevel.value ?? '',
+		}),
+		set: (option) => {
+			newSelectedLevel.value = option.value as Skill['mastery'];
+		},
+	});
+
+	const skillOptions = computed(() => {
+		const availableSkills = allSkills.value.filter(
+			(skill) =>
+				!skills.value.some((userSkill) => userSkill.name === skill.name)
+		);
+
+		const groupedSkills = availableSkills.reduce(
+			(acc, skill) => {
+				const category = skill.category_name;
+				if (!acc[category]) {
+					acc[category] = [];
+				}
+				acc[category].push(skill);
+				return acc;
+			},
+			{} as Record<string, SkillDefault[]>
+		);
+
+		return Object.entries(groupedSkills).flatMap(([category, cvSkills]) => [
+			{ value: category, label: category, disabled: true, isSeparator: true },
+			...cvSkills.map((skill) => ({
+				value: skill.id,
+				label: skill.name,
+			})),
+		]);
+	});
+
+	const handleAddSkill = () => {
+		newSelectedSkill.value = null;
+		newSelectedLevel.value = null;
+		isAddSkillModalOpen.value = true;
+	};
+
+	const handleAddSkillConfirm = async () => {
+		if (!newSelectedSkill.value || !newSelectedLevel.value) return;
+
+		const newSkill = {
+			name: newSelectedSkill.value.name,
+			categoryId: newSelectedSkill.value.category.id,
+			mastery: newSelectedLevel.value,
+		};
+
+		try {
+			const { executeAdd } = addCvSkill({
+				cvId: cvId.value!,
+				name: newSelectedSkill.value.name,
+				categoryId: newSelectedSkill.value.category.id,
+				mastery: newSelectedLevel.value as SkillLevel,
+			});
+
+			await executeAdd();
+			clearNuxtData(skillsDataKey);
+			cvSkills.value = [...cvSkills.value, newSkill];
+
+			showSuccessToast('Skill added successfully');
+			isAddSkillModalOpen.value = false;
+		} catch (error) {
+			showErrorToast('Error adding skill');
+			console.error('Error adding skill:', error);
+		}
+	};
+
+	// update skill modal state and logic
+	const isUpdateSkillModalOpen = ref(false);
+	const selectedSkill = ref<Skill | null>(null);
+	const initialLevel = ref<Skill['mastery'] | null>(null);
+	const selectedLevel = ref<Skill['mastery'] | null>(null);
+	const hasChanges = computed(() => selectedLevel.value !== initialLevel.value);
+
+	const selectedSkillOption = computed({
+		get: () => ({
+			value: selectedSkill.value?.name ?? '',
+			label: selectedSkill.value?.name ?? '',
+		}),
+		set: () => {},
+	});
+
+	const selectedLevelOption = computed({
+		get: () => ({
+			value: selectedLevel.value ?? '',
+			label: selectedLevel.value ?? '',
+		}),
+		set: (option) => {
+			selectedLevel.value = option.value as Skill['mastery'];
+		},
+	});
+
+	const handleUpdateSkillConfirm = async () => {
+		if (!selectedSkill.value || !selectedLevel.value) return;
+
+		try {
+			const { executeUpdate } = updateCvSkill({
+				cvId: cvId.value!,
+				name: selectedSkill.value.name,
+				categoryId: selectedSkill.value.categoryId,
+				mastery: selectedLevel.value as SkillLevel,
+			});
+
+			await executeUpdate();
+			clearNuxtData(skillsDataKey);
+
+			console.log(cvSkills);
+
+			cvSkills.value = cvSkills.value.map((skill) =>
+				skill.name === selectedSkill.value?.name
+					? { ...skill, mastery: selectedLevel.value! }
+					: skill
+			);
+			console.log(cvSkills);
+
+			showSuccessToast('Skill updated successfully');
+		} catch (error) {
+			showErrorToast('Error updating skill');
+			console.error('Error updating skill:', error);
+		}
+	};
+
+	// removal mode state and logic
+	const isRemovalMode = ref(false);
+	const isDeletingSkills = ref(false);
+	const selectedSkillsToRemove = ref<Set<string>>(new Set());
+
+	const handleCancelRemoval = () => {
+		isRemovalMode.value = false;
+		selectedSkillsToRemove.value.clear();
+	};
+
+	const handleDeleteSkills = async () => {
+		isDeletingSkills.value = true;
+		try {
+			const { executeDelete } = deleteCvSkill(
+				cvId.value!,
+				Array.from(selectedSkillsToRemove.value)
+			);
+			await executeDelete();
+			clearNuxtData(skillsDataKey);
+
+			cvSkills.value = cvSkills.value.filter(
+				(skill) => !selectedSkillsToRemove.value.has(skill.name)
+			);
+			showSuccessToast('Skills deleted successfully');
+			handleCancelRemoval();
+		} catch (error) {
+			showErrorToast('Error deleting skills');
+			console.error('Error deleting skills:', error);
+		} finally {
+			isDeletingSkills.value = false;
+		}
+	};
+
+	// helpers
+	const getSkillProgress = (mastery: Skill['mastery']) => {
+		return SKILL_LEVEL_TO_PROGRESS[mastery];
+	};
+
+	const getSkillsByCategory = (categoryId: string) => {
+		if (categoryId === 'other') {
+			return cvSkills.value.filter((skill) => !skill.categoryId);
+		}
+		return cvSkills.value.filter((skill) => skill.categoryId === categoryId);
+	};
+
+	// handler to manage update and removal
+	const handleSkillClick = (skill: Skill) => {
+		if (isRemovalMode.value) {
+			const skillName = skill.name;
+			if (selectedSkillsToRemove.value.has(skillName)) {
+				selectedSkillsToRemove.value.delete(skillName);
+			} else {
+				selectedSkillsToRemove.value.add(skillName);
+			}
+			return;
+		}
+		selectedSkill.value = skill;
+		selectedLevel.value = skill.mastery;
+		initialLevel.value = skill.mastery;
+
+		isUpdateSkillModalOpen.value = true;
+	};
+
+	// button ui helper
+	const getSkillButtonProps = (skill: Skill) => {
+		if (isRemovalMode.value) {
+			const isSelected = selectedSkillsToRemove.value.has(skill.name);
+			return {
+				progress: isSelected ? 0 : getSkillProgress(skill.mastery),
+				class: isSelected ? 'text-white' : '',
+			};
+		}
+		return {
+			progress: getSkillProgress(skill.mastery),
+			class: '',
+		};
+	};
 </script>

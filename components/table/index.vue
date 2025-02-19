@@ -26,8 +26,8 @@
 </template>
 
 <script setup lang="ts">
-	import TableCvRow from '@/components/table/CvRow.vue';
-	import TableUserRow from '@/components/table/UserRow.vue';
+	import TableCvRow from '~/components/table/CvRow.vue';
+	import TableUserRow from '~/components/table/UserRow.vue';
 	import type { Row } from '~/global';
 	const emit = defineEmits(['onDeleteCV']);
 
