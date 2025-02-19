@@ -5,7 +5,11 @@
 			class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
 			@mousedown="handleBackdropClick"
 		>
-			<div class="w-full max-w-[600px] rounded bg-dark-1 p-6" @mousedown.stop>
+			<div
+				class="w-full rounded bg-dark-1 p-6"
+				:class="maxWidthClass || 'max-w-[600px]'"
+				@mousedown.stop
+			>
 				<div class="mb-6 flex items-center justify-between">
 					<h2 class="text-xl font-normal text-white">{{ title }}</h2>
 					<button
@@ -70,6 +74,10 @@
 		hasChanges: {
 			type: Boolean,
 			default: false,
+		},
+		maxWidthClass: {
+			type: String,
+			default: '',
 		},
 	});
 

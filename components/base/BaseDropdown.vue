@@ -5,7 +5,7 @@
 			type="button"
 			:class="[
 				'peer h-12 w-full appearance-none border border-gray-6 bg-dark-1 p-3 text-left text-white transition-all duration-200 focus:border-red-5 focus:outline-none disabled:opacity-50',
-				disabled ? 'pointer-events-none' : 'hover:border-white',
+				disabled ? 'pointer-events-none opacity-60' : 'hover:border-white',
 			]"
 			@click="isOpen = !isOpen"
 		>
