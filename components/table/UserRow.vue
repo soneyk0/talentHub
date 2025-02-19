@@ -37,7 +37,6 @@
 						]"
 						@profile-click="openProfile"
 						@update-click="updateUser"
-						@delete-click="deleteUser"
 					/>
 				</div>
 				<TableUpdateModal v-model:is-open="isOpen" />
