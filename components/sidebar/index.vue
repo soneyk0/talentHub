@@ -14,19 +14,12 @@
 			/>
 		</nav>
 		<SidebarUserItem
-			v-if="userData.email"
-			:item="{
-				photo: userData.photo,
-				text:
-					userData.firstName.trim() ||
-					userData.lastName.trim() ||
-					userData.email,
-				link: userData.profileLink,
-			}"
+			v-if="displayUserInfo.text"
+			:item="displayUserInfo"
 			:is-collapsed="isCollapsed"
 			class="mt-auto"
+			@logout="logout"
 		/>
-		<SidebarLogoutItem :is-collapsed="isCollapsed" @click="logout" />
 		<ButtonsToggle
 			:is-toggled="isCollapsed"
 			class="mb-4 ml-2"
@@ -42,7 +35,7 @@
 	import IconsEmployees from '~/components/icons/Employees.vue';
 	import IconsLanguages from '~/components/icons/Languages.vue';
 	import IconsSkills from '~/components/icons/Skills.vue';
-
+	import { getUserById } from '~/services/user';
 	const router = useRouter();
 	const route = useRoute();
 
@@ -73,11 +66,45 @@
 		},
 	]);
 
-	const { getCurrentUserId, userData, fetchUserData } = useCurrentUser();
+	const { getCurrentUserId, userData, updateCurrentUserData } =
+		useCurrentUser();
 
-	if (getCurrentUserId.value) {
-		await fetchUserData();
+	const userDataKey = `user-${getCurrentUserId.value}`;
+	const { data: initialUserData } = useNuxtData(userDataKey);
+	if (!initialUserData.value) {
+		const { data, refresh } = await useAsyncData(
+			userDataKey,
+			() => getUserById(getCurrentUserId.value!, true),
+			{
+				server: true,
+				lazy: false,
+				immediate: true,
+			}
+		);
+		initialUserData.value = data.value;
 	}
+
+	const displayUserInfo = computed(() => {
+		if (userData.email) {
+			return {
+				photo: userData.photo,
+				text: `${userData.firstName} ${userData.lastName}`.trim(),
+				link: userData.profileLink,
+			};
+		} else {
+			return {
+				photo: initialUserData.value.user.profile.avatar || '',
+				text: `${initialUserData.value.user.profile.first_name || ''} ${initialUserData.value.user.profile.last_name || ''}`.trim(),
+				link: `/users/${getCurrentUserId.value}/profile`,
+			};
+		}
+	});
+
+	onMounted(async () => {
+		if (initialUserData.value?.user) {
+			updateCurrentUserData(initialUserData.value.user);
+		}
+	});
 
 	const isCollapsed = ref(false);
 

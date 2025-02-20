@@ -32,6 +32,8 @@
 	const searchQuery = ref('');
 	const isDataLoaded = ref(false);
 	const users = ref<User[]>([]);
+	const { getCurrentUserId } = useCurrentUser();
+	const currentUserId = ref(Number(getCurrentUserId.value));
 
 	const getUsers = async () => {
 		try {
@@ -70,19 +72,26 @@
 	});
 
 	const filteredData = computed(() => {
-		if (!searchQuery.value || !tableData.value) return tableData.value;
+		if (!tableData.value) return [];
+		let data = tableData.value;
 
-		const lowerCaseSearch = searchQuery.value.toLowerCase();
-
-		return tableData.value.filter((row) => {
-			const firstNameMatches = row.firstName
-				?.toLowerCase()
-				.includes(lowerCaseSearch);
-			const lastNameMatches = row.lastName
-				?.toLowerCase()
-				.includes(lowerCaseSearch);
-			const emailMatches = row.email?.toLowerCase().includes(lowerCaseSearch);
-			return firstNameMatches || lastNameMatches || emailMatches;
+		if (searchQuery.value) {
+			const lowerCaseSearch = searchQuery.value.toLowerCase();
+			data = data.filter((row) => {
+				const firstNameMatches = row.firstName
+					?.toLowerCase()
+					.includes(lowerCaseSearch);
+				const lastNameMatches = row.lastName
+					?.toLowerCase()
+					.includes(lowerCaseSearch);
+				const emailMatches = row.email?.toLowerCase().includes(lowerCaseSearch);
+				return firstNameMatches || lastNameMatches || emailMatches;
+			});
+		}
+		return data.sort((a, b) => {
+			if (a.id === currentUserId.value) return -1;
+			if (b.id === currentUserId.value) return 1;
+			return 0;
 		});
 	});
 

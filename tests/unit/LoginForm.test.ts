@@ -1,5 +1,4 @@
 import { describe, expect, test, vi } from 'vitest';
-import { ref } from 'vue';
 import { login } from '~/services/auth';
 
 vi.mock('~/services/auth', () => ({

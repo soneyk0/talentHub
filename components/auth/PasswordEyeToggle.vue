@@ -16,8 +16,6 @@
 </template>
 
 <script setup lang="ts">
-	import { defineEmits, ref } from 'vue';
-
 	const props = defineProps({
 		color: {
 			type: String,

@@ -6,7 +6,7 @@
 			:type="type"
 			:class="[
 				'peer h-12 w-full min-w-[220px] border border-gray-6 bg-dark-1 p-3 text-white transition-all duration-200 focus:border-red-5 focus:outline-none',
-				disabled ? '' : 'hover:border-white',
+				disabled ? 'opacity-60' : 'hover:border-white',
 			]"
 			:autocomplete="autocomplete"
 			:placeholder="enteredValue || isFocused ? placeholder : ''"

@@ -2,7 +2,7 @@ import type { ColorClasses } from './button.types';
 
 export const buttonColorClasses: ColorClasses = {
 	primary: {
-		contained: 'bg-red-5 text-white hover:bg-red-2 shadow-md',
+		contained: 'bg-red-5 text-button-white hover:bg-red-2 shadow-md',
 		outlined:
 			'border border-red-rgb/50 hover:border-red-5 text-red-5 bg-red-rgb/0 hover:bg-red-rgb/10',
 		text: 'text-red-5 bg-red-rgb/0 hover:bg-red-rgb/10',
