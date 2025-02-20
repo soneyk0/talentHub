@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
+	darkMode: 'class',
 	content: ['./**/*.{vue,ts}', '!./node_modules/**'],
 	theme: {
 		extend: {
@@ -29,6 +30,7 @@ const config: Config = {
 				'red-5': 'var(--color-red-5)',
 
 				white: 'var(--color-white)',
+				'button-white': 'var(--color-button-white)',
 
 				'red-rgb': 'rgb(var(--color-red-rgb) / <alpha-value>)',
 				'gray-rgb': 'rgb(var(--color-gray-rgb) / <alpha-value>)',

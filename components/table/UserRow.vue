@@ -11,7 +11,7 @@
 			v-for="(item, key) in displayedFields"
 			:key="key"
 			:class="[
-				'custom-column py-4 pr-3 font-medium',
+				'custom-column py-4 pr-3 font-normal',
 				displayedFields[key].class,
 			]"
 		>

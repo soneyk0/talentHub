@@ -4,7 +4,7 @@
 			:id="id"
 			type="button"
 			:class="[
-				'peer h-12 w-full appearance-none border border-gray-6 bg-dark-1 p-3 text-left text-white transition-all duration-200 focus:border-red-5 focus:outline-none disabled:opacity-50',
+				'peer h-12 w-full appearance-none border border-gray-6 bg-dark-1 p-3 text-left text-white focus:border-red-5 focus:outline-none disabled:opacity-50',
 				disabled ? 'pointer-events-none opacity-60' : 'hover:border-white',
 			]"
 			@click="isOpen = !isOpen"
@@ -14,7 +14,7 @@
 
 		<label
 			:class="[
-				'pointer-events-none absolute left-0 top-0 text-gray-2 transition-all duration-200 peer-focus:bg-dark-1 peer-focus:text-red-5',
+				'pointer-events-none absolute left-0 top-0 text-gray-2 peer-focus:bg-dark-1 peer-focus:text-red-5',
 				selectedValue?.value
 					? '-translate-x-0 -translate-y-4 scale-75 bg-dark-1 p-1'
 					: 'translate-y-0 p-3 peer-focus:-translate-x-0 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:p-1',
