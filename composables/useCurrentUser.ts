@@ -1,5 +1,4 @@
 import type { UserProfileInfo } from '~/global';
-import { getUserById } from '~/services/user';
 const currentUserId = ref<string | null>(null);
 const hasLoaded = ref(false);
 
@@ -22,27 +21,6 @@ export function useCurrentUser() {
 
 	const setCurrentUserId = (id: string | null) => {
 		currentUserId.value = id;
-	};
-
-	const fetchUserData = async () => {
-		if (hasLoaded.value) {
-			return;
-		}
-		try {
-			const { user } = await getUserById(currentUserId.value!);
-			if (user) {
-				userData.photo = user.profile.avatar || '';
-				userData.firstName = user.profile.first_name || '';
-				userData.lastName = user.profile.last_name || '';
-				userData.email = user.email || '';
-				userData.profileLink = `/users/${currentUserId.value}/profile`;
-				userData.department = user.department?.name || '';
-				userData.position = user.position?.name || '';
-				hasLoaded.value = true;
-			}
-		} catch (error) {
-			console.error('Error fetching user data:', error);
-		}
 	};
 
 	const updateCurrentUserData = (user: UserProfileInfo) => {
@@ -76,7 +54,6 @@ export function useCurrentUser() {
 		getCurrentUserId,
 		setCurrentUserId,
 		reinitializeUser,
-		fetchUserData,
 		userData,
 		updateCurrentUserData,
 		clearUserData,

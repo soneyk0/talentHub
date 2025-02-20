@@ -192,6 +192,8 @@
 			await updateUserData();
 			await updateProfileData();
 
+			clearNuxtData(`user-${userId.value}`);
+
 			updateCurrentUserData({
 				profile: {
 					first_name: firstName.value,
