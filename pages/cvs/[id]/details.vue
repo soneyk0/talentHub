@@ -1,13 +1,13 @@
 <template>
 	<div class="mx-auto max-w-4xl">
 		<div class="mb-10">
-			<BaseInput id="name" v-model="name" label="Name" type="text" />
+			<BaseInput id="name" v-model="name" :label="$t('Name')" type="text" />
 		</div>
 		<div class="mb-10">
 			<BaseInput
 				id="education"
 				v-model="education"
-				label="Education"
+				:label="$t('Education')"
 				type="text"
 			/>
 		</div>
@@ -15,7 +15,7 @@
 			<BaseTextarea
 				id="description"
 				v-model="description"
-				label="Description"
+				:label="$t('Description')"
 				:rows="6"
 			/>
 		</div>
@@ -28,7 +28,7 @@
 				:disabled="!hasChanges"
 				@click="handleSubmit"
 			>
-				UPDATE
+				{{ $t('Update') }}
 			</BaseButton>
 		</div>
 	</div>

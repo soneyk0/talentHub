@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<BaseForm
-			info-text="We will sent you an email with further instructions"
-			title="Forgot password"
+			:info-text="t('We will sent you an email with further instructions')"
+			:title="t('Forgot password')"
 			@submit="handleReset"
 		>
 			<template #main>
@@ -12,7 +12,7 @@
 					type="text"
 					placeholder="example@mail.com"
 					required
-					label="Email"
+					:label="t('Email')"
 					class="w-screen max-w-[550px]"
 					autocomplete="on"
 				/>
@@ -25,7 +25,7 @@
 						type="submit"
 						:disabled="isSubmitting"
 					>
-						RESET PASSWORD
+						{{ t('Reset password') }}
 					</BaseButton>
 				</div>
 				<div>
@@ -36,7 +36,7 @@
 							type="button"
 							class="w-1/2"
 						>
-							CANCEL
+							{{ t('Cancel') }}
 						</BaseButton>
 					</NuxtLink>
 				</div>
@@ -48,6 +48,7 @@
 <script lang="ts" setup>
 	import { useRouter } from '#app';
 	import { forgotPassword } from '~/services/auth';
+	const { t } = useI18n();
 
 	const email = ref('');
 	const isSubmitting = ref(false);

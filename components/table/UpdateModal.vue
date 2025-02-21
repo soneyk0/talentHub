@@ -2,8 +2,8 @@
 	<div>
 		<BaseModal
 			v-model:is-open="isOpen"
-			title="Update user"
-			confirm-text="UPDATE"
+			:title="$t('Update user')"
+			:confirm-text="$t('Update')"
 			max-width-class="max-w-[900px]"
 			:has-changes="hasChanges"
 			@confirm="handleSubmit"
@@ -13,7 +13,7 @@
 					<BaseInput
 						id="email"
 						v-model="email"
-						label="Email"
+						:label="$t('Email')"
 						:type="'email'"
 						:disabled="true"
 					/>
@@ -22,35 +22,43 @@
 					<BaseInput
 						id="password"
 						v-model="password"
-						label="Password"
+						:label="$t('Password')"
 						:type="'password'"
 						:disabled="true"
 					/>
 				</div>
 
 				<div class="space-y-2">
-					<BaseInput id="firstName" v-model="firstName" label="First Name" />
+					<BaseInput
+						id="firstName"
+						v-model="firstName"
+						:label="$t('First Name')"
+					/>
 				</div>
 				<div class="space-y-2">
-					<BaseInput id="lastName" v-model="lastName" label="Last Name" />
+					<BaseInput
+						id="lastName"
+						v-model="lastName"
+						:label="$t('Last Name')"
+					/>
 				</div>
 
 				<div class="space-y-2">
 					<BaseDropdown
 						id="department"
 						v-model="selectedDepartment"
-						label="Department"
+						:label="$t('Department')"
 						:options="departments"
-						default-option-label="No department"
+						:default-option-label="$t('No department')"
 					/>
 				</div>
 				<div class="space-y-2">
 					<BaseDropdown
 						id="position"
 						v-model="selectedPosition"
-						label="Position"
+						:label="$t('Position')"
 						:options="positions"
-						default-option-label="No position"
+						:default-option-label="$t('No position')"
 					/>
 				</div>
 
@@ -58,7 +66,7 @@
 					<BaseDropdown
 						id="role"
 						v-model="role"
-						label="Role"
+						:label="$t('Role')"
 						:options="roles"
 						:disabled="true"
 					/>
@@ -80,6 +88,7 @@
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
 
 	const isOpen = defineModel<boolean>('isOpen', { default: false });
+	const { t } = useI18n();
 
 	const firstName = ref('');
 	const lastName = ref('');
@@ -101,8 +110,8 @@
 	const departments = ref<Option[]>([]);
 	const positions = ref<Option[]>([]);
 	const roles = ref<Option[]>([
-		{ value: 'Employee', label: 'Employee' },
-		{ value: 'Admin', label: 'Admin' },
+		{ value: 'Employee', label: t('Employee') },
+		{ value: 'Admin', label: t('Admin') },
 	]);
 	const loadOptions = async () => {
 		try {

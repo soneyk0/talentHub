@@ -21,8 +21,8 @@
 					class="absolute right-0 z-10 -mt-11 w-28 rounded-lg border-dark-4 bg-dark-4 py-2 shadow-lg"
 					:class="optionsPosition"
 					:buttons="[
-						{ label: 'Details', event: 'detailsClick' },
-						{ label: 'Delete CV', event: 'deleteClick' },
+						{ label: $t('Details'), event: 'detailsClick' },
+						{ label: $t('delete'), event: 'deleteClick' },
 					]"
 					@details-click="openDetails"
 					@delete-click="$emit('onDeleteCV')"

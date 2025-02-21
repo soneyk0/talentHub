@@ -1,7 +1,11 @@
 <template>
 	<div class="h-[calc(100vh-0.75rem-90px)]">
 		<div>
-			<BaseSearchBar v-model="searchQuery" placeholder="Search" class="mb-5" />
+			<BaseSearchBar
+				v-model="searchQuery"
+				:placeholder="$t('Search')"
+				class="mb-5"
+			/>
 		</div>
 		<div>
 			<Table
@@ -29,6 +33,7 @@
 		position: { name: string } | null;
 	}
 
+	const { t } = useI18n();
 	const searchQuery = ref('');
 	const isDataLoaded = ref(false);
 	const users = ref<User[]>([]);
@@ -49,11 +54,11 @@
 
 	const headers = reactive([
 		{ key: 'avatar', label: '', isSortable: false },
-		{ key: 'firstName', label: 'First Name', isSortable: true },
-		{ key: 'lastName', label: 'Last Name', isSortable: true },
-		{ key: 'email', label: 'Email', isSortable: true },
-		{ key: 'department', label: 'Department', isSortable: true },
-		{ key: 'position', label: 'Position', isSortable: true },
+		{ key: 'firstName', label: t('First Name'), isSortable: true },
+		{ key: 'lastName', label: t('Last Name'), isSortable: true },
+		{ key: 'email', label: t('Email'), isSortable: true },
+		{ key: 'department', label: t('Department'), isSortable: true },
+		{ key: 'position', label: t('Position'), isSortable: true },
 		{ key: 'link', label: '', isSortable: false },
 	]);
 

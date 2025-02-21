@@ -30,7 +30,7 @@
 							>
 								<div class="flex items-center justify-center gap-3">
 									<PlusIcon color="var(--color-gray-7)" width="24" />
-									ADD LANGUAGE
+									{{ $t('ADD LANGUAGE') }}
 								</div>
 							</BaseButton>
 							<BaseButton
@@ -42,7 +42,7 @@
 							>
 								<div class="flex items-center justify-center gap-3">
 									<TrashBin color="var(--color-red-1)" width="24" />
-									REMOVE LANGUAGES
+									{{ $t('REMOVE LANGUAGES') }}
 								</div>
 							</BaseButton>
 						</template>
@@ -53,7 +53,7 @@
 								color="secondary"
 								@click="handleCancelRemoval"
 							>
-								CANCEL
+								{{ $t('Cancel') }}
 							</BaseButton>
 							<BaseButton
 								class="max-w-[220px]"
@@ -65,7 +65,7 @@
 								@click="handleDeleteLanguages"
 							>
 								<div class="flex items-center justify-center gap-3">
-									DELETE
+									{{ $t('Delete') }}
 									<div class="w-2">{{ selectedLanguagesToRemove.size }}</div>
 								</div>
 							</BaseButton>
@@ -78,10 +78,11 @@
 			v-model:is-open="isUpdateLanguageModalOpen"
 			v-model:name-option="selectedLanguageOption"
 			v-model:level-option="selectedLevelOption"
-			title="Update Language"
+			:title="$t('update language')"
 			confirm-text="CONFIRM"
 			:has-changes="hasChanges"
-			entity-label="Language"
+			:entity-label="$t('Language')"
+			:entity-level-label="$t('Language proficiency')"
 			name-input-id="language-name"
 			level-input-id="language-level"
 			:name-options="[
@@ -98,10 +99,11 @@
 			v-model:is-open="isAddLanguageModalOpen"
 			v-model:name-option="newLanguageOption"
 			v-model:level-option="newLevelOption"
-			title="Add Language"
+			:title="$t('add language')"
 			confirm-text="ADD"
 			:has-changes="!!(newSelectedLanguage && newSelectedLevel)"
-			entity-label="Language"
+			:entity-label="$t('Language')"
+			:entity-level-label="$t('Language proficiency')"
 			name-input-id="new-language-name"
 			level-input-id="new-language-level"
 			:name-options="languageOptions"

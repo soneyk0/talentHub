@@ -3,8 +3,8 @@
 		<AuthTheHeader />
 		<div class="flex flex-1 items-center justify-center">
 			<BaseForm
-				info-text="Welcome! Sign up to continue"
-				title="Register now"
+				:info-text="$t('Welcome! Sign up to continue')"
+				:title="$t('Register now')"
 				@submit="handleSignup"
 			>
 				<template #main>
@@ -14,18 +14,20 @@
 						type="text"
 						placeholder="example@mail.com"
 						required
-						label="Email"
+						:label="$t('Email')"
 						class="w-screen max-w-[550px]"
 						autocomplete="on"
 					/>
-					<span v-if="$v.email.$error" class="text-red-1">Required field</span>
+					<span v-if="$v.email.$error" class="text-red-1">
+						{{ $t('Required field') }}
+					</span>
 					<BaseInput
 						id="password"
 						v-model="form.password"
 						:type="isPasswordVisible ? 'text' : 'password'"
-						placeholder="Enter your password"
+						:placeholder="$t('Enter your password')"
 						required
-						label="Password"
+						:label="$t('Password')"
 						class="w-screen max-w-[550px]"
 					>
 						<template #icon>
@@ -40,7 +42,7 @@
 							v-if="$v.password.$error && !$v.password.$model"
 							class="text-red-1"
 						>
-							Required field
+							{{ $t('Required field') }}
 						</span>
 						<span
 							v-if="
@@ -50,7 +52,7 @@
 							"
 							class="text-red-1"
 						>
-							Password must be at least 6 characters long
+							{{ $t('At least 6 characters') }}
 						</span>
 					</span>
 				</template>
@@ -62,7 +64,7 @@
 							type="submit"
 							:disabled="isSubmitting"
 						>
-							CREATE ACCOUNT
+							{{ $t('Create account') }}
 						</BaseButton>
 					</div>
 					<div>
@@ -73,7 +75,7 @@
 								type="button"
 								class="w-1/2"
 							>
-								I HAVE AN ACCOUNT
+								{{ $t('I have an account') }}
 							</BaseButton>
 						</NuxtLink>
 					</div>
