@@ -1,24 +1,46 @@
 <template>
-	<div>
-		<ClientOnly>
-			<BaseDropdown
-				id="theme"
-				v-model="selectedTheme"
-				label="Theme"
-				:options="themeOptions"
-			/>
-		</ClientOnly>
+	<div class="flex flex-col gap-8">
+		<BaseDropdown
+			id="theme"
+			v-model="selectedTheme"
+			:label="$t('Appearance')"
+			:options="themeOptions"
+		/>
+		<BaseDropdown
+			id="language"
+			v-model="selectedLocale"
+			:label="$t('Language')"
+			:options="localeOptions"
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
 	const colorMode = useColorMode();
+	const { locale, locales, setLocale, t } = useI18n();
 
-	const themeOptions = [
-		{ value: 'system', label: 'System' },
-		{ value: 'light', label: 'Light' },
-		{ value: 'dark', label: 'Dark' },
-	];
+	const themeOptions = computed(() => [
+		{ value: 'system', label: t('Device settings') },
+		{ value: 'light', label: t('Light') },
+		{ value: 'dark', label: t('Dark') },
+	]);
+
+	const localeOptions = computed(() => {
+		return (locales.value as any[]).map((locale) => ({
+			value: locale.code,
+			label: locale.name,
+		}));
+	});
+
+	const selectedLocale = computed({
+		get: () => ({
+			value: locale.value,
+			label: locale.value,
+		}),
+		set: (option) => {
+			setLocale(option.value);
+		},
+	});
 
 	const selectedTheme = computed({
 		get: () => ({

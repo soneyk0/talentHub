@@ -35,7 +35,7 @@
 				{{ fullName }}
 			</h5>
 			<p class="text-gray-10">{{ email }}</p>
-			<p class="text-white">A member since {{ dateJoined }}</p>
+			<p class="text-white">{{ $t('A member since') }} {{ dateJoined }}</p>
 		</div>
 		<ProfileForm
 			v-model:first-name="firstName"

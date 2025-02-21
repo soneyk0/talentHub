@@ -38,31 +38,31 @@
 	import { getUserById } from '~/services/user';
 	const router = useRouter();
 	const route = useRoute();
-
-	const items = reactive([
+	const { t } = useI18n();
+	const items = computed(() => [
 		{
 			icon: markRaw(IconsEmployees),
-			text: 'Employees',
+			text: t('Users'),
 			link: '/users',
-			isActive: true,
+			isActive: route.path.startsWith('/users'),
 		},
 		{
 			icon: markRaw(IconsSkills),
-			text: 'Skills',
+			text: t('Skills'),
 			link: '/skills',
-			isActive: false,
+			isActive: route.path.startsWith('/skills'),
 		},
 		{
 			icon: markRaw(IconsLanguages),
-			text: 'Languages',
+			text: t('Languages'),
 			link: '/languages',
-			isActive: false,
+			isActive: route.path.startsWith('/languages'),
 		},
 		{
 			icon: markRaw(IconsCVs),
-			text: 'CVs',
+			text: t('CVs'),
 			link: '/cvs',
-			isActive: false,
+			isActive: route.path.startsWith('/cvs'),
 		},
 	]);
 
@@ -124,7 +124,7 @@
 	};
 
 	const updateActiveTab = () => {
-		items.forEach((item) => {
+		items.value.forEach((item) => {
 			item.isActive = route.path.startsWith(item.link);
 		});
 	};

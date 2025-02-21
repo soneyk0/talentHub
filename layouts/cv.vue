@@ -26,12 +26,13 @@
 
 	const route = useRoute();
 	const id = route.params.id;
+	const { t } = useI18n();
 
 	const tabs = [
-		{ path: '/details', label: 'DETAILS' },
-		{ path: '/skills', label: 'SKILLS' },
-		{ path: '/projects', label: 'PROJECTS' },
-		{ path: '/preview', label: 'PREVIEW' },
+		{ path: '/details', label: t('DETAILS') },
+		{ path: '/skills', label: t('SKILLS') },
+		{ path: '/projects', label: t('PROJECTS') },
+		{ path: '/preview', label: t('PREVIEW') },
 	];
 
 	const currentTab = computed(() => {

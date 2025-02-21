@@ -32,8 +32,8 @@
 						class="absolute right-0 z-[9999] mt-2 w-28 rounded-lg border-dark-3 bg-dark-2 py-2 shadow-lg"
 						:class="optionsPosition"
 						:buttons="[
-							{ label: 'Profile', event: 'profileClick' },
-							{ label: 'Update user', event: 'updateClick' },
+							{ label: $t('Profile'), event: 'profileClick' },
+							{ label: $t('update'), event: 'updateClick' },
 						]"
 						@profile-click="openProfile"
 						@update-click="updateUser"
@@ -114,8 +114,6 @@
 	const updateUser = () => {
 		isOpen.value = true;
 	};
-
-	const deleteUser = () => {};
 </script>
 
 <style scoped>

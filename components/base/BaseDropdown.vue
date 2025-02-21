@@ -1,5 +1,5 @@
 <template>
-	<div class="relative w-full min-w-[220px] flex-grow">
+	<div class="relative w-full min-w-[100px] flex-grow">
 		<button
 			:id="id"
 			type="button"
@@ -9,12 +9,14 @@
 			]"
 			@click="isOpen = !isOpen"
 		>
-			{{ selectedValue?.value === '' ? '' : selectedOption?.label }}
+			<span class="block truncate">
+				{{ selectedValue?.value === '' ? '' : selectedOption?.label }}
+			</span>
 		</button>
 
 		<label
 			:class="[
-				'pointer-events-none absolute left-0 top-0 text-gray-2 peer-focus:bg-dark-1 peer-focus:text-red-5',
+				'pointer-events-none absolute left-1 top-0 origin-[0] text-gray-2 peer-focus:bg-dark-1 peer-focus:text-red-5',
 				selectedValue?.value
 					? '-translate-x-0 -translate-y-4 scale-75 bg-dark-1 p-1'
 					: 'translate-y-0 p-3 peer-focus:-translate-x-0 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:p-1',

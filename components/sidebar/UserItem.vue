@@ -24,14 +24,14 @@
 					@click.stop="handleProfile"
 				>
 					<IconsProfile color="var(--color-white)" width="24" />
-					Profile
+					{{ $t('Profile') }}
 				</button>
 				<button
 					class="flex w-full cursor-pointer items-center gap-3 bg-dark-1 px-4 py-2 font-normal text-white hover:bg-dark-4"
 					@click.stop="handleSettings"
 				>
 					<IconsCogwheel color="var(--color-white)" width="24" />
-					Settings
+					{{ $t('Settings') }}
 				</button>
 				<hr class="my-2 border-0 border-t border-gray-600 bg-dark-1" />
 				<button
@@ -39,7 +39,7 @@
 					@click.stop="handleLogout"
 				>
 					<IconsLogout color="var(--color-white)" width="24" />
-					Logout
+					{{ $t('Logout') }}
 				</button>
 			</div>
 		</div>
