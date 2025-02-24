@@ -1,0 +1,11 @@
+query GetAllProjects {
+    projects {
+        id
+        name
+        domain
+        description
+        environment
+        start_date
+        end_date
+    }
+}

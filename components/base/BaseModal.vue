@@ -5,7 +5,11 @@
 			class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
 			@mousedown="handleBackdropClick"
 		>
-			<div class="w-full max-w-[600px] rounded bg-dark-1 p-6" @mousedown.stop>
+			<div
+				:style="{ maxWidth: `${modalWidth}px` }"
+				class="w-full rounded bg-dark-1 p-6"
+				@mousedown.stop
+			>
 				<div class="mb-6 flex items-center justify-between">
 					<h2 class="text-xl font-normal text-white">{{ title }}</h2>
 					<button
@@ -71,6 +75,15 @@
 			type: Boolean,
 			default: false,
 		},
+		modalWidth: {
+			type: Number,
+			default: 600,
+			required: false,
+		},
+		hideByConfirm: {
+			type: Boolean,
+			default: true,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -85,7 +98,9 @@
 
 	const handleConfirm = () => {
 		emit('confirm');
-		emit('update:isOpen', false);
+		if (props.hideByConfirm) {
+			emit('update:isOpen', false);
+		}
 	};
 	const handleBackdropClick = (e: MouseEvent) => {
 		if (e.target === e.currentTarget) {

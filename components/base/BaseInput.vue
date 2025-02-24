@@ -1,6 +1,11 @@
 <template>
-	<div class="relative w-full flex-grow">
+	<div
+		class="relative w-full flex-grow"
+		:style="{ opacity: disabled ? '0.5' : '1' }"
+	>
+		<slot name="inner-content"></slot>
 		<input
+			v-if="!hideInput"
 			:id="id"
 			v-model="enteredValue"
 			:type="type"
@@ -11,6 +16,7 @@
 			:autocomplete="autocomplete"
 			:placeholder="enteredValue || isFocused ? placeholder : ''"
 			:disabled="disabled"
+			:readonly="readonly"
 			@focus="isFocused = true"
 			@blur="isFocused = !!enteredValue"
 			@input="onInput"
@@ -44,6 +50,14 @@
 		type: {
 			type: String,
 			default: 'text',
+		},
+		readonly: {
+			type: Boolean,
+			default: false,
+		},
+		hideInput: {
+			type: Boolean,
+			default: false,
 		},
 		placeholder: { type: String, default: '' },
 		autocomplete: { type: String, default: 'off' },

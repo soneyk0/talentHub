@@ -1,13 +1,22 @@
 <template>
-	<div class="relative w-full flex-grow">
+	<div
+		class="relative w-full flex-grow"
+		:style="{
+			opacity: disabled ? '0.5' : '1',
+		}"
+	>
 		<textarea
 			:id="id"
 			ref="textareaRef"
 			v-model="enteredValue"
-			class="peer h-auto w-full min-w-[220px] resize-none overflow-hidden border border-gray-6 bg-dark-1 p-3 text-white transition-all duration-200 hover:border-white focus:border-red-5 focus:outline-none"
+			:class="[
+				'peer h-auto w-full min-w-[220px] resize-none overflow-hidden border border-gray-6 bg-dark-1 p-3 text-white transition-all duration-200 focus:border-red-5 focus:outline-none',
+				disabled ? '' : 'hover:border-white',
+			]"
 			:placeholder="enteredValue || isFocused ? placeholder : ''"
 			:label="label"
 			:rows="rows"
+			:disabled="disabled"
 			@focus="isFocused = true"
 			@blur="isFocused = !!enteredValue"
 			@input="autoResize"
@@ -31,6 +40,7 @@
 		label: string;
 		placeholder?: string;
 		rows: number;
+		disabled: boolean;
 	}>();
 	const isFocused = ref(false);
 	const enteredValue = defineModel<string>();

@@ -28,6 +28,10 @@ export interface Row {
 	lastName?: string;
 	department?: string;
 	position?: string;
+	domain?: string;
+	start_date?: string;
+	end_date?: string;
+	responsibilities?: string[];
 }
 
 export interface Cv {

@@ -1,9 +1,18 @@
 import { useApolloClient, useMutation, useQuery } from '@vue/apollo-composable';
-import { CreateCV, DeleteCV, UpdateCV } from '~/graphql/mutations/cv.graphql';
+import type { AddCvProjectInput, UpdateCvProjectInput } from 'cv-graphql';
+import {
+	AddCvProject,
+	CreateCV,
+	DeleteCV,
+	RemoveCvProject,
+	UpdateCV,
+	UpdateCvProject,
+} from '~/graphql/mutations/cv.graphql';
 import {
 	GetAllCvs,
 	GetCvById,
 	GetCvFullName,
+	GetCvProjects,
 } from '~/graphql/queries/cv.graphql';
 
 interface CreateCV {
@@ -79,7 +88,7 @@ export const createCv = async (cv: CreateCV) => {
 		const response = await addCVMutation({ cv });
 		return response!.data?.createCv;
 	} catch (err) {
-		console.error('Error adding skill:', err);
+		console.error('Error adding CV:', err);
 		throw err;
 	}
 };
@@ -91,7 +100,7 @@ export const deleteCv = async (cvId: string) => {
 	});
 };
 
-export const updateСv = (cv: UpdateCvInput) => {
+export const updateCv = (cv: UpdateCvInput) => {
 	const { mutate: updateCvMutation, loading, error } = useMutation(UpdateCV);
 
 	const executeUpdate = async () => {
@@ -105,4 +114,51 @@ export const updateСv = (cv: UpdateCvInput) => {
 	};
 
 	return { executeUpdate, loading, error };
+};
+
+export const getCvProjects = async (cvId: string) => {
+	const apolloClient = useApolloClient().client;
+	try {
+		const { data } = await apolloClient.query({
+			query: GetCvProjects,
+			variables: { cvId },
+			fetchPolicy: 'network-only',
+		});
+		return data.cv.projects ?? [];
+	} catch (error) {
+		console.error('Error fetching Cv projects:', error);
+		return [];
+	}
+};
+
+export const removeCvProject = async (cvId: string, projectId: string) => {
+	const { mutate } = useMutation(RemoveCvProject);
+	const res = await mutate({
+		project: { cvId, projectId },
+	});
+	return res?.data?.removeCvProject;
+};
+
+export const createCvProjects = async (project: AddCvProjectInput) => {
+	const { mutate: addCvProjectMutation } = useMutation(AddCvProject);
+
+	try {
+		const response = await addCvProjectMutation({ project });
+		return response!.data?.addCvProject;
+	} catch (err) {
+		console.error('Error adding project:', err);
+		throw err;
+	}
+};
+
+export const updateCvProject = async (project: UpdateCvProjectInput) => {
+	const { mutate: updateCvProjectMutation } = useMutation(UpdateCvProject);
+
+	try {
+		const response = await updateCvProjectMutation({ project });
+		return response!.data?.project;
+	} catch (err) {
+		console.error('Error updating CV project:', err);
+		throw err;
+	}
 };
