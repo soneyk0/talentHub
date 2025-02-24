@@ -1,26 +1,40 @@
 query GetCvFullName($cvId: ID!) {
-	cv(cvId: $cvId) {
-		name
-	}
+    cv(cvId: $cvId) {
+        name
+    }
 }
 
 query GetAllCvs {
-	cvs {
-		id
-		name
-		education
-		description
-		user {
-			id
-			email
-		}
-	}
+    cvs {
+        id
+        name
+        education
+        description
+        user {
+            id
+            email
+        }
+    }
 }
 
 query GetCvById($cvId: ID!) {
-	cv(cvId: $cvId) {
-		name
-		education
-		description
-	}
+    cv(cvId: $cvId) {
+        name
+        education
+        description
+    }
+}
+
+query GetCvSkills($cvId: ID!) {
+    cv(cvId: $cvId) {
+        id
+        user {
+            id
+        }
+        skills {
+            name
+            categoryId
+            mastery
+        }
+    }
 }
