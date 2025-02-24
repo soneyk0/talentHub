@@ -22,6 +22,40 @@ query GetCvById($cvId: ID!) {
         name
         education
         description
+        projects {
+            name
+            description
+            domain
+            start_date
+            end_date
+            responsibilities
+            environment
+
+        }
+        skills {
+            name
+            mastery
+            categoryId
+        }
+    }
+}
+
+query GetCvProjects ($cvId: ID!) {
+    cv (cvId: $cvId){
+        id
+        projects {
+            project {
+                id
+                __typename
+            }
+            id
+            name
+            domain
+            start_date
+            end_date
+            description
+            environment
+            responsibilities
     }
 }
 

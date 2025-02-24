@@ -17,6 +17,7 @@
 				v-model="description"
 				:label="$t('Description')"
 				:rows="6"
+				:disabled="false"
 			/>
 		</div>
 		<div class="flex justify-end">
@@ -35,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-	import { getCvById, updateСv } from '~/services/cv';
+	import { getCvById, updateCv } from '~/services/cv';
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
 
 	definePageMeta({
@@ -85,7 +86,7 @@
 	const handleSubmit = async () => {
 		isSubmitting.value = true;
 		try {
-			const { executeUpdate: updateCvData } = updateСv({
+			const { executeUpdate: updateCvData } = updateCv({
 				cvId: cvId.value,
 				name: name.value,
 				education: education.value,

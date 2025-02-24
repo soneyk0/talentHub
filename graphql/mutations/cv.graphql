@@ -22,6 +22,46 @@ mutation UpdateCV($cv:  UpdateCvInput!) {
     }
 }
 
+
+mutation RemoveCvProject($project: RemoveCvProjectInput!) {
+    removeCvProject(project: $project){
+        projects {
+            id
+            project {
+                id
+                __typename
+            }
+            name
+            domain
+            start_date
+            end_date
+            description
+            environment
+            responsibilities
+        }
+    }
+}
+
+
+mutation AddCvProject($project: AddCvProjectInput!) {
+    addCvProject(project: $project){
+        projects {
+            id
+        }
+    }
+}
+
+mutation UpdateCvProject($project:  UpdateCvProjectInput!) {
+    updateCvProject(project: $project) {
+        projects {
+            id
+        }
+    }
+}
+
+mutation ExportPdfCv($pdf:  ExportPdfInput!) {
+    exportPdf(pdf: $pdf)
+    
 mutation AddCvSkill($skill: AddCvSkillInput!) {
     addCvSkill(skill: $skill) {
         id

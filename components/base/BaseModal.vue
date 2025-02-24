@@ -6,8 +6,8 @@
 			@mousedown="handleBackdropClick"
 		>
 			<div
+				:style="{ maxWidth: `${modalWidth}px` }"
 				class="w-full rounded bg-dark-1 p-6"
-				:class="maxWidthClass || 'max-w-[600px]'"
 				@mousedown.stop
 			>
 				<div class="mb-6 flex items-center justify-between">
@@ -76,9 +76,14 @@
 			type: Boolean,
 			default: false,
 		},
-		maxWidthClass: {
-			type: String,
-			default: '',
+		modalWidth: {
+			type: Number,
+			default: 600,
+			required: false,
+		},
+		hideByConfirm: {
+			type: Boolean,
+			default: true,
 		},
 	});
 
@@ -94,7 +99,9 @@
 
 	const handleConfirm = () => {
 		emit('confirm');
-		emit('update:isOpen', false);
+		if (props.hideByConfirm) {
+			emit('update:isOpen', false);
+		}
 	};
 	const handleBackdropClick = (e: MouseEvent) => {
 		if (e.target === e.currentTarget) {

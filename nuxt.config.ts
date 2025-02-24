@@ -6,6 +6,7 @@ export default defineNuxtConfig({
 	modules: [
 		'@nuxt/eslint',
 		'@nuxt/test-utils/module',
+		'@samk-dev/nuxt-vcalendar',
 		'@nuxtjs/color-mode',
 		'@nuxtjs/i18n',
 	],

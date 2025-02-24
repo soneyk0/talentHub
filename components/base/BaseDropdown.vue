@@ -1,5 +1,10 @@
 <template>
-	<div class="relative w-full min-w-[100px] flex-grow">
+	<div
+		:class="[
+			'relative w-full min-w-[100px] flex-grow',
+			disabled && 'opacity-50',
+		]"
+	>
 		<button
 			:id="id"
 			type="button"

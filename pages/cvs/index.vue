@@ -51,6 +51,7 @@
 				v-model="description"
 				:label="$t('Description')"
 				:rows="6"
+				:disabled="false"
 			/>
 		</BaseModal>
 		<BaseModal

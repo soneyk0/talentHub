@@ -18,7 +18,8 @@
 					:key="row.id"
 					:row="row"
 					:table-container="tableContainer"
-					@on-delete-c-v="$emit('onDeleteCV', row)"
+					@on-delete-project="$emit('onDeleteProject', row)"
+					@on-edit-project="$emit('onEditProject', row)"
 				/>
 			</tbody>
 		</table>
@@ -26,16 +27,19 @@
 </template>
 
 <script setup lang="ts">
-	import TableCvRow from '~/components/table/CvRow.vue';
-	import TableUserRow from '~/components/table/UserRow.vue';
+	import TableCvRow from '@/components/table/CvRow.vue';
+	import TableProjectRow from '@/components/table/ProjectRow.vue';
+	import TableUserRow from '@/components/table/UserRow.vue';
+
 	import type { Row } from '~/global';
-	const emit = defineEmits(['onDeleteCV']);
+
+	const emit = defineEmits(['onDeleteProject', 'onEditProject']);
 
 	const props = defineProps<{
 		headers: { key: string; label: string; isSortable: boolean }[];
 		rowsData: Row[];
 		searchQuery?: string;
-		rowComponent: 'TableUserRow' | 'TableCvRow';
+		rowComponent: 'TableUserRow' | 'TableCvRow' | 'TableProjectRow';
 	}>();
 
 	const tableContainer = ref<HTMLElement | null>(null);
@@ -48,11 +52,12 @@
 
 	const rowComponent = computed(() => {
 		const components: Record<
-			'TableUserRow' | 'TableCvRow',
-			typeof TableUserRow | typeof TableCvRow
+			'TableUserRow' | 'TableCvRow' | 'TableProjectRow',
+			typeof TableUserRow | typeof TableCvRow | typeof TableProjectRow
 		> = {
 			TableUserRow,
 			TableCvRow,
+			TableProjectRow,
 		};
 		return components[props.rowComponent];
 	});
