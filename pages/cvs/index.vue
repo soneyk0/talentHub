@@ -4,7 +4,7 @@
 			<div>
 				<BaseSearchBar
 					v-model="searchQuery"
-					placeholder="Search"
+					:placeholder="$t('Search')"
 					class="mb-5"
 				/>
 			</div>
@@ -17,7 +17,7 @@
 				>
 					<div class="flex items-center justify-center gap-3">
 						<PlusIcon color="var(--color-red-1)" width="24" />
-						CREATE CV
+						{{ $t('CREATE CV') }}
 					</div>
 				</BaseButton>
 			</div>
@@ -33,38 +33,38 @@
 		</div>
 		<BaseModal
 			v-model:is-open="isAddCVModalOpen"
-			confirm-text="CREATE"
-			cancel-text="CANCEL"
-			title="Create CV"
+			:confirm-text="$t('Create')"
+			:cancel-text="$t('Cancel')"
+			:title="$t('Create CV')"
 			:has-changes="!!name && !!education && !!description"
 			@confirm="handleAddCVConfirm"
 		>
-			<BaseInput id="name" v-model="name" type="text" label="Name" />
+			<BaseInput id="name" v-model="name" type="text" :label="$t('Name')" />
 			<BaseInput
 				id="education"
 				v-model="education"
 				type="text"
-				label="Education"
+				:label="$t('Education')"
 			/>
 			<BaseTextarea
 				id="description"
 				v-model="description"
-				label="Description"
+				:label="$t('Description')"
 				:rows="6"
 				:disabled="false"
 			/>
 		</BaseModal>
 		<BaseModal
 			v-model:is-open="isDeleteCVModalOpen"
-			confirm-text="CONFIRM"
-			cancel-text="CANCEL"
-			title="Delete CV"
+			:confirm-text="$t('Confirm')"
+			:cancel-text="$t('Cancel')"
+			:title="$t('Delete CV')"
 			:has-changes="isDeleteCVModalOpen"
 			@confirm="deleteCV"
 			@cancel="selectedCv = null"
 		>
 			<p class="text-white">
-				Are you sure you want to delete CV
+				{{ $t('Are you sure you want to delete CV') }}
 				<b>{{ selectedCv!.name }}</b>
 				?
 			</p>
@@ -91,6 +91,7 @@
 	const selectedCv = ref<Cv | null>(null);
 
 	const { getCurrentUserId } = useCurrentUser();
+	const { t } = useI18n();
 
 	const userId = String(getCurrentUserId.value);
 
@@ -99,9 +100,9 @@
 	const { data } = await useAsyncData(cvsDataKey, () => getAllCvs());
 	cvsData.value = data.value;
 	const headers = reactive([
-		{ key: 'name', label: 'CV Name', isSortable: true },
-		{ key: 'education', label: 'Education', isSortable: true },
-		{ key: 'email', label: 'Email', isSortable: true },
+		{ key: 'name', label: t('CV Name'), isSortable: true },
+		{ key: 'education', label: t('Education'), isSortable: true },
+		{ key: 'email', label: t('Email'), isSortable: true },
 		{ key: 'link', label: '', isSortable: false },
 	]);
 

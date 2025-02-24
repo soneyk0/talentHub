@@ -9,7 +9,7 @@
 			}"
 			@click="navigate('/auth/login')"
 		>
-			LOG IN
+			{{ $t('Log in') }}
 		</button>
 		<button
 			class="min-w-[150px] border-b-2 px-6 py-3 font-medium transition-all duration-200 ease-in-out focus:bg-gray-9 active:bg-red-500/10"
@@ -20,7 +20,7 @@
 			}"
 			@click="navigate('/auth/signup')"
 		>
-			SIGN UP
+			{{ $t('Sign up') }}
 		</button>
 	</div>
 </template>

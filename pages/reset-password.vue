@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<BaseForm
-			info-text="Almost done! Now create a new password"
-			title="Set a new password"
+			:info-text="$t('Almost done! Now create a new password')"
+			:title="$t('Set a new password')"
 			@submit="handleSubmit"
 		>
 			<template #main>
@@ -10,9 +10,9 @@
 					id="password"
 					v-model="newPassword"
 					type="text"
-					placeholder="Enter new password"
+					:placeholder="$t('Enter new password')"
 					required
-					label="New password"
+					:label="$t('New password')"
 					class="w-screen max-w-[550px]"
 				/>
 			</template>
@@ -24,7 +24,7 @@
 						type="submit"
 						:disabled="isSubmitting"
 					>
-						SUBMIT
+						{{ $t('SUBMIT') }}
 					</BaseButton>
 				</div>
 				<div>
@@ -35,7 +35,7 @@
 							type="button"
 							class="w-1/2"
 						>
-							BACK TO LOG IN
+							{{ $t('BACK TO LOG IN') }}
 						</BaseButton>
 					</NuxtLink>
 				</div>
@@ -46,7 +46,6 @@
 
 <script lang="ts" setup>
 	import { useRouter } from '#app';
-	import { ref } from 'vue';
 	import { resetPassword } from '~/services/auth';
 
 	definePageMeta({

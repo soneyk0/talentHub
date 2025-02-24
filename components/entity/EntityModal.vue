@@ -16,7 +16,7 @@
 		<BaseDropdown
 			:id="levelInputId"
 			v-model="levelOption"
-			:label="`${entityLabel} Level`"
+			:label="entityLevelLabel"
 			:options="levelOptions"
 		/>
 	</BaseModal>
@@ -36,6 +36,7 @@
 		confirmText: string;
 		hasChanges: boolean;
 		entityLabel: string;
+		entityLevelLabel: string;
 		nameInputId: string;
 		levelInputId: string;
 		nameOptions: Array<{

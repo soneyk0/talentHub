@@ -56,6 +56,19 @@ query GetCvProjects ($cvId: ID!) {
             description
             environment
             responsibilities
+    }
+}
+
+query GetCvSkills($cvId: ID!) {
+    cv(cvId: $cvId) {
+        id
+        user {
+            id
+        }
+        skills {
+            name
+            categoryId
+            mastery
         }
     }
 }

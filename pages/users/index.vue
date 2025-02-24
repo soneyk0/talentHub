@@ -1,7 +1,11 @@
 <template>
 	<div class="h-[calc(100vh-0.75rem-90px)]">
 		<div>
-			<BaseSearchBar v-model="searchQuery" placeholder="Search" class="mb-5" />
+			<BaseSearchBar
+				v-model="searchQuery"
+				:placeholder="$t('Search')"
+				class="mb-5"
+			/>
 		</div>
 		<div>
 			<Table
@@ -29,9 +33,12 @@
 		position: { name: string } | null;
 	}
 
+	const { t } = useI18n();
 	const searchQuery = ref('');
 	const isDataLoaded = ref(false);
 	const users = ref<User[]>([]);
+	const { getCurrentUserId } = useCurrentUser();
+	const currentUserId = ref(Number(getCurrentUserId.value));
 
 	const getUsers = async () => {
 		try {
@@ -47,11 +54,11 @@
 
 	const headers = reactive([
 		{ key: 'avatar', label: '', isSortable: false },
-		{ key: 'firstName', label: 'First Name', isSortable: true },
-		{ key: 'lastName', label: 'Last Name', isSortable: true },
-		{ key: 'email', label: 'Email', isSortable: true },
-		{ key: 'department', label: 'Department', isSortable: true },
-		{ key: 'position', label: 'Position', isSortable: true },
+		{ key: 'firstName', label: t('First Name'), isSortable: true },
+		{ key: 'lastName', label: t('Last Name'), isSortable: true },
+		{ key: 'email', label: t('Email'), isSortable: true },
+		{ key: 'department', label: t('Department'), isSortable: true },
+		{ key: 'position', label: t('Position'), isSortable: true },
 		{ key: 'link', label: '', isSortable: false },
 	]);
 
@@ -70,19 +77,26 @@
 	});
 
 	const filteredData = computed(() => {
-		if (!searchQuery.value || !tableData.value) return tableData.value;
+		if (!tableData.value) return [];
+		let data = tableData.value;
 
-		const lowerCaseSearch = searchQuery.value.toLowerCase();
-
-		return tableData.value.filter((row) => {
-			const firstNameMatches = row.firstName
-				?.toLowerCase()
-				.includes(lowerCaseSearch);
-			const lastNameMatches = row.lastName
-				?.toLowerCase()
-				.includes(lowerCaseSearch);
-			const emailMatches = row.email?.toLowerCase().includes(lowerCaseSearch);
-			return firstNameMatches || lastNameMatches || emailMatches;
+		if (searchQuery.value) {
+			const lowerCaseSearch = searchQuery.value.toLowerCase();
+			data = data.filter((row) => {
+				const firstNameMatches = row.firstName
+					?.toLowerCase()
+					.includes(lowerCaseSearch);
+				const lastNameMatches = row.lastName
+					?.toLowerCase()
+					.includes(lowerCaseSearch);
+				const emailMatches = row.email?.toLowerCase().includes(lowerCaseSearch);
+				return firstNameMatches || lastNameMatches || emailMatches;
+			});
+		}
+		return data.sort((a, b) => {
+			if (a.id === currentUserId.value) return -1;
+			if (b.id === currentUserId.value) return 1;
+			return 0;
 		});
 	});
 

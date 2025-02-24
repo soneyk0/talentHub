@@ -18,6 +18,7 @@
 
 	const route = useRoute();
 	const router = useRouter();
+	const { t } = useI18n();
 
 	const id = ref('');
 	const fullname = ref('');
@@ -29,11 +30,46 @@
 		const pathSegments = path.split('/').filter(Boolean);
 
 		const segments = pathSegments.map((segment, index) => {
+			let label = '';
+
+			switch (segment) {
+				case 'users':
+					label = t('Users');
+					break;
+				case 'cvs':
+					label = t('CVs');
+					break;
+				case 'skills':
+					label = t('Skills');
+					break;
+				case 'languages':
+					label = t('Languages');
+					break;
+				case 'profile':
+					label = t('Profile');
+					break;
+				case 'settings':
+					label = t('Settings');
+					break;
+				case 'details':
+					label = t('Details');
+					break;
+
+				case 'projects':
+					label = t('Projects');
+					break;
+
+				case 'preview':
+					label = t('preview');
+					break;
+
+				default:
+					label = segment.charAt(0).toUpperCase() + segment.slice(1);
+					break;
+			}
+
 			return {
-				label:
-					segment === 'users'
-						? 'Employees'
-						: segment.charAt(0).toUpperCase() + segment.slice(1),
+				label,
 				link: '/' + pathSegments.slice(0, index + 1).join('/'),
 			};
 		});

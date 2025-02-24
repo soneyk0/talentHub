@@ -19,7 +19,9 @@
 			/>
 		</div>
 
-		<div class="relative flex w-full items-center justify-start text-base">
+		<div
+			class="relative flex w-full items-center justify-start text-base text-gray-7"
+		>
 			<slot />
 		</div>
 	</BaseButton>

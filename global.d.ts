@@ -71,7 +71,10 @@ export interface User {
 	role: string;
 }
 
-export type UserProfileInfo = Pick<User, 'email'> & {
+export type UserProfileInfo = Pick<
+	User,
+	'email' | 'department' | 'position'
+> & {
 	profile: Omit<User['profile'], 'full_name' | 'id'>;
 };
 

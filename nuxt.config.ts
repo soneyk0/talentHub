@@ -7,6 +7,8 @@ export default defineNuxtConfig({
 		'@nuxt/eslint',
 		'@nuxt/test-utils/module',
 		'@samk-dev/nuxt-vcalendar',
+		'@nuxtjs/color-mode',
+		'@nuxtjs/i18n',
 	],
 	css: ['~/assets/styles/main.css'],
 	plugins: [
@@ -22,5 +24,24 @@ export default defineNuxtConfig({
 	},
 	vite: {
 		plugins: [graphqlLoader()],
+	},
+	colorMode: {
+		classSuffix: '',
+		preference: 'dark',
+		fallback: 'dark',
+	},
+	i18n: {
+		lazy: true,
+		langDir: './locales',
+		locales: [
+			{ code: 'en', iso: 'en-US', name: 'English', file: 'en.json' },
+			{ code: 'ru', iso: 'ru-RU', name: 'Русский', file: 'ru.json' },
+		],
+		defaultLocale: 'en',
+		strategy: 'no_prefix',
+		detectBrowserLanguage: {
+			useCookie: true,
+			fallbackLocale: 'en',
+		},
 	},
 });

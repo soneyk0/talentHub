@@ -1,4 +1,4 @@
-:root {
+.dark {
 	--color-dark-1: #353535; /* global bg, dropdown hover, input bg */
 	--color-dark-2: #292929; /* options bg */
 	--color-dark-3: #4b4b4b; /* options hover */
@@ -23,7 +23,37 @@
 	--color-red-5: #c63031; /* primary button text */
 
 	--color-white: #ffffff; /* active text, button text */
-
+	--color-button-white: #ffffff; /* specially for basebutton text */
 	--color-red-rgb: 198 48 49; /* for primary button outlines */
 	--color-gray-rgb: 118 118 118; /* for secondary button outlines */
+}
+
+.light {
+	--color-dark-1: #ffffff;
+	--color-dark-2: #f5f5f5;
+	--color-dark-3: #e8e8e8;
+	--color-dark-4: #f0f0f0;
+	--color-dark-5: #fafafa;
+
+	--color-gray-1: #4a4a4a;
+	--color-gray-2: #666666;
+	--color-gray-3: #808080;
+	--color-gray-4: #999999;
+	--color-gray-5: #b3b3b3;
+	--color-gray-6: #cccccc;
+	--color-gray-7: #727171;
+	--color-gray-8: #e6e6e6;
+	--color-gray-9: #f2f2f2;
+	--color-gray-10: #666666;
+
+	--color-red-1: #c62f31;
+	--color-red-2: #8a2122;
+	--color-red-3: #d9a5a5;
+	--color-red-4: #e27575;
+	--color-red-5: #c63031;
+
+	--color-white: #000000;
+	--color-button-white: #ffffff;
+	--color-red-rgb: 255 59 61;
+	--color-gray-rgb: 102 102 102;
 }

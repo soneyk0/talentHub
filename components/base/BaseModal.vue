@@ -54,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+	const { t } = useI18n();
 	const props = defineProps({
 		isOpen: {
 			type: Boolean,

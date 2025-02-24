@@ -6,30 +6,30 @@
 		<BaseInput
 			id="firstName"
 			v-model="firstName"
-			label="First Name"
+			:label="$t('First Name')"
 			:disabled="!canEdit"
 		/>
 		<BaseInput
 			id="lastName"
 			v-model="lastName"
-			label="Last Name"
+			:label="$t('Last Name')"
 			:disabled="!canEdit"
 		/>
 
 		<BaseDropdown
 			id="department"
 			v-model="selectedDepartment"
-			label="Department"
+			:label="$t('Department')"
 			:options="departments"
-			default-option-label="No department"
+			:default-option-label="$t('No department')"
 			:disabled="!canEdit"
 		/>
 		<BaseDropdown
 			id="position"
 			v-model="selectedPosition"
-			label="Position"
+			:label="$t('Position')"
 			:options="positions"
-			default-option-label="No position"
+			:default-option-label="$t('No position')"
 			:disabled="!canEdit"
 		/>
 
@@ -41,7 +41,7 @@
 			color="primary"
 			:disabled="isSubmitting || isUploading || !hasChanges"
 		>
-			UPDATE
+			{{ $t('Update') }}
 		</BaseButton>
 	</form>
 </template>
