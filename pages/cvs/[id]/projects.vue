@@ -1,10 +1,10 @@
 <template>
-	<div class="h-[calc(100vh-0.75rem-90px)]">
+	<div class="h-[calc(100vh-3rem-90px)]">
 		<div class="flex items-center justify-between">
 			<div>
 				<BaseSearchBar
 					v-model="searchQuery"
-					placeholder="Search"
+					:placeholder="$t('Search')"
 					class="mb-5"
 				/>
 			</div>
@@ -17,7 +17,7 @@
 				>
 					<div class="flex items-center justify-center gap-3">
 						<PlusIcon color="var(--color-red-1)" width="24" />
-						ADD PROJECT
+						{{ $t('ADD PROJECT') }}
 					</div>
 				</BaseButton>
 			</div>
@@ -43,15 +43,15 @@
 		></CvProjectModal>
 		<BaseModal
 			v-model:is-open="isDeleteProjectModalOpen"
-			confirm-text="CONFIRM"
-			cancel-text="CANCEL"
-			title="Remove project"
+			:confirm-text="$t('CONFIRM')"
+			:cancel-text="$t('CANCEL')"
+			:title="$t('Remove project')"
 			:has-changes="isDeleteProjectModalOpen"
 			@confirm="deleteProject"
 			@cancel="projectForDelete = null"
 		>
 			<p class="text-white">
-				Are you sure you want to delete project
+				{{$t('Are you sure you want to delete project')}}
 				<b>{{ projectForDelete!.name }}</b>
 				?
 			</p>
@@ -81,6 +81,7 @@
 	const cvId = ref(route.params.id as string);
 	const { data: listOfProjectsData } = useNuxtData('listOfProjects');
 	const selectedProject = ref<CvProject | null>(null);
+	const { t } = useI18n();
 
 	if (!listOfProjectsData.value) {
 		const { data } = await useAsyncData(
@@ -102,10 +103,10 @@
 	projectsData.value = data.value;
 
 	const headers = reactive([
-		{ key: 'name', label: 'Name', isSortable: true },
-		{ key: 'domain', label: 'Domain', isSortable: true },
-		{ key: 'startDate', label: 'Start Date', isSortable: true },
-		{ key: 'endDate', label: 'End Date', isSortable: true },
+		{ key: 'name', label: t('Name'), isSortable: true },
+		{ key: 'domain', label: t('Domain'), isSortable: true },
+		{ key: 'startDate', label: t('Start Date'), isSortable: true },
+		{ key: 'endDate', label: t('End Date'), isSortable: true },
 		{ key: 'link', label: '', isSortable: false },
 	]);
 

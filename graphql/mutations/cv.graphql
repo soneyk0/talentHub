@@ -59,9 +59,6 @@ mutation UpdateCvProject($project:  UpdateCvProjectInput!) {
     }
 }
 
-mutation ExportPdfCv($pdf:  ExportPdfInput!) {
-    exportPdf(pdf: $pdf)
-    
 mutation AddCvSkill($skill: AddCvSkillInput!) {
     addCvSkill(skill: $skill) {
         id
@@ -94,3 +91,6 @@ mutation DeleteCvSkill($skill: DeleteCvSkillInput!) {
         }
     }
 }
+
+mutation ExportPdfCv($pdf:  ExportPdfInput!) {
+    exportPdf(pdf: $pdf)}

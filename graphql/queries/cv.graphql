@@ -56,8 +56,8 @@ query GetCvProjects ($cvId: ID!) {
             description
             environment
             responsibilities
-    }
-}
+        }
+    }}
 
 query GetCvSkills($cvId: ID!) {
     cv(cvId: $cvId) {

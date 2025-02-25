@@ -20,6 +20,7 @@
 					:table-container="tableContainer"
 					@on-delete-project="$emit('onDeleteProject', row)"
 					@on-edit-project="$emit('onEditProject', row)"
+					@on-delete-c-v="$emit('onDeleteCV', row)"
 				/>
 			</tbody>
 		</table>
@@ -33,7 +34,7 @@
 
 	import type { Row } from '~/global';
 
-	const emit = defineEmits(['onDeleteProject', 'onEditProject']);
+	const emit = defineEmits(['onDeleteProject', 'onEditProject', 'onDeleteCV']);
 
 	const props = defineProps<{
 		headers: { key: string; label: string; isSortable: boolean }[];

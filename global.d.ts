@@ -16,6 +16,16 @@ export interface Skill {
 	mastery: SkillLevel;
 }
 
+export interface Project {
+	name: string;
+	description: string;
+	end_date: string;
+	start_date: string;
+	environment: string[];
+	responsibilities: string[];
+	domain: string;
+}
+
 export interface Row {
 	id: number;
 	name?: string;

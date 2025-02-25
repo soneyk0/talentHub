@@ -51,6 +51,7 @@
 	"update": "Update",
 	"delete": "Delete",
 	"Delete": "DELETE",
+	"DELETE": "DELETE",
 
 	"Add": "ADD",
 
@@ -116,6 +117,15 @@
 	"CREATE CV": "CREATE CV",
 	"Delete CV": "Delete CV",
 	"Are you sure you want to delete CV": "Are you sure you want to delete CV",
+
+	" project": " PROJECT",
+	"ADD": "ADD",
+	"UPDATE": "UPDATE",
+	"CANCEL": "CANCEL",
+	"ADD PROJECT": "ADD PROJECT",
+	"Remove project": "Remove project",
+	"Responsibilities": "Responsibilities",
+	"Environment": "Environment",
 
 	"PREVIEW": "PREVIEW",
 	"preview": "preview",
