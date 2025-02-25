@@ -3,13 +3,14 @@ import type { AddCvProjectInput, UpdateCvProjectInput } from 'cv-graphql';
 import type { Skill } from '~/global';
 import {
 	AddCvProject,
+	AddCvSkill,
 	CreateCV,
 	DeleteCV,
+	DeleteCvSkill,
+	ExportPdfCv,
 	RemoveCvProject,
 	UpdateCV,
 	UpdateCvProject,
-	AddCvSkill,
-	DeleteCvSkill,
 	UpdateCvSkill,
 } from '~/graphql/mutations/cv.graphql';
 import {
@@ -172,7 +173,9 @@ export const updateCvProject = async (project: UpdateCvProjectInput) => {
 	} catch (err) {
 		console.error('Error updating CV project:', err);
 		throw err;
-    
+	}
+};
+
 export const addCvSkill = (skill: UpdateCvSkillInput) => {
 	const { mutate: addSkillMutation, loading, error } = useMutation(AddCvSkill);
 
@@ -253,5 +256,36 @@ export const getCvSkills = async (cvId: string) => {
 			skills: [],
 			error,
 		};
+	}
+};
+
+export const exportCvToPdf = async (htmlContent: string) => {
+	const margin = {
+		top: '20',
+		left: '20',
+		bottom: '20',
+		right: '20',
+	};
+	const { mutate } = useMutation(ExportPdfCv);
+	try {
+		const data = await mutate({
+			pdf: { html: htmlContent, margin },
+		});
+		console.log(data);
+
+		if (data) {
+			const linkSource = `data:application/pdf;base64,${data.data.exportPdf}`;
+			// console.log('BEFORE DECODING')
+			// console.log(window.atob(linkSource));
+			// const atob = window.atob(linkSource);
+			// debugger;
+			const downloadLink = document.createElement('a');
+			const fileName = 'cv.pdf';
+			downloadLink.href = linkSource;
+			downloadLink.download = fileName;
+			downloadLink.click();
+		}
+	} catch (error) {
+		console.error('Error when exporting PDF:', error);
 	}
 };

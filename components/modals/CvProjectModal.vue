@@ -1,8 +1,8 @@
 <template>
 	<BaseModal
 		v-model:is-open="isOpened"
-		:confirm-text="project ? 'UPDATE' : 'ADD'"
-		cancel-text="CANCEL"
+		:confirm-text="project ? $t('UPDATE') : $t('ADD')"
+		:cancel-text="$t('CANCEL')"
 		:modal-width="900"
 		:hide-by-confirm="false"
 		:has-changes="
@@ -12,7 +12,7 @@
 					currentProject.responsibilities[0] !== project.responsibilities[0]
 				: !!currentProject.projectId
 		"
-		:title="(project ? 'Update' : 'Add') + ' project'"
+		:title="(project ? $t('Update') : $t('Add')) + $t(' project')"
 		@update:is-open="emit('update:isOpen', $event)"
 		@confirm="onSubmit"
 	>
@@ -20,7 +20,7 @@
 			<BaseDropdown
 				id="project"
 				v-model="selectedProjectOption"
-				label="Project"
+				:label="$t('Project')"
 				:options="optionList"
 				:disabled="!!project?.id"
 				default-option-label="No project"
@@ -30,16 +30,22 @@
 				v-model="projectOptions.domain"
 				:disabled="true"
 				type="text"
-				label="Domain"
+				:label="$t('Domain')"
 			/>
-			<BaseCalendar v-model="currentProject.start_date" label="Start date" />
-			<BaseCalendar v-model="currentProject.end_date!" label="End date" />
+			<BaseCalendar
+				v-model="currentProject.start_date"
+				:label="$t('Start Date')"
+			/>
+			<BaseCalendar
+				v-model="currentProject.end_date!"
+				:label="$t('End Date')"
+			/>
 		</div>
 
 		<BaseTextarea
 			id="description"
 			v-model="projectOptions.description"
-			label="Description"
+			:label="$t('Description')"
 			:disabled="true"
 			:rows="6"
 		/>
@@ -47,7 +53,7 @@
 			id="environment"
 			:model-value="projectOptions.environment.toString()"
 			:disabled="true"
-			label="Environment"
+			:label="$t('Environment')"
 			class="bg-gray-"
 			:hide-input="true"
 		>
@@ -76,7 +82,7 @@
 			id="responsibilities"
 			v-model="currentProject.responsibilities![0]"
 			placeholder=""
-			label="Responsibilities"
+			:label="$t('Responsibilities')"
 			type="text"
 		/>
 	</BaseModal>
@@ -86,6 +92,7 @@
 	import type { AddCvProjectInput, CvProject, Project } from 'cv-graphql';
 	import type { Option } from '~/global';
 	import { createCvProjects, updateCvProject } from '~/services/cv';
+	import { showSuccessToast } from '~/utils/toast/toast';
 
 	const props = defineProps<{
 		projectList: Project[];
@@ -143,12 +150,14 @@
 				start_date: new Date(currentProject.start_date).toISOString(),
 				end_date: new Date(currentProject.end_date!).toISOString(),
 			});
+			showSuccessToast('Project update successfully');
 		} else {
 			await createCvProjects({
 				...currentProject,
 				start_date: new Date(currentProject.start_date).toISOString(),
 				end_date: new Date(currentProject.end_date!).toISOString(),
 			});
+			showSuccessToast('Project create successfully');
 		}
 		emit('project-updated');
 		emit('update:isOpen', false);

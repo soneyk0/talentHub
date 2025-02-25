@@ -37,7 +37,7 @@
 							>
 								<div class="flex items-center justify-center gap-3">
 									<PlusIcon color="var(--color-gray-7)" width="24" />
-									ADD SKILL
+									{{ $t('ADD SKILL') }}
 								</div>
 							</BaseButton>
 							<BaseButton
@@ -49,7 +49,7 @@
 							>
 								<div class="flex items-center justify-center gap-3">
 									<TrashBin color="var(--color-red-1)" width="24" />
-									REMOVE SKILLS
+									{{ $t('REMOVE SKILLS') }}
 								</div>
 							</BaseButton>
 						</template>
@@ -60,7 +60,7 @@
 								color="secondary"
 								@click="handleCancelRemoval"
 							>
-								CANCEL
+								{{$t('CANCEL')}}
 							</BaseButton>
 							<BaseButton
 								class="max-w-[220px]"
@@ -72,7 +72,7 @@
 								@click="handleDeleteSkills"
 							>
 								<div class="flex items-center justify-center gap-3">
-									DELETE
+									{{$t('DELETE')}}
 									<div class="w-2">{{ selectedSkillsToRemove.size }}</div>
 								</div>
 							</BaseButton>
@@ -86,10 +86,11 @@
 			v-model:is-open="isUpdateSkillModalOpen"
 			v-model:name-option="selectedSkillOption"
 			v-model:level-option="selectedLevelOption"
-			title="Update Skill"
-			confirm-text="CONFIRM"
+			:title="$t('Update Skill')"
+			:confirm-text="$t('CONFIRM')"
 			:has-changes="hasChanges"
-			entity-label="Skill"
+			:entity-label="$t('Skill')"
+			:entity-level-label="$t('Skill mastery')"
 			name-input-id="skill-name"
 			level-input-id="skill-level"
 			:name-options="[
@@ -106,10 +107,11 @@
 			v-model:is-open="isAddSkillModalOpen"
 			v-model:name-option="newSkillOption"
 			v-model:level-option="newLevelOption"
-			title="Add Skill"
-			confirm-text="ADD"
+			:title="$t('Add skill')"
+			:confirm-text="$t('Add')"
 			:has-changes="!!(newSelectedSkill && newSelectedLevel)"
-			entity-label="Skill"
+			:entity-label="$t('Skill')"
+			:entity-level-label="$t('Skill mastery')"
 			name-input-id="new-skill-name"
 			level-input-id="new-skill-level"
 			:name-options="skillOptions"

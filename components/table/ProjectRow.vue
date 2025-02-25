@@ -18,11 +18,11 @@
 
 				<TableOptions
 					v-if="optionsVisible"
-					class="absolute right-0 z-10 -mt-11 w-28 rounded-lg border-dark-4 bg-dark-4 py-2 shadow-lg"
+					class="absolute right-0 z-10 -mt-11 w-36 rounded-lg border-dark-4 bg-dark-4 py-2 shadow-lg"
 					:class="optionsPosition"
 					:buttons="[
-						{ label: 'Update project', event: 'updateClick' },
-						{ label: 'Remove project', event: 'removeClick' },
+						{ label: $t('Update project'), event: 'updateClick' },
+						{ label: $t('Remove project'), event: 'removeClick' },
 					]"
 					@update-click="$emit('onEditProject')"
 					@remove-click="$emit('onDeleteProject')"

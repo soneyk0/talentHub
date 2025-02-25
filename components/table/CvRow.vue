@@ -22,7 +22,7 @@
 					:class="optionsPosition"
 					:buttons="[
 						{ label: $t('Details'), event: 'detailsClick' },
-						{ label: $t('delete'), event: 'deleteClick' },
+						{ label: $t('Delete CV'), event: 'deleteClick' },
 					]"
 					@details-click="openDetails"
 					@delete-click="$emit('onDeleteCV')"
