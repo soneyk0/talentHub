@@ -169,7 +169,6 @@
 	const openDeleteCVModal = (cv: Cv) => {
 		selectedCv.value = cv;
 		isDeleteCVModalOpen.value = true;
-		console.log(123);
 	};
 
 	const deleteCV = async () => {

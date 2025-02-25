@@ -271,14 +271,8 @@ export const exportCvToPdf = async (htmlContent: string) => {
 		const data = await mutate({
 			pdf: { html: htmlContent, margin },
 		});
-		console.log(data);
-
 		if (data) {
 			const linkSource = `data:application/pdf;base64,${data.data.exportPdf}`;
-			// console.log('BEFORE DECODING')
-			// console.log(window.atob(linkSource));
-			// const atob = window.atob(linkSource);
-			// debugger;
 			const downloadLink = document.createElement('a');
 			const fileName = 'cv.pdf';
 			downloadLink.href = linkSource;

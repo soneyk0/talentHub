@@ -379,14 +379,11 @@
 			await executeUpdate();
 			clearNuxtData(skillsDataKey);
 
-			console.log(cvSkills);
-
 			cvSkills.value = cvSkills.value.map((skill) =>
 				skill.name === selectedSkill.value?.name
 					? { ...skill, mastery: selectedLevel.value! }
 					: skill
 			);
-			console.log(cvSkills);
 
 			showSuccessToast('Skill updated successfully');
 		} catch (error) {
