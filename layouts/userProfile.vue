@@ -28,7 +28,15 @@
 	import Skills from '~/pages/users/[id]/skills.vue';
 
 	const route = useRoute();
-	const id = route.params.id;
+	const id = ref(route.params.id);
+
+	watch(
+		() => route.params.id,
+		(newParams) => {
+			id.value = newParams;
+		},
+		{ deep: true }
+	);
 	const { t } = useI18n();
 	const tabs = [
 		{ path: '/profile', label: t('PROFILE') },

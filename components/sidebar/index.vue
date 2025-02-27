@@ -14,7 +14,6 @@
 			/>
 		</nav>
 		<SidebarUserItem
-			v-if="displayUserInfo.text"
 			:item="displayUserInfo"
 			:is-collapsed="isCollapsed"
 			class="mt-auto"
@@ -88,13 +87,16 @@
 		if (userData.email) {
 			return {
 				photo: userData.photo,
-				text: `${userData.firstName} ${userData.lastName}`.trim(),
+				text:
+					`${userData.firstName} ${userData.lastName}`.trim() || userData.email,
 				link: userData.profileLink,
 			};
 		} else {
 			return {
 				photo: initialUserData.value.user.profile.avatar || '',
-				text: `${initialUserData.value.user.profile.first_name || ''} ${initialUserData.value.user.profile.last_name || ''}`.trim(),
+				text:
+					`${initialUserData.value.user.profile.first_name || ''} ${initialUserData.value.user.profile.last_name || ''}`.trim() ||
+					initialUserData.value.user.email,
 				link: `/users/${getCurrentUserId.value}/profile`,
 			};
 		}
