@@ -19,6 +19,7 @@
 			class="mt-auto"
 			@logout="logout"
 		/>
+
 		<ButtonsToggle
 			:is-toggled="isCollapsed"
 			class="mb-4 ml-2"
