@@ -55,9 +55,9 @@
 			:disabled="true"
 			:label="$t('Environment')"
 			class="bg-gray-"
-			:hide-input="true"
+			:hide-input="!!projectOptions.environment[0]"
 		>
-			<template #inner-content>
+			<template v-if="!!projectOptions.environment[0]" #inner-content>
 				<div
 					class="flex flex-wrap gap-1 border border-gray-6 bg-dark-1 p-3 text-white"
 				>
