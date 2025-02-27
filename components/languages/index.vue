@@ -75,7 +75,7 @@
 				</div>
 			</div>
 		</div>
-		<EntityModal
+		<ModalsEntityModal
 			v-model:is-open="isUpdateLanguageModalOpen"
 			v-model:name-option="selectedLanguageOption"
 			v-model:level-option="selectedLevelOption"
@@ -96,7 +96,7 @@
 			:is-name-disabled="true"
 			@confirm="handleUpdateLanguageConfirm"
 		/>
-		<EntityModal
+		<ModalsEntityModal
 			v-model:is-open="isAddLanguageModalOpen"
 			v-model:name-option="newLanguageOption"
 			v-model:level-option="newLevelOption"

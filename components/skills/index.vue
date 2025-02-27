@@ -82,7 +82,7 @@
 			</div>
 		</div>
 
-		<EntityModal
+		<ModalsEntityModal
 			v-model:is-open="isUpdateSkillModalOpen"
 			v-model:name-option="selectedSkillOption"
 			v-model:level-option="selectedLevelOption"
@@ -104,7 +104,7 @@
 			:is-name-disabled="true"
 			@confirm="handleUpdateSkillConfirm"
 		/>
-		<EntityModal
+		<ModalsEntityModal
 			v-model:is-open="isAddSkillModalOpen"
 			v-model:name-option="newSkillOption"
 			v-model:level-option="newLevelOption"

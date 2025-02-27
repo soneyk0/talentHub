@@ -60,7 +60,7 @@
 								color="secondary"
 								@click="handleCancelRemoval"
 							>
-								{{$t('CANCEL')}}
+								{{ $t('CANCEL') }}
 							</BaseButton>
 							<BaseButton
 								class="max-w-[220px]"
@@ -72,7 +72,7 @@
 								@click="handleDeleteSkills"
 							>
 								<div class="flex items-center justify-center gap-3">
-									{{$t('DELETE')}}
+									{{ $t('DELETE') }}
 									<div class="w-2">{{ selectedSkillsToRemove.size }}</div>
 								</div>
 							</BaseButton>
@@ -82,7 +82,7 @@
 			</div>
 		</div>
 
-		<EntityModal
+		<ModalsEntityModal
 			v-model:is-open="isUpdateSkillModalOpen"
 			v-model:name-option="selectedSkillOption"
 			v-model:level-option="selectedLevelOption"
@@ -103,7 +103,7 @@
 			:is-name-disabled="true"
 			@confirm="handleUpdateSkillConfirm"
 		/>
-		<EntityModal
+		<ModalsEntityModal
 			v-model:is-open="isAddSkillModalOpen"
 			v-model:name-option="newSkillOption"
 			v-model:level-option="newLevelOption"
