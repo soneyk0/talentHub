@@ -1,9 +1,10 @@
 import { defineVitestConfig } from '@nuxt/test-utils/config';
-
 export default defineVitestConfig({
+	// plugins: [vue()],
 	test: {
 		environment: 'nuxt',
 		globals: true,
+		setupFiles: ['./tests/setup.ts'],
 		exclude: [
 			'**/node_modules/**',
 			'**/dist/**',
@@ -14,7 +15,12 @@ export default defineVitestConfig({
 			provider: 'v8',
 			reportOnFailure: true,
 			reportsDirectory: './coverage',
-			include: ['components/**/*.vue', 'services/*.ts', 'composables/*.ts'],
+			include: [
+				'components/**/*.vue',
+				'services/*.ts',
+				'composables/*.ts',
+				'layouts/*.vue',
+			],
 			enabled: true,
 		},
 	},

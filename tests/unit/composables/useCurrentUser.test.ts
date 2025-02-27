@@ -2,6 +2,8 @@ import { describe } from 'vitest';
 
 describe('useCurrentUser composable', () => {
 	beforeEach(() => {
+		vi.clearAllMocks();
+
 		const { clearUserData } = useCurrentUser();
 		clearUserData();
 	});

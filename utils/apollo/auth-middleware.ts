@@ -1,6 +1,15 @@
 import { ApolloLink, HttpLink } from '@apollo/client/core';
 
 export const authMiddleware = new ApolloLink((operation, forward) => {
+	// let token;
+	// if (import.meta.client) {
+	// 	token = useCookie('access_token').value;
+	// } else {
+	// 	console.log('die');
+	// 	const { getAccessToken } = useTokens();
+	// 	token = getAccessToken.value;
+	// }
+
 	const token = useCookie('access_token').value;
 
 	if (operation.operationName !== 'ResetPassword') {
@@ -10,7 +19,7 @@ export const authMiddleware = new ApolloLink((operation, forward) => {
 			},
 		});
 	}
-
+	// console.log(operation.getContext().headers);
 	return forward(operation);
 });
 

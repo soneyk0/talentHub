@@ -108,9 +108,10 @@ export const createCv = async (cv: CreateCV) => {
 
 export const deleteCv = async (cvId: string) => {
 	const { mutate } = useMutation(DeleteCV);
-	await mutate({
+	const response = await mutate({
 		cv: { cvId },
 	});
+	return response?.data?.deleteCv;
 };
 
 export const updateCv = (cv: UpdateCvInput) => {
@@ -119,7 +120,7 @@ export const updateCv = (cv: UpdateCvInput) => {
 	const executeUpdate = async () => {
 		try {
 			const response = await updateCvMutation({ cv });
-			return response!.data?.cvs;
+			return response!.data?.updateCv;
 		} catch (err) {
 			console.error('Error updating CV:', err);
 			throw err;
@@ -169,7 +170,7 @@ export const updateCvProject = async (project: UpdateCvProjectInput) => {
 
 	try {
 		const response = await updateCvProjectMutation({ project });
-		return response!.data?.project;
+		return response!.data?.updateCvProject;
 	} catch (err) {
 		console.error('Error updating CV project:', err);
 		throw err;

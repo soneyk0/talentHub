@@ -12,6 +12,7 @@
 							:level-prop-class="getLanguageButtonProps(language).class"
 							variant="text"
 							color="secondary"
+							:disabled="!canEdit"
 							@click="handleLanguageClick(language)"
 						>
 							{{ language.name }}
@@ -134,6 +135,7 @@
 	const userId = ref(
 		(route.params.id as string) || String(getCurrentUserId.value)
 	);
+	console.log(getCurrentUserId.value);
 	const canEdit = computed(() => {
 		return String(getCurrentUserId.value) === userId.value;
 	});

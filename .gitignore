@@ -23,6 +23,6 @@ logs
 .env.*
 !.env.example
 
-#Tests
+# Test coverage
 html
 coverage

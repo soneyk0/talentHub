@@ -19,6 +19,7 @@
 			class="mt-auto"
 			@logout="logout"
 		/>
+		-->
 		<ButtonsToggle
 			:is-toggled="isCollapsed"
 			class="mb-4 ml-2"
@@ -34,7 +35,6 @@
 	import IconsEmployees from '~/components/icons/Employees.vue';
 	import IconsLanguages from '~/components/icons/Languages.vue';
 	import IconsSkills from '~/components/icons/Skills.vue';
-	import { getUserById } from '~/services/user';
 	const router = useRouter();
 	const route = useRoute();
 	const { t } = useI18n();
@@ -69,19 +69,20 @@
 		useCurrentUser();
 
 	const userDataKey = `user-${getCurrentUserId.value}`;
-	const { data: initialUserData } = useNuxtData(userDataKey);
-	if (!initialUserData.value) {
-		const { data, refresh } = await useAsyncData(
-			userDataKey,
-			() => getUserById(getCurrentUserId.value!, true),
-			{
-				server: true,
-				lazy: false,
-				immediate: true,
-			}
-		);
-		initialUserData.value = data.value;
-	}
+	// const { data: initialUserData } = useNuxtData(userDataKey);
+	// if (!initialUserData.value) {
+	// 	// console.log('123');
+	// 	const { data, refresh } = await useAsyncData(
+	// 		userDataKey,
+	// 		() => getUserById(getCurrentUserId.value!, true),
+	// 		{
+	// 			server: true,
+	// 			lazy: false,
+	// 			immediate: true,
+	// 		}
+	// 	);
+	// 	initialUserData.value = data.value;
+	// }
 
 	const displayUserInfo = computed(() => {
 		if (userData.email) {
@@ -102,11 +103,11 @@
 		}
 	});
 
-	onMounted(async () => {
-		if (initialUserData.value?.user) {
-			updateCurrentUserData(initialUserData.value.user);
-		}
-	});
+	// onMounted(async () => {
+	// 	if (initialUserData.value?.user) {
+	// 		updateCurrentUserData(initialUserData.value.user);
+	// 	}
+	// });
 
 	const isCollapsed = ref(false);
 
