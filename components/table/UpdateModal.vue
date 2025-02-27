@@ -137,8 +137,8 @@
 		try {
 			const { user } = await getUserById(userId.value!, true);
 			if (user) {
-				firstName.value = user.profile.first_name;
-				lastName.value = user.profile.last_name;
+				firstName.value = user.profile.first_name || '';
+				lastName.value = user.profile.last_name || '';
 				email.value = user.email;
 				avatar.value = user.profile.avatar;
 				selectedDepartment.value = {

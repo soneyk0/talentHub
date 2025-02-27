@@ -9,7 +9,6 @@ export default defineNuxtPlugin({
 			let accessToken: string | null = null;
 			const { setCurrentUserId, clearUserData } = useCurrentUser();
 			clearUserData();
-
 			if (import.meta.server) {
 				const cookies = parseCookies(
 					nuxtApp.ssrContext?.event.node.req.headers.cookie || ''
@@ -19,7 +18,6 @@ export default defineNuxtPlugin({
 				const accessTokenCookie = useCookie('access_token');
 				accessToken = accessTokenCookie.value ?? null;
 			}
-
 			if (accessToken) {
 				try {
 					const payload = JSON.parse(atob(accessToken.split('.')[1]));

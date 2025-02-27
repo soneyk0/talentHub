@@ -95,6 +95,7 @@
 	const isSubmitting = ref(false);
 
 	const { form, $v } = useAuthValidation({ passwordMinLength: 6 });
+	const { setCurrentUserId, getCurrentUserId } = useCurrentUser();
 
 	const handleSignup = async () => {
 		isSubmitting.value = true;
@@ -106,6 +107,7 @@
 		try {
 			const data = await signUp(form.value);
 			if (data) {
+				setCurrentUserId(data.signup.user.id);
 				router.push('/users');
 			}
 		} finally {
