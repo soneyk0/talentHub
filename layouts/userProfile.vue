@@ -5,7 +5,7 @@
 				<NuxtLink
 					v-for="tab in tabs"
 					:key="tab.path"
-					:to="`/users/${currentId}${tab.path}`"
+					:to="`/users/${id}${tab.path}`"
 					:class="getTabClass(tab.path)"
 				>
 					{{ tab.label }}

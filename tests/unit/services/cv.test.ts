@@ -5,6 +5,7 @@ import {
 	createCvProjects,
 	deleteCv,
 	deleteCvSkill,
+	exportCvToPdf,
 	getAllCvs,
 	getCvById,
 	getCvFullname,
@@ -117,8 +118,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
 				loading: ref(false),
 				error: ref(null),
 			} as any);
@@ -135,8 +134,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
 				loading: ref(false),
 				error: ref(null),
 			} as any);
@@ -152,10 +149,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
-				loading: ref(false),
-				error: ref(null),
 			} as any);
 
 			const result = await deleteCv(mockCvId);
@@ -170,10 +163,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
-				loading: ref(false),
-				error: ref(null),
 			} as any);
 
 			await expect(deleteCv(mockCvId)).rejects.toThrow('Failed to delete CV');
@@ -194,8 +183,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
 				loading: ref(false),
 				error: ref(null),
 			} as any);
@@ -213,8 +200,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
 				loading: ref(false),
 				error: ref(null),
 			} as any);
@@ -277,10 +262,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
-				loading: ref(false),
-				error: ref(null),
 			} as any);
 
 			const result = await createCvProjects(mockProjectData);
@@ -295,10 +276,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
-				loading: ref(false),
-				error: ref(null),
 			} as any);
 
 			await expect(createCvProjects(mockProjectData)).rejects.toThrow(
@@ -314,10 +291,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
-				loading: ref(false),
-				error: ref(null),
 			} as any);
 
 			const result = await removeCvProject(mockCvId, mockProjectId);
@@ -345,10 +318,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
-				loading: ref(false),
-				error: ref(null),
 			} as any);
 
 			const result = await updateCvProject(mockUpdateData);
@@ -363,10 +332,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
-				loading: ref(false),
-				error: ref(null),
 			} as any);
 
 			await expect(updateCvProject(mockUpdateData)).rejects.toThrow(
@@ -428,8 +393,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
 				loading: ref(false),
 				error: ref(null),
 			} as any);
@@ -447,8 +410,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
 				loading: ref(false),
 				error: ref(null),
 			} as any);
@@ -472,8 +433,7 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
+
 				loading: ref(false),
 				error: ref(null),
 			} as any);
@@ -491,8 +451,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
 				loading: ref(false),
 				error: ref(null),
 			} as any);
@@ -515,8 +473,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
 				loading: ref(false),
 				error: ref(null),
 			} as any);
@@ -539,8 +495,6 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				onDone: vi.fn(),
-				onError: vi.fn(),
 				loading: ref(false),
 				error: ref(null),
 			} as any);
@@ -565,6 +519,66 @@ describe('cv service', () => {
 			expect(fullname).toBe(mockName);
 			expect(loading.value).toBe(false);
 			expect(error.value).toBeNull();
+		});
+	});
+
+	describe('exportCvToPdf', () => {
+		const mockHtmlContent = '<html><body><h1>Test CV</h1></body></html>';
+		const mockPdfData = { data: { exportPdf: 'mockedBase64PdfString' } };
+
+		test('successfully exports CV to PDF', async () => {
+			const mutate = vi.fn().mockResolvedValue(mockPdfData);
+
+			vi.mocked(useMutation).mockReturnValue({
+				mutate,
+			} as any);
+
+			const createElementSpy = vi.spyOn(document, 'createElement');
+			const anchorElementMock = {
+				click: vi.fn(),
+				href: '',
+				download: '',
+			} as any;
+			createElementSpy.mockReturnValue(anchorElementMock);
+
+			await exportCvToPdf(mockHtmlContent);
+
+			expect(mutate).toHaveBeenCalledWith({
+				pdf: {
+					html: mockHtmlContent,
+					margin: { top: '20', left: '20', bottom: '20', right: '20' },
+				},
+			});
+			expect(anchorElementMock.href).toContain(
+				'data:application/pdf;base64,mockedBase64PdfString'
+			);
+			expect(anchorElementMock.download).toBe('cv.pdf');
+			expect(anchorElementMock.click).toHaveBeenCalled();
+
+			createElementSpy.mockRestore();
+		});
+
+		test('handles export error', async () => {
+			const mockError = new Error('Mutation failed');
+			const mutate = vi.fn().mockRejectedValue(mockError);
+
+			vi.mocked(useMutation).mockReturnValue({
+				mutate,
+			} as any);
+
+			const consoleErrorSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {});
+
+			await exportCvToPdf(mockHtmlContent);
+
+			expect(mutate).toHaveBeenCalled();
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'Error when exporting PDF:',
+				mockError
+			);
+
+			consoleErrorSpy.mockRestore();
 		});
 	});
 });

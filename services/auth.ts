@@ -19,7 +19,6 @@ export const signUp = async (auth: { email: string; password: string }) => {
 			maxAge: 60 * 60 * 24 * 30,
 			path: '/',
 		});
-		console.log(res.data.signup);
 		accessToken.value = res.data.signup.access_token;
 		refreshToken.value = res.data.signup.refresh_token;
 		const { setCurrentUserId, reinitializeUser } = useCurrentUser();

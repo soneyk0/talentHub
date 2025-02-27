@@ -135,7 +135,6 @@
 	const userId = ref(
 		(route.params.id as string) || String(getCurrentUserId.value)
 	);
-	console.log(getCurrentUserId.value);
 	const canEdit = computed(() => {
 		return String(getCurrentUserId.value) === userId.value;
 	});

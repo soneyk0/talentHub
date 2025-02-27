@@ -10,7 +10,6 @@ const errorLink = onError(
 				if (extensions?.code === 'UNAUTHENTICATED') {
 					try {
 						const { access_token } = await fetchNewToken();
-						// ------------------------------
 
 						const oldHeaders = operation.getContext().headers;
 						operation.setContext({
