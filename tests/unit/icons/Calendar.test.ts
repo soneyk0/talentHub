@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import Calendar from '~/components/icons/Calendar.vue';
 
-describe('CalendarIcon.vue', () => {
+describe('Calendar icon', () => {
 	it('renders the icon with the given color', () => {
 		const wrapper = mount(Calendar, {
 			props: { color: 'red' },

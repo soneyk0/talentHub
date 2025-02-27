@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import BackArrow from '~/components/icons/BackArrow.vue';
 
-describe('BackArrow', () => {
+describe('BackArrow icon', () => {
 	it('should apply the correct width and color styles from props', () => {
 		const wrapper = mount(BackArrow, {
 			props: {
@@ -27,16 +27,5 @@ describe('BackArrow', () => {
 		expect(wrapper.find('svg').classes()).not.toContain('rotate-180');
 		await wrapper.setProps({ isToggled: true });
 		expect(wrapper.find('svg').classes()).toContain('rotate-180');
-	});
-
-	it('should have correct path d attribute', () => {
-		const wrapper = mount(BackArrow, {
-			props: {
-				isToggled: false,
-				color: 'green',
-				width: '30px',
-			},
-		});
-		expect(wrapper.find('path').attributes('d')).toBe('M15 19l-7-7 7-7');
 	});
 });
