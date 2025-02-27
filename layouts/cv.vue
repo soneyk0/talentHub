@@ -22,6 +22,8 @@
 </template>
 
 <script setup>
+	import { NuxtLayout, NuxtLink, NuxtPage } from '#components';
+	import { KeepAlive } from 'vue';
 	import { useRoute } from 'vue-router';
 
 	const route = useRoute();
@@ -34,22 +36,6 @@
 		{ path: '/projects', label: t('PROJECTS') },
 		{ path: '/preview', label: t('PREVIEW') },
 	];
-
-	const currentTab = computed(() => {
-		const path = route.path;
-		switch (true) {
-			case path.endsWith('/details'):
-				return DETAILS;
-			case path.endsWith('/skills'):
-				return SKILLS;
-			case path.endsWith('/projects'):
-				return PROJECTS;
-			case path.endsWith('/preview'):
-				return PREVIEW;
-			default:
-				return null;
-		}
-	});
 
 	const tabClass =
 		'p-2 text-sm no-underline w-36 h-11 text-center border-b-2 border-solid transition-all duration-200  active:bg-red-500/10';

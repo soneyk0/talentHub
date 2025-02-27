@@ -23,9 +23,6 @@
 
 <script setup>
 	import { useRoute } from 'vue-router';
-	import Languages from '~/pages/users/[id]/languages.vue';
-	import Profile from '~/pages/users/[id]/profile.vue';
-	import Skills from '~/pages/users/[id]/skills.vue';
 
 	const route = useRoute();
 	const id = ref(route.params.id);
@@ -43,20 +40,6 @@
 		{ path: '/skills', label: t('SKILLS') },
 		{ path: '/languages', label: t('LANGUAGES') },
 	];
-
-	const currentTab = computed(() => {
-		const path = route.path;
-		switch (true) {
-			case path.endsWith('/profile'):
-				return Profile;
-			case path.endsWith('/languages'):
-				return Languages;
-			case path.endsWith('/skills'):
-				return Skills;
-			default:
-				return null;
-		}
-	});
 
 	const tabClass =
 		'p-2 text-sm no-underline w-36 h-11 text-center border-b-2 border-solid transition-all duration-200  active:bg-red-500/10';

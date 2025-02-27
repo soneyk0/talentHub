@@ -16,6 +16,7 @@ const newInstance = new ApolloClient({
 
 export const fetchNewToken = async () => {
 	const refreshToken = useCookie('refresh_token');
+	const accessToken = useCookie('access_token');
 	const { data } = await newInstance.mutate<{
 		updateToken: UpdateTokenResult;
 	}>({
@@ -26,6 +27,9 @@ export const fetchNewToken = async () => {
 			},
 		},
 	});
+
+	accessToken.value = data?.updateToken.access_token;
+	refreshToken.value = data?.updateToken.refresh_token;
 
 	return data!.updateToken!;
 };

@@ -12,6 +12,7 @@
 							:level-prop-class="getLanguageButtonProps(language).class"
 							variant="text"
 							color="secondary"
+							:disabled="!canEdit"
 							@click="handleLanguageClick(language)"
 						>
 							{{ language.name }}

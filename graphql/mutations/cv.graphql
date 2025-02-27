@@ -1,96 +1,94 @@
 mutation CreateCV($cv: CreateCvInput!) {
-    createCv(cv: $cv) {
-        name
-        education
-        description
-        id
-    }
+	createCv(cv: $cv) {
+		name
+		education
+		description
+		id
+	}
 }
 
 mutation DeleteCV($cv: DeleteCvInput!) {
-    deleteCv(cv: $cv){
-        affected
-    }
+	deleteCv(cv: $cv) {
+		affected
+	}
 }
 
-mutation UpdateCV($cv:  UpdateCvInput!) {
-    updateCv(cv: $cv) {
-        id
-        name
-        education
-        education
-    }
+mutation UpdateCV($cv: UpdateCvInput!) {
+	updateCv(cv: $cv) {
+		id
+		name
+		education
+	}
 }
-
 
 mutation RemoveCvProject($project: RemoveCvProjectInput!) {
-    removeCvProject(project: $project){
-        projects {
-            id
-            project {
-                id
-                __typename
-            }
-            name
-            domain
-            start_date
-            end_date
-            description
-            environment
-            responsibilities
-        }
-    }
+	removeCvProject(project: $project) {
+		projects {
+			id
+			project {
+				id
+				__typename
+			}
+			name
+			domain
+			start_date
+			end_date
+			description
+			environment
+			responsibilities
+		}
+	}
 }
-
 
 mutation AddCvProject($project: AddCvProjectInput!) {
-    addCvProject(project: $project){
-        projects {
-            id
-        }
-    }
+	addCvProject(project: $project) {
+		projects {
+			id
+		}
+	}
 }
 
-mutation UpdateCvProject($project:  UpdateCvProjectInput!) {
-    updateCvProject(project: $project) {
-        projects {
-            id
-        }
-    }
+mutation UpdateCvProject($project: UpdateCvProjectInput!) {
+	updateCvProject(project: $project) {
+		projects {
+			id
+		}
+	}
+}
+
+mutation ExportPdfCv($pdf: ExportPdfInput!) {
+	exportPdf(pdf: $pdf)
 }
 
 mutation AddCvSkill($skill: AddCvSkillInput!) {
-    addCvSkill(skill: $skill) {
-        id
-        skills {
-            name
-            categoryId
-            mastery
-        }
-    }
+	addCvSkill(skill: $skill) {
+		id
+		skills {
+			name
+			categoryId
+			mastery
+		}
+	}
 }
 
 mutation UpdateCvSkill($skill: UpdateCvSkillInput!) {
-    updateCvSkill(skill: $skill) {
-        id
-        skills {
-            name
-            categoryId
-            mastery
-        }
-    }
+	updateCvSkill(skill: $skill) {
+		id
+		skills {
+			name
+			categoryId
+			mastery
+		}
+	}
 }
 
 mutation DeleteCvSkill($skill: DeleteCvSkillInput!) {
-    deleteCvSkill(skill: $skill) {
-        id
-        skills {
-            name
-            categoryId
-            mastery
-        }
-    }
+	deleteCvSkill(skill: $skill) {
+		id
+		skills {
+			name
+			categoryId
+			mastery
+		}
+	}
 }
-
-mutation ExportPdfCv($pdf:  ExportPdfInput!) {
-    exportPdf(pdf: $pdf)}

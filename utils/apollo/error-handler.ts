@@ -9,12 +9,7 @@ const errorLink = onError(
 			graphQLErrors.forEach(async ({ message, extensions }) => {
 				if (extensions?.code === 'UNAUTHENTICATED') {
 					try {
-						const { access_token, refresh_token } = await fetchNewToken();
-						const accessTokenCookie = useCookie('access_token');
-						const refreshTokenCookie = useCookie('refresh_token');
-
-						accessTokenCookie.value = access_token;
-						refreshTokenCookie.value = refresh_token;
+						const { access_token } = await fetchNewToken();
 
 						const oldHeaders = operation.getContext().headers;
 						operation.setContext({

@@ -12,3 +12,8 @@
 		</div>
 	</div>
 </template>
+
+<script setup lang="ts">
+	import Header from '~/components/header/index.vue';
+	import Sidebar from '~/components/sidebar/index.vue';
+</script>
