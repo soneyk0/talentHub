@@ -28,6 +28,7 @@
 				:headers="headers"
 				:rows-data="filteredData"
 				row-component="TableProjectRow"
+				class="pb-24"
 				@on-delete-project="openDeleteProjectModal"
 				@on-edit-project="onUpdateProjectClick"
 			/>
@@ -51,7 +52,7 @@
 			@cancel="projectForDelete = null"
 		>
 			<p class="text-white">
-				{{$t('Are you sure you want to delete project')}}
+				{{ $t('Are you sure you want to delete project') }}
 				<b>{{ projectForDelete!.name }}</b>
 				?
 			</p>
