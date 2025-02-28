@@ -20,6 +20,7 @@ export default defineVitestConfig({
 				'services/*.ts',
 				'composables/*.ts',
 				'layouts/*.vue',
+				'pages/**/*.vue',
 			],
 			enabled: true,
 		},

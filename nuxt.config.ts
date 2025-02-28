@@ -11,6 +11,7 @@ export default defineNuxtConfig({
 	],
 	css: ['~/assets/styles/main.css'],
 	plugins: [
+		'~/plugins/vue-i18n-cookie',
 		'~/plugins/apollo-client',
 		'~/plugins/auth',
 		{ src: '~/plugins/toast', mode: 'client' },
@@ -32,15 +33,13 @@ export default defineNuxtConfig({
 	i18n: {
 		lazy: true,
 		langDir: './locales',
+
 		locales: [
 			{ code: 'en', iso: 'en-US', name: 'English', file: 'en.json' },
 			{ code: 'ru', iso: 'ru-RU', name: 'Русский', file: 'ru.json' },
 		],
 		defaultLocale: 'en',
 		strategy: 'no_prefix',
-		detectBrowserLanguage: {
-			useCookie: true,
-			fallbackLocale: 'en',
-		},
+		detectBrowserLanguage: false,
 	},
 });
