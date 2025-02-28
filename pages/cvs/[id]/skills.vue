@@ -124,6 +124,7 @@
 <script setup lang="ts">
 	import PlusIcon from '~/components/icons/PlusIcon.vue';
 	import TrashBin from '~/components/icons/TrashBin.vue';
+	import EntityModal from '~/components/modals/EntityModal.vue';
 	import {
 		SKILL_LEVEL_TO_PROGRESS,
 		SKILL_LEVELS,
@@ -169,7 +170,6 @@
 	} as const;
 
 	const categories = ref<SkillCategory[]>([otherCategory]);
-	const skills = ref<Skill[]>([]);
 	const cvSkills = ref<Skill[]>([]);
 	const allSkills = ref<SkillDefault[]>([]);
 	const route = useRoute();
@@ -205,7 +205,6 @@
 		const { data } = await useAsyncData(skillsDataKey, () =>
 			getCvSkills(cvId.value!)
 		);
-
 		skillsData.value = data.value;
 		cvSkills.value = skillsData.value;
 	}
@@ -281,7 +280,7 @@
 	const skillOptions = computed(() => {
 		const availableSkills = allSkills.value.filter(
 			(skill) =>
-				!skills.value.some((userSkill) => userSkill.name === skill.name)
+				!cvSkills.value.some((userSkill) => userSkill.name === skill.name)
 		);
 
 		const groupedSkills = availableSkills.reduce(
@@ -314,12 +313,6 @@
 	const handleAddSkillConfirm = async () => {
 		if (!newSelectedSkill.value || !newSelectedLevel.value) return;
 
-		const newSkill = {
-			name: newSelectedSkill.value.name,
-			categoryId: newSelectedSkill.value.category.id,
-			mastery: newSelectedLevel.value,
-		};
-
 		try {
 			const { executeAdd } = addCvSkill({
 				cvId: cvId.value!,
@@ -328,9 +321,10 @@
 				mastery: newSelectedLevel.value as SkillLevel,
 			});
 
-			await executeAdd();
+			const data = await executeAdd();
+			console.log(data);
 			clearNuxtData(skillsDataKey);
-			cvSkills.value = [...cvSkills.value, newSkill];
+			cvSkills.value = data.skills;
 
 			showSuccessToast('Skill added successfully');
 			isAddSkillModalOpen.value = false;
@@ -409,12 +403,9 @@
 				cvId.value!,
 				Array.from(selectedSkillsToRemove.value)
 			);
-			await executeDelete();
+			const data = await executeDelete();
 			clearNuxtData(skillsDataKey);
-
-			cvSkills.value = cvSkills.value.filter(
-				(skill) => !selectedSkillsToRemove.value.has(skill.name)
-			);
+			cvSkills.value = data.skills;
 			showSuccessToast('Skills deleted successfully');
 			handleCancelRemoval();
 		} catch (error) {
