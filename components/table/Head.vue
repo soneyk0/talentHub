@@ -8,17 +8,18 @@
 			>
 				<div class="flex items-center gap-2">
 					<span>{{ header.label }}</span>
-					<button
-						v-if="header.isSortable"
-						class="flex w-6 justify-center text-gray-5"
-						@click="emitSort(header.key)"
-					>
-						<template v-if="sortKey === header.key">
-							<span v-if="sortOrder === 'asc'">▲</span>
-							<span v-else>▼</span>
-						</template>
-						<template v-else>▲▼</template>
-					</button>
+					<div v-if="header.isSortable">
+						<button
+							class="flex w-6 justify-center text-gray-5"
+							@click="emitSort(header.key)"
+						>
+							<template v-if="sortKey === header.key">
+								<span v-if="sortOrder === 'asc'">▲</span>
+								<span v-else>▼</span>
+							</template>
+							<template v-else>▲▼</template>
+						</button>
+					</div>
 				</div>
 			</th>
 		</tr>

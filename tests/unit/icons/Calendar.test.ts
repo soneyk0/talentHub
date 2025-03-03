@@ -9,11 +9,7 @@ describe('Calendar icon', () => {
 		});
 
 		const svgElement = wrapper.find('[data-testid="CalendarIcon"]');
-
-		// Проверяем, что элемент найден
 		expect(svgElement.exists()).toBe(true);
-
-		// Проверяем, что fill соответствует переданному цвету
 		expect(svgElement.attributes('style')).toContain('fill: red');
 	});
 });
