@@ -394,7 +394,7 @@
 		(newUser) => {
 			if (newUser) {
 				user.fullName = newUser.profile.full_name || '';
-				user.position = newUser.position.name;
+				user.position = newUser.position?.name || '';
 				user.language = newUser.profile.languages.map((lang: Language) => ({
 					name: lang.name,
 					proficiency: lang.proficiency,

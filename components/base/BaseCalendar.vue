@@ -22,7 +22,6 @@
 
 <script setup lang="ts">
 	import VueDatePicker from '@vuepic/vue-datepicker';
-	import { defineProps, ref } from 'vue';
 
 	const props = defineProps({
 		label: {
