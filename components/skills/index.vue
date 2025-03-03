@@ -2,133 +2,51 @@
 	<div class="-mt-8 flex h-[calc(100vh-70px-2.5rem)] flex-col">
 		<div class="flex-1 overflow-y-auto pt-8">
 			<div class="relative mx-auto flex w-full max-w-[900px] flex-col">
-				<div class="flex flex-col gap-8 pb-5">
-					<div
-						v-for="category in categoriesWithSkills"
-						:key="category.id"
-						class="flex flex-col gap-4"
-					>
-						<h3 class="text-m font-light text-white">{{ category.name }}</h3>
-						<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-							<ButtonsProgressButton
-								v-for="skill in getSkillsByCategory(category.id)"
-								:key="skill.name"
-								:progress="getSkillButtonProps(skill).progress"
-								:class="getSkillButtonProps(skill).class"
-								variant="text"
-								color="secondary"
-								:disabled="!canEdit"
-								@click="handleSkillClick(skill)"
-							>
-								{{ skill.name }}
-							</ButtonsProgressButton>
-						</div>
-					</div>
-				</div>
+				<SkillList
+					:categories="categoriesWithSkills"
+					:skills="skills"
+					:is-removal-mode="isRemovalMode"
+					:selected-skills-to-remove="selectedSkillsToRemove"
+					:can-edit="canEdit"
+					@skill-click="handleSkillClick"
+				/>
 
-				<div v-if="canEdit" class="sticky bottom-0 bg-dark-1 py-2">
-					<div class="flex justify-end gap-4 px-2">
-						<template v-if="!isRemovalMode">
-							<BaseButton
-								class="max-w-[220px]"
-								variant="text"
-								color="secondary"
-								@click="handleAddSkill"
-							>
-								<div class="flex items-center justify-center gap-3">
-									<PlusIcon color="var(--color-gray-7)" width="24" />
-									{{ $t('ADD SKILL') }}
-								</div>
-							</BaseButton>
-							<BaseButton
-								v-if="skills.length > 0"
-								class="max-w-[220px]"
-								variant="text"
-								color="primary"
-								@click="isRemovalMode = true"
-							>
-								<div class="flex items-center justify-center gap-3">
-									<TrashBin color="var(--color-red-1)" width="24" />
-									{{ $t('REMOVE SKILLS') }}
-								</div>
-							</BaseButton>
-						</template>
-						<template v-else>
-							<BaseButton
-								class="max-w-[220px]"
-								variant="outlined"
-								color="secondary"
-								@click="handleCancelRemoval"
-							>
-								{{ $t('Cancel') }}
-							</BaseButton>
-							<BaseButton
-								class="max-w-[220px]"
-								variant="contained"
-								color="primary"
-								:disabled="
-									selectedSkillsToRemove.size === 0 || isDeletingSkills
-								"
-								@click="handleDeleteSkills"
-							>
-								<div class="flex items-center justify-center gap-3">
-									{{ $t('Delete') }}
-									<div class="w-2">{{ selectedSkillsToRemove.size }}</div>
-								</div>
-							</BaseButton>
-						</template>
-					</div>
-				</div>
+				<SkillActions
+					v-if="canEdit"
+					:skills="skills"
+					:is-removal-mode="isRemovalMode"
+					:selected-skills-to-remove="selectedSkillsToRemove"
+					:is-deleting-skills="isDeletingSkills"
+					@add-skill="handleAddSkill"
+					@toggle-removal-mode="isRemovalMode = !isRemovalMode"
+					@cancel-removal="handleCancelRemoval"
+					@delete-skills="handleDeleteSkills"
+				/>
 			</div>
 		</div>
 
-		<ModalsEntityModal
+		<UpdateSkillModal
 			v-model:is-open="isUpdateSkillModalOpen"
-			v-model:name-option="selectedSkillOption"
-			v-model:level-option="selectedLevelOption"
-			:title="$t('Update skill')"
-			:confirm-text="$t('Confirm')"
-			:cancel-text="$t('Cancel')"
-			:has-changes="hasChanges"
-			:entity-label="$t('Skill')"
-			:entity-level-label="$t('Skill mastery')"
-			name-input-id="skill-name"
-			level-input-id="skill-level"
-			:name-options="[
-				{
-					value: selectedSkill?.name ?? '',
-					label: selectedSkill?.name ?? '',
-				},
-			]"
-			:level-options="SKILL_LEVELS"
-			:is-name-disabled="true"
+			v-model:selected-skill="selectedSkill"
+			v-model:selected-level="selectedLevel"
+			:initial-level="initialLevel"
+			:skill-levels="SKILL_LEVELS"
 			@confirm="handleUpdateSkillConfirm"
 		/>
-		<ModalsEntityModal
+
+		<AddSkillModal
 			v-model:is-open="isAddSkillModalOpen"
-			v-model:name-option="newSkillOption"
-			v-model:level-option="newLevelOption"
-			:title="$t('Add skill')"
-			:confirm-text="$t('Add')"
-			:has-changes="!!(newSelectedSkill && newSelectedLevel)"
-			:entity-label="$t('Skill')"
-			:entity-level-label="$t('Skill mastery')"
-			name-input-id="new-skill-name"
-			level-input-id="new-skill-level"
-			:name-options="skillOptions"
-			:level-options="SKILL_LEVELS"
+			v-model:selected-skill="newSelectedSkill"
+			v-model:selected-level="newSelectedLevel"
+			:skill-options="skillOptions"
+			:skill-levels="SKILL_LEVELS"
 			@confirm="handleAddSkillConfirm"
 		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import PlusIcon from '~/components/icons/PlusIcon.vue';
-	import TrashBin from '~/components/icons/TrashBin.vue';
-	import {
-		SKILL_LEVEL_TO_PROGRESS,
-		SKILL_LEVELS,
-	} from '~/constants/entity-level';
+	import { SKILL_LEVELS } from '~/constants/entity-level';
 	import type { Skill, SkillLevel } from '~/global';
 	import {
 		addProfileSkill,
@@ -139,6 +57,10 @@
 		updateProfileSkill,
 	} from '~/services/user';
 	import { showErrorToast, showSuccessToast } from '~/utils/toast/toast';
+	import SkillActions from './SkillActions.vue';
+	import SkillList from './SkillList.vue';
+	import AddSkillModal from './modals/AddSkillModal.vue';
+	import UpdateSkillModal from './modals/UpdateSkillModal.vue';
 
 	interface SkillDefault {
 		id: string;
@@ -252,27 +174,6 @@
 	const newSelectedSkill = ref<SkillDefault | null>(null);
 	const newSelectedLevel = ref<Skill['mastery'] | null>(null);
 
-	const newSkillOption = computed({
-		get: () => ({
-			value: newSelectedSkill.value?.id ?? '',
-			label: newSelectedSkill.value?.name ?? '',
-		}),
-		set: (option) => {
-			newSelectedSkill.value =
-				allSkills.value.find((skill) => skill.id === option.value) ?? null;
-		},
-	});
-
-	const newLevelOption = computed({
-		get: () => ({
-			value: newSelectedLevel.value ?? '',
-			label: newSelectedLevel.value ?? '',
-		}),
-		set: (option) => {
-			newSelectedLevel.value = option.value as Skill['mastery'];
-		},
-	});
-
 	const skillOptions = computed(() => {
 		const availableSkills = allSkills.value.filter(
 			(skill) =>
@@ -308,18 +209,25 @@
 
 	const handleAddSkillConfirm = async () => {
 		if (!newSelectedSkill.value || !newSelectedLevel.value) return;
+		const fullSkillData = allSkills.value.find(
+			(skill) => skill.id === newSelectedSkill.value?.id
+		);
+		if (!fullSkillData || !fullSkillData.name || !fullSkillData.category?.id) {
+			showErrorToast('Error: Skill data incomplete');
+			return;
+		}
 
 		const newSkill = {
-			name: newSelectedSkill.value.name,
-			categoryId: newSelectedSkill.value.category.id,
+			name: fullSkillData.name,
+			categoryId: fullSkillData.category.id,
 			mastery: newSelectedLevel.value,
 		};
 
 		try {
 			const { executeAdd } = addProfileSkill({
 				userId: userId.value!,
-				name: newSelectedSkill.value.name,
-				categoryId: newSelectedSkill.value.category.id,
+				name: fullSkillData!.name,
+				categoryId: fullSkillData!.category.id,
 				mastery: newSelectedLevel.value as SkillLevel,
 			});
 
@@ -340,25 +248,6 @@
 	const selectedSkill = ref<Skill | null>(null);
 	const initialLevel = ref<Skill['mastery'] | null>(null);
 	const selectedLevel = ref<Skill['mastery'] | null>(null);
-	const hasChanges = computed(() => selectedLevel.value !== initialLevel.value);
-
-	const selectedSkillOption = computed({
-		get: () => ({
-			value: selectedSkill.value?.name ?? '',
-			label: selectedSkill.value?.name ?? '',
-		}),
-		set: () => {},
-	});
-
-	const selectedLevelOption = computed({
-		get: () => ({
-			value: selectedLevel.value ?? '',
-			label: selectedLevel.value ?? '',
-		}),
-		set: (option) => {
-			selectedLevel.value = option.value as Skill['mastery'];
-		},
-	});
 
 	const handleUpdateSkillConfirm = async () => {
 		if (!selectedSkill.value || !selectedLevel.value) return;
@@ -420,18 +309,6 @@
 		}
 	};
 
-	// helpers
-	const getSkillProgress = (mastery: Skill['mastery']) => {
-		return SKILL_LEVEL_TO_PROGRESS[mastery];
-	};
-
-	const getSkillsByCategory = (categoryId: string) => {
-		if (categoryId === 'other') {
-			return skills.value.filter((skill) => !skill.categoryId);
-		}
-		return skills.value.filter((skill) => skill.categoryId === categoryId);
-	};
-
 	// handler to manage update and removal
 	const handleSkillClick = (skill: Skill) => {
 		if (isRemovalMode.value) {
@@ -448,20 +325,5 @@
 		initialLevel.value = skill.mastery;
 
 		isUpdateSkillModalOpen.value = true;
-	};
-
-	// button ui helper
-	const getSkillButtonProps = (skill: Skill) => {
-		if (isRemovalMode.value) {
-			const isSelected = selectedSkillsToRemove.value.has(skill.name);
-			return {
-				progress: isSelected ? 0 : getSkillProgress(skill.mastery),
-				class: isSelected ? 'text-white' : '',
-			};
-		}
-		return {
-			progress: getSkillProgress(skill.mastery),
-			class: '',
-		};
 	};
 </script>

@@ -8,18 +8,7 @@ vi.mock('~/components/auth/ForgotPasswordForm.vue', () => ({
 	},
 }));
 
-// const mockDefinePageMeta = vi.fn();
-// vi.mock('#imports', () => {
-// 	return {
-// 		definePageMeta: mockDefinePageMeta,
-// 	};
-// });
-
 describe('forgot password page', () => {
-	// beforeEach(() => {
-	// 	mockDefinePageMeta.mockClear();
-	// });
-
 	it('renders the page with AuthForgotPasswordForm', () => {
 		const wrapper = mount(ForgotPasswordPage);
 
@@ -32,12 +21,4 @@ describe('forgot password page', () => {
 		expect(formComponent.exists()).toBe(true);
 		expect(formComponent.text()).toBe('aboba');
 	});
-
-	// it('defines the correct page meta', () => {
-	// 	const wrapper = mount(ForgotPasswordPage);
-	// 	expect(mockDefinePageMeta).toBeCalledTimes(1);
-	// 	expect(mockDefinePageMeta).toBeCalledWith({
-	// 		layout: 'auth',
-	// 	});
-	// });
 });

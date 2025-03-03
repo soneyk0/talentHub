@@ -16,6 +16,11 @@ export interface Skill {
 	mastery: SkillLevel;
 }
 
+export interface Category {
+	id: string;
+	name: string;
+}
+
 export interface Project {
 	name: string;
 	description: string;
