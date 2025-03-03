@@ -46,8 +46,8 @@
 </template>
 
 <script setup lang="ts">
-	import AddSkillModal from '~/components/skills/modals/AddSkillModal.vue';
-	import UpdateSkillModal from '~/components/skills/modals/UpdateSkillModal.vue';
+	import AddSkillModal from '~/components/modals/AddSkillModal.vue';
+	import UpdateSkillModal from '~/components/modals/UpdateSkillModal.vue';
 	import SkillActions from '~/components/skills/SkillActions.vue';
 	import SkillList from '~/components/skills/SkillList.vue';
 	import { SKILL_LEVELS } from '~/constants/entity-level';
