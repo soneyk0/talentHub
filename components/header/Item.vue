@@ -1,13 +1,13 @@
 <template>
 	<li class="flex items-center">
 		<template v-if="!isLast">
-			<a
-				:href="breadcrumb.link"
+			<NuxtLink
+				:to="breadcrumb.link"
 				class="hover:underline"
 				:class="{ 'text-red-1': index === 1 }"
 			>
 				<p>{{ breadcrumb.label }}</p>
-			</a>
+			</NuxtLink>
 			<span aria-hidden="true" class="mx-2">
 				<IconsBackArrow
 					:is-toggled="true"
