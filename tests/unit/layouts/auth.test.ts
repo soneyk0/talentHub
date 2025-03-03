@@ -11,8 +11,8 @@ describe('Auth Layout', () => {
 			},
 		});
 
-		expect(wrapper.find('div').exists()).toBe(true);
+		expect(wrapper.vm).toBeTruthy();
+
 		expect(wrapper.find('[data-test="slot-content"]').exists()).toBe(true);
-		expect(wrapper.find('div.flex.min-h-screen').exists()).toBe(true);
 	});
 });

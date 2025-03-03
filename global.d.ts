@@ -68,7 +68,6 @@ export type SkillLevel =
 	| 'Proficient'
 	| 'Expert';
 
-// in case we need it later
 export interface User {
 	id: string;
 	created_at: string;

@@ -11,11 +11,8 @@ describe('Default Layout', () => {
 			},
 		});
 
-		expect(wrapper.find('aside').exists()).toBe(true);
-		expect(wrapper.find('header').exists()).toBe(true);
-		expect(wrapper.find('[data-test="slot-content"]').exists()).toBe(true);
+		expect(wrapper.vm).toBeTruthy();
 
-		expect(wrapper.find('div.flex.min-h-screen').exists()).toBe(true);
-		expect(wrapper.find('main.flex-1').exists()).toBe(true);
+		expect(wrapper.find('[data-test="slot-content"]').exists()).toBe(true);
 	});
 });

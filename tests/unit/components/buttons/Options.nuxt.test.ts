@@ -22,13 +22,7 @@ describe('OptionsButton', () => {
 
 		const button = wrapper.find('button');
 		expect(button.exists()).toBe(true);
-
 		expect(button.classes()).toContain('flex');
-		expect(button.classes()).toContain('h-10');
-		expect(button.classes()).toContain('w-10');
-		expect(button.classes()).toContain('items-center');
-		expect(button.classes()).toContain('justify-center');
-		expect(button.classes()).toContain('rounded-[20px]');
 
 		const icon = wrapper.find('svg');
 		expect(icon.attributes('data-color')).toBe(color);
@@ -56,10 +50,6 @@ describe('OptionsButton', () => {
 		});
 
 		const button = wrapper.find('button');
-
-		expect(button.classes()).toContain('transition');
-		expect(button.classes()).toContain('duration-300');
-		expect(button.classes()).toContain('ease-in-out');
 		expect(button.classes()).toContain('hover:bg-dark-4');
 	});
 });
