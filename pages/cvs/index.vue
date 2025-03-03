@@ -102,7 +102,7 @@
 	const headers = reactive([
 		{ key: 'name', label: t('CV Name'), isSortable: true },
 		{ key: 'education', label: t('Education'), isSortable: true },
-		{ key: 'email', label: t('Email'), isSortable: true },
+		{ key: 'email', label: t('Email'), isSortable: false },
 		{ key: 'link', label: '', isSortable: false },
 	]);
 
@@ -126,8 +126,10 @@
 
 		return tableData.value.filter((row) => {
 			const nameMatches = row.name?.toLowerCase().includes(lowerCaseSearch);
-			const emailMatches = row.email?.toLowerCase().includes(lowerCaseSearch);
-			return nameMatches || emailMatches;
+			const educationMatches = row.education
+				?.toLowerCase()
+				.includes(lowerCaseSearch);
+			return nameMatches || educationMatches;
 		});
 	});
 

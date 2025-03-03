@@ -330,13 +330,13 @@
 
 	const { data: cvData } = useNuxtData(cvDataKey);
 
-	if (!cvData.value) {
+	if (!cvData.value || cvData.value) {
 		const { data, refresh } = await useAsyncData(
 			cvDataKey,
 			() => getCvById(cvId.value),
 			{
 				server: true,
-				lazy: false,
+				lazy: true,
 				immediate: true,
 			}
 		);
@@ -375,7 +375,7 @@
 
 	const { data: userData } = useNuxtData(userDataKey);
 
-	if (!userData.value) {
+	if (!userData.value || userData.value) {
 		const { data, refresh } = await useAsyncData(
 			userDataKey,
 			() => getUserById(userId.value as string, true),
@@ -415,7 +415,7 @@
 	const categoriesDataKey = 'skill-categories';
 	const { data: categoriesData } = useNuxtData(categoriesDataKey);
 
-	if (!categoriesData.value) {
+	if (!categoriesData.value || categoriesData.value) {
 		const { data } = await useAsyncData(categoriesDataKey, () =>
 			getSkillCategories()
 		);

@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-	import '@vuepic/vue-datepicker/dist/main.css'; // Импорт стилей
+	import '@vuepic/vue-datepicker/dist/main.css';
 	import type { CvProject } from 'cv-graphql';
 	import PlusIcon from '~/components/icons/PlusIcon.vue';
 	import CvProjectModal from '~/components/modals/CvProjectModal.vue';
@@ -106,8 +106,8 @@
 	const headers = reactive([
 		{ key: 'name', label: t('Name'), isSortable: true },
 		{ key: 'domain', label: t('Domain'), isSortable: true },
-		{ key: 'startDate', label: t('Start Date'), isSortable: true },
-		{ key: 'endDate', label: t('End Date'), isSortable: true },
+		{ key: 'start_date', label: t('Start Date'), isSortable: true },
+		{ key: 'end_date', label: t('End Date'), isSortable: true },
 		{ key: 'link', label: '', isSortable: false },
 	]);
 
