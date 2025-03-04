@@ -68,7 +68,6 @@
 	});
 
 	const { data: cvData } = useNuxtData(cvDataKey);
-
 	if (!cvData.value) {
 		const { data, refresh } = await useAsyncData(
 			cvDataKey,

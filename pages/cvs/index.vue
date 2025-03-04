@@ -65,7 +65,7 @@
 		>
 			<p class="text-white">
 				{{ $t('Are you sure you want to delete CV') }}
-				<b>{{ selectedCv!.name }}</b>
+				<b>{{ selectedCv?.name }}</b>
 				?
 			</p>
 		</BaseModal>

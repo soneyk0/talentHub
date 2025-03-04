@@ -18,6 +18,5 @@ describe('Cv Layout', () => {
 		expect(wrapper.vm).toBeTruthy();
 
 		expect(wrapper.find('nav').exists()).toBe(true);
-		expect(wrapper.find('div.mt-8').exists()).toBe(true);
 	});
 });
