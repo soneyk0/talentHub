@@ -177,20 +177,15 @@ export const updateCvProject = async (project: UpdateCvProjectInput) => {
 	}
 };
 
-export const addCvSkill = (skill: UpdateCvSkillInput) => {
-	const { mutate: addSkillMutation, loading, error } = useMutation(AddCvSkill);
-
-	const executeAdd = async () => {
-		try {
-			const response = await addSkillMutation({ skill });
-			return response!.data?.addCvSkill;
-		} catch (err) {
-			console.error('Error adding skill:', err);
-			throw err;
-		}
-	};
-
-	return { executeAdd, loading, error };
+export const addCvSkill = async (skill: UpdateCvSkillInput) => {
+	const { mutate: addSkillMutation } = useMutation(AddCvSkill);
+	try {
+		const response = await addSkillMutation({ skill });
+		return response!.data?.addCvSkill;
+	} catch (err) {
+		console.error('Error adding skill:', err);
+		throw err;
+	}
 };
 
 export const updateCvSkill = (skill: UpdateCvSkillInput) => {
