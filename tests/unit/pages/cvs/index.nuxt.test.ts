@@ -35,24 +35,6 @@ vi.mock('~/components/base/BaseTextarea.vue', () => ({
 	},
 }));
 
-vi.mock('~/components/base/BaseInput.vue', () => ({
-	default: {
-		name: 'BaseInput',
-		props: ['id', 'modelValue', 'label', 'type'],
-		template: `
-      <div>
-        <input 
-          :id="id" 
-          :type="type"
-          :value="modelValue"
-          @input="$emit('update:modelValue', $event.target.value)"
-        />
-        <label>{{ label }}</label>
-      </div>
-    `,
-	},
-}));
-
 vi.mock('~/components/base/SearchBar.vue', () => ({
 	default: {
 		name: 'BaseSearchBar',
@@ -66,22 +48,6 @@ vi.mock('~/components/base/SearchBar.vue', () => ({
           @input="$emit('update:modelValue', $event.target.value)"
         />
       </div>
-    `,
-	},
-}));
-
-vi.mock('~/components/base/button/BaseButton.vue', () => ({
-	default: {
-		name: 'BaseButton',
-		props: ['color', 'type', 'variant', 'disabled'],
-		template: `
-      <button 
-        :type="type" 
-        :disabled="disabled"
-        @click="$emit('click')"
-      >
-        <slot></slot>
-      </button>
     `,
 	},
 }));
@@ -214,9 +180,8 @@ describe('CV index page', () => {
 	it('filters CVs based on search query', async () => {
 		const wrapper = await mountSuspended(CVIndexPage);
 
-		await wrapper.find('.search-input').setValue('test1');
+		await wrapper.find('.search-input').setValue('Test CV 1');
 
-		const vm = wrapper.vm;
 		expect(wrapper.vm.filteredData.length).toBe(1);
 		expect(wrapper.vm.filteredData[0].name).toBe('Test CV 1');
 	});

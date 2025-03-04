@@ -393,15 +393,12 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				loading: ref(false),
-				error: ref(null),
 			} as any);
 
-			const { executeAdd } = addCvSkill(mockSkillData);
-			const result = await executeAdd();
+			const response = await addCvSkill(mockSkillData);
 
 			expect(mutate).toHaveBeenCalledWith({ skill: mockSkillData });
-			expect(result).toEqual(mockResponse.data.addCvSkill);
+			expect(response).toEqual(mockResponse.data.addCvSkill);
 		});
 
 		test('handles add skill error', async () => {
@@ -410,12 +407,11 @@ describe('cv service', () => {
 
 			vi.mocked(useMutation).mockReturnValue({
 				mutate,
-				loading: ref(false),
-				error: ref(null),
 			} as any);
 
-			const { executeAdd } = addCvSkill(mockSkillData);
-			await expect(executeAdd()).rejects.toThrow('Failed to add skill');
+			await expect(addCvSkill(mockSkillData)).rejects.toThrow(
+				'Failed to add skill'
+			);
 		});
 	});
 
