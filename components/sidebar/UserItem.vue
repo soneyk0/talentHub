@@ -5,7 +5,7 @@
 			class="fixed inset-0 z-40 cursor-default"
 			@click.stop="isOpen = false"
 		></div>
-		<div :class="linkClasses" @click="isOpen = !isOpen">
+		<div :class="linkClasses" data-tested="open" @click="isOpen = !isOpen">
 			<BaseUserPic
 				:name="item.text"
 				:photo="item.photo"
