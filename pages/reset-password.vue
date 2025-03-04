@@ -22,7 +22,7 @@
 						variant="contained"
 						:color="newPassword ? 'primary' : 'secondary'"
 						type="submit"
-						:disabled="isSubmitting"
+						:disabled="isSubmitting || !newPassword.trim()"
 					>
 						{{ $t('SUBMIT') }}
 					</BaseButton>
